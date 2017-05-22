@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/05/21 13:07:48 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/05/22 13:02:07 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,7 @@ int		vingt_et_un_sh(char **envp);
 int		reset_term(void);
 int		prepare_term(void);
 int		f_putchar(int c);
+char	**remalloc_env(char **envp, int after_size, int new_size);
+char	**creat_env(char **envp_begin);
 
 #endif
