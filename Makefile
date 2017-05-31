@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/05/21 12:18:14 by gsotty           ###   ########.fr        #
+#    Updated: 2017/05/30 09:23:46 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,11 +31,11 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	make -s -C $(LIBFT) re
-	$(CC) -lncurses $(FLAG) $(SRC) ./libft/libft.a -o $(NAME)
+	$(CC) -ltermcap $(FLAG) $(SRC) ./libft/libft.a -o $(NAME)
 
 debug: $(OBJ)
 	make -s -C $(LIBFT) re
-	$(CC) -lncurses -g $(FLAG) $(SRC) ./libft/libft.a -o $(NAME)
+	$(CC) -ltermcap -g $(FLAG) $(SRC) ./libft/libft.a -o $(NAME)
 	make -s -C $(LIBFT) clean
 	rm -Rf $(OBJ)
 

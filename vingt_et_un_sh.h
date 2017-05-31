@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/05/22 13:02:07 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/05/31 13:44:00 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,27 @@
 # include <curses.h>
 # include <sys/ioctl.h>
 
+sig_atomic_t		g_sig;
+
 typedef struct		s_pos
 {
-		int			pos_x;
-		int			pos_y;
+	int				pos_x;
+	int				pos_y;
 }					t_pos;
 
+typedef struct		s_split
+{
+	int				j;
+	int				x;
+}					t_split;
+
+void	parser(char *buf, char **envp);
 int		vingt_et_un_sh(char **envp);
 int		reset_term(void);
 int		prepare_term(void);
 int		f_putchar(int c);
 char	**remalloc_env(char **envp, int after_size, int new_size);
 char	**creat_env(char **envp_begin);
+char	**ft_strsplit_space(char const *buf, char *c);
 
 #endif

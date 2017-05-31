@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:56:19 by gsotty            #+#    #+#             */
-/*   Updated: 2017/05/22 15:06:36 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/05/30 15:49:17 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int		while_vingt_et_un_sh(t_pos *pos)
 			tputs(tgetstr("up", NULL), 1 , f_putchar);
 	//		tputs(tgoto(tgetstr("cm", NULL), pos->pos_x, pos->pos_y), 1,
 	//				f_putchar);
-		}
+		
 		else if (buffer[1] == 0 && buffer[2] == 0 && buffer[0] != 10)
 		{
 			write(1, buffer, 1);
@@ -91,7 +91,7 @@ int		while_vingt_et_un_sh(t_pos *pos)
 			pos->pos_x++;
 		}
 	}
-//	printf("%s\n", buf);
+	printf("\n%s\n", buf);
 	return (0);
 }
 
@@ -99,6 +99,8 @@ int		vingt_et_un_sh(char **envp_begin)
 {
 	t_pos	pos;
 
+	printf("%d\n", MAX_CANON);
+	printf("%d\n", MAX_INPUT);
 	ft_memset(&pos, 0, sizeof(pos));
 	(void)envp_begin;
 	if (prepare_term() == -1)
