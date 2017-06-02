@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:56:19 by gsotty            #+#    #+#             */
-/*   Updated: 2017/05/30 15:49:17 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/01 11:23:44 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int		while_vingt_et_un_sh(t_pos *pos)
 			tputs(tgetstr("up", NULL), 1 , f_putchar);
 	//		tputs(tgoto(tgetstr("cm", NULL), pos->pos_x, pos->pos_y), 1,
 	//				f_putchar);
-		
+		}
 		else if (buffer[1] == 0 && buffer[2] == 0 && buffer[0] != 10)
 		{
 			write(1, buffer, 1);

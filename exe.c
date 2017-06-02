@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   exe.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/06/01 12:29:03 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/01 12:36:07 by gsotty           ###   ########.fr       */
+/*   Created: 2017/04/06 11:34:50 by gsotty            #+#    #+#             */
+/*   Updated: 2017/04/28 14:51:08 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./vingt_et_un_sh.h"
+#include "minishell.h"
 
-static void	env_fork(char **argv, char **envp)
+static void	env_fork(char **argv)
 {
 	pid_t	father;
 
@@ -25,20 +25,20 @@ static void	env_fork(char **argv, char **envp)
 	if (father == 0)
 	{
 		ft_env(argv);
-		free_tab(envp);
+		free_tab(g_envp);
 		exit(0);
 	}
 	return ;
 }
 
-void		exe_cmd(int argc, char **argv, char **envp)
+void		exe_cmd(int argc, char **argv)
 {
 	if (argv == NULL || argv[0] == NULL)
 		return ;
 	if (ft_strcmp(argv[0], "env") == 0)
-		env_fork(argv, envp);
+		env_fork(argv);
 	else if (ft_strcmp(argv[0], "echo") == 0)
-		ft_echo(argv);
+		echo(argv);
 	else if (ft_strcmp(argv[0], "setenv") == 0)
 		ft_setenv(argv);
 	else if (ft_strcmp(argv[0], "unsetenv") == 0)
@@ -60,7 +60,7 @@ static int	len_tab(char **argv)
 	return (x);
 }
 
-void		parser(char *buf, char **envp)
+void		exe(char *buf)
 {
 	int		x;
 	int		len_argv;
@@ -78,7 +78,7 @@ void		parser(char *buf, char **envp)
 			if ((argv = ft_strsplit_space(sep_exe[x], " \t")) != NULL)
 			{
 				argc = len_tab(argv);
-				exe_cmd(argc, argv, envp);
+				exe_cmd(argc, argv);
 				free_tab(argv);
 			}
 		}

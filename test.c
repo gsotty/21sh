@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/30 09:07:10 by gsotty            #+#    #+#             */
-/*   Updated: 2017/05/31 13:44:08 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/01 12:12:53 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int		main(int argc, char **argv, char **envp)
 	char	tmp;
 	char	tmp_2;
 	char	buffer[3];
-	char	buf[4096];
+	char	buf[4086];
 
 	if (prepare_term() == -1)
 		return (1);
@@ -64,7 +64,7 @@ int		main(int argc, char **argv, char **envp)
 			if (len == 0)
 				x = 0;
 			read(0, buffer, 3);
-		//	printf("%d, %d, %d\n", buffer[0], buffer[1], buffer[2]);
+	//		printf("111 = %d, %d, %d\n", buffer[0], buffer[1], buffer[2]);
 			if (buffer[0] == 4 && buffer[1] == 0 && buffer[2] == 0)
 			{
 				if (len == 0)
@@ -154,38 +154,41 @@ int		main(int argc, char **argv, char **envp)
 					len--;
 				}
 			}
-			else if (buffer[1] == 0 && buffer[2] == 0 && buffer[0] != 10)
+			else if (buffer[0] != 10)
 			{
-				if (ft_isprint(buffer[0]) == 1)
+				if (len < 4086)
 				{
-					write(1, buffer, 3);
-					if (buf[x] != '\0')
+					if (ft_isprint(buffer[0]) == 1)
 					{
-						y = x;
-						tmp_2 = buffer[0];
-						while (y < (len + 2))
+						write(1, buffer, 3);
+						if (buf[x] != '\0')
 						{
-							tmp = buf[y];
-							buf[y] = tmp_2;
-							tmp_2 = buf[y + 1];
-							buf[y + 1] = tmp;
-							y += 2;
+							y = x;
+							tmp_2 = buffer[0];
+							while (y < (len + 2))
+							{
+								tmp = buf[y];
+								buf[y] = tmp_2;
+								tmp_2 = buf[y + 1];
+								buf[y + 1] = tmp;
+								y += 2;
+							}
+							len++;
 						}
-						len++;
+						else
+						{
+							buf[x] = buffer[0];
+						}
+						x++;
 					}
-					else
-					{
-						buf[x] = buffer[0];
-					}
-					x++;
 				}
 			}
 			if (len < x)
 				len = x;
 		}
 		write(1, "\n", 1);
-//		write(1, buf, len);
-//		write(1, "\n", 1);
+		//		write(1, buf, len);
+		//		write(1, "\n", 1);
 		parser(buf, envp);
 		if (ft_strcmp(buf, "exit") == 0)
 			break ;

@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/15 16:04:41 by gsotty            #+#    #+#             */
-/*   Updated: 2017/05/30 10:06:37 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/01 12:21:57 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int		prepare_term(void)
 
 	if ((name_term = getenv("TERM")) == NULL)
 	{
-		write(2, "ft_select: TERM not set\n", 24);
+		write(2, "21sh: TERM not set\n", 24);
 		return (-1);
 	}
 	if (tgetent(NULL, name_term) == ERR)
