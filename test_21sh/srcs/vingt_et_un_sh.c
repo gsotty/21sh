@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/30 09:07:10 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/03 15:12:03 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/03 15:58:29 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ int		verif_sig(int len)
 int		vingt_et_un_sh(int argc, char **argv, char ***envp)
 {
 	int		x;
+	int		j;
 	int		y;
 	int		len;
 	char	tmp;
@@ -161,26 +162,31 @@ int		vingt_et_un_sh(int argc, char **argv, char ***envp)
 				{
 					if (ft_isprint(buffer[0]) == 1)
 					{
+						j = 0;
 						write(1, buffer, 3);
-						if (buf[x] != '\0')
+						while (buffer[j] != '\0')
 						{
-							y = x;
-							tmp_2 = buffer[0];
-							while (y < (len + 2))
+							if (buf[x] != '\0')
 							{
-								tmp = buf[y];
-								buf[y] = tmp_2;
-								tmp_2 = buf[y + 1];
-								buf[y + 1] = tmp;
-								y += 2;
+								y = x;
+								tmp_2 = buffer[j];
+								while (y < (len + 2))
+								{
+									tmp = buf[y];
+									buf[y] = tmp_2;
+									tmp_2 = buf[y + 1];
+									buf[y + 1] = tmp;
+									y += 2;
+								}
+								len++;
 							}
-							len++;
+							else
+							{
+								buf[x] = buffer[j];
+							}
+							x++;
+							j++;
 						}
-						else
-						{
-							buf[x] = buffer[0];
-						}
-						x++;
 					}
 				}
 			}
@@ -188,11 +194,9 @@ int		vingt_et_un_sh(int argc, char **argv, char ***envp)
 				len = x;
 		}
 		write(1, "\n", 1);
-		//		write(1, buf, len);
-		//		write(1, "\n", 1);
-		parser(buf, envp);
 		if (ft_strcmp(buf, "exit") == 0)
 			break ;
+		parser(buf, envp);
 	}
 	reset_term();
 	return (0);
