@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/22 15:28:33 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/02 11:36:33 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/03 14:41:24 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	env_argv(char **cmd, int ret, char ***envp)
 	}
 	if (cmd[ret + y] != NULL)
 	{
-		//exe_cmd(1, cmd + ret + y);
+		exe_cmd(1, cmd + ret + y, envp);
 		y++;
 	}
 	else if (cmd[ret + y] == NULL)
@@ -44,11 +44,11 @@ void	env_no_argv(char ***envp)
 	int		x;
 
 	x = 0;
-	if (*envp == NULL || *envp[0] == NULL)
+	if (*envp == NULL || envp[0][0] == NULL)
 		return ;
-	while (*envp[x] != NULL)
+	while (envp[0][x] != NULL)
 	{
-		write(1, ft_strjoin(*envp[x], "\n"), ft_strlen(*envp[x]) + 1);
+		write(1, ft_strjoin(envp[0][x], "\n"), ft_strlen(envp[0][x]) + 1);
 		x++;
 	}
 	return ;

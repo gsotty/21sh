@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/03 13:58:54 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/02 10:33:11 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/03 15:39:23 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	find_var(char *tmp_data, int x, char ***envp)
 	char	*tmp_env;
 	char	*p;
 
-	tmp_env = ft_strdup(*envp[x]);
+	tmp_env = ft_strdup(envp[0][x]);
 	p = ft_strchr(tmp_env, '=');
 	*p = '\0';
 	if (ft_strcmp(tmp_env, tmp_data) == 0)
@@ -41,9 +41,9 @@ static int	find_var(char *tmp_data, int x, char ***envp)
 
 static void	ft_remove(int x, int len_env, char ***envp)
 {
-	if (*envp[0] != NULL && *envp[1] == NULL)
+	if (envp[0][0] != NULL && envp[0][1] == NULL)
 	{
-		free(*envp[0]);
+		free(envp[0][0]);
 		free(*envp);
 		*envp = NULL;
 	}
@@ -51,11 +51,11 @@ static void	ft_remove(int x, int len_env, char ***envp)
 	{
 		while (x < len_env)
 		{
-			free(*envp[x]);
-			if (*envp[x + 1] != NULL)
-				*envp[x] = ft_strdup(*envp[x + 1]);
+			free(envp[0][x]);
+			if (envp[0][x + 1] != NULL)
+				envp[0][x] = ft_strdup(envp[0][x + 1]);
 			else
-				*envp[x] = NULL;
+				envp[0][x] = NULL;
 			x++;
 		}
 	}
@@ -69,14 +69,14 @@ static void	ft_while_remove(char *data, int len_env, char ***envp)
 
 	x = 0;
 	tmp_data = ft_strdup(data);
-	while (*envp[x] != NULL)
+	while (envp[0][x] != NULL)
 	{
 		if ((find_var(tmp_data, x, envp)) == 1)
 			break ;
 		x++;
 	}
 	free(tmp_data);
-	if (*envp[x] != NULL)
+	if (envp[0][x] != NULL)
 		ft_remove(x, len_env, envp);
 	return ;
 }

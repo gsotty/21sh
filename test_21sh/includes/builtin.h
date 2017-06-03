@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/02 10:02:26 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/02 11:36:39 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/03 14:42:52 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@
 ** tools
 */
 
-char				*find_var_env(char *name, char **envp);
-void				free_tab(char **tab);
-void				creat_env(char **envp_begin, char ***envp);
+char				*find_var_env(char *name, char ***envp);
+void				free_tab(char **tab_1);
+char				***creat_env(char **envp_begin, char ***envp);
 void				remalloc_env(int after_size, int new_size, char ***envp);
 
 /*
@@ -83,5 +83,12 @@ typedef struct		s_intflag
 
 void				ft_env(char **cmd, char ***envp);
 int					check_flag_env(char **cmd, t_flag_env *flag, char ***envp);
+
+/*
+** exec
+*/
+
+void				exe_cmd(int argc, char **argv, char ***envp);
+void				exe_fork(int argc, char **argv, char ***envp);
 
 #endif

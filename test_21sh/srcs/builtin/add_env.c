@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/22 15:34:40 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/02 10:26:40 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/03 15:29:04 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ static int	find_var(char *tmp_data, char ***envp)
 	x = 0;
 	if (*envp == NULL || *envp[0] == NULL)
 		return (0);
-	while (*envp[x] != NULL)
+	while (envp[0][x] != NULL)
 	{
-		tmp_env = ft_strdup(*envp[x]);
+		tmp_env = ft_strdup(envp[0][x]);
 		p = ft_strchr(tmp_env, '=');
 		*p = 0;
 		if (ft_strcmp(tmp_env, tmp_data) == 0)
@@ -43,10 +43,10 @@ static void	envp_null(char *data, char ***envp)
 	{
 		if ((*envp = ft_memalloc(sizeof(char *) * 2)) == NULL)
 			return ;
-		*envp[0] = ft_strdup(data);
+		envp[0][0] = ft_strdup(data);
 	}
 	else
-		*envp[0] = ft_strdup(data);
+		envp[0][0] = ft_strdup(data);
 	return ;
 }
 
@@ -61,15 +61,15 @@ void		envp_no_null(char *data, char ***envp)
 	p = ft_strchr(tmp_data, '=');
 	*p = '\0';
 	x = find_var(tmp_data, envp);
-	if (*envp[x] == NULL)
+	if (envp[0][x] == NULL)
 	{
 		remalloc_env(x, x + 1, envp);
-		*envp[x] = ft_strdup(data);
+		envp[0][x] = ft_strdup(data);
 	}
 	else
 	{
-		free(*envp[x]);
-		*envp[x] = ft_strdup(data);
+		free(envp[0][x]);
+		envp[0][x] = ft_strdup(data);
 	}
 	free(tmp_data);
 	return ;

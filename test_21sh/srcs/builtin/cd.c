@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/31 14:35:53 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/02 11:12:35 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/03 15:36:20 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,15 @@ void	cd_no_argv(t_flag_cd *flag_cd, char ***envp)
 {
 	char	*tmp;
 
-	if ((tmp = find_var_env("HOME", *envp)) == NULL)
+	if ((tmp = find_var_env("HOME", envp)) == NULL)
 	{
-		write(2, "\033[31mcd: HOME not set\033[0m\n", 32);
+		write(2, "\033[31mcd: HOME not set\033[0m\n", 26);
 		return ;
 	}
-	add_oldpwd(flag_cd, find_var_env("PWD", *envp), envp);
+	add_oldpwd(flag_cd, find_var_env("PWD", envp), envp);
 	if (chdir(tmp) == -1)
 	{
-		write(2, "\033[31mcd: no such file or directory:\033[0m ", 44);
+		write(2, "\033[31mcd: no such file or directory:\033[0m ", 39);
 		write(2, ft_strjoin(tmp, "\n"), ft_strlen(tmp) + 1);
 		return ;
 	}
@@ -34,10 +34,10 @@ void	cd_no_argv(t_flag_cd *flag_cd, char ***envp)
 
 void	cd_argv(char **argv, t_flag_cd *flag_cd, int x, char ***envp)
 {
-	add_oldpwd(flag_cd, find_var_env("PWD", *envp), envp);
+	add_oldpwd(flag_cd, find_var_env("PWD", envp), envp);
 	if (chdir(argv[x]) == -1)
 	{
-		write(2, "\033[31mcd: no such file or directory:\033[0m ", 44);
+		write(2, "\033[31mcd: no such file or directory:\033[0m ", 39);
 		write(2, ft_strjoin(argv[x], "\n"), ft_strlen(argv[x]) + 1);
 		return ;
 	}
@@ -50,20 +50,20 @@ void	cd_argv_neg(t_flag_cd *flag_cd, char ***envp)
 	char	*tmp;
 	char	*tmp_join;
 
-	if (*envp == NULL || ((tmp = find_var_env("OLDPWD", *envp)) == NULL))
+	if (envp == NULL || ((tmp = find_var_env("OLDPWD", envp)) == NULL))
 	{
-		write(2, "\033[31mcd: OLDPWD not set\033[0m\n", 31);
+		write(2, "\033[31mcd: OLDPWD not set\033[0m\n", 28);
 		return ;
 	}
 	tmp_join = ft_strdup(tmp);
-	add_oldpwd(flag_cd, find_var_env("PWD", *envp), envp);
+	add_oldpwd(flag_cd, find_var_env("PWD", envp), envp);
 	if (chdir(tmp_join) == -1)
 	{
-		write(2, "\033[31mcd: no such file or directory:\033[0m ", 44);
+		write(2, "\033[31mcd: no such file or directory:\033[0m ", 39);
 		write(2, ft_strjoin(tmp_join, "\n"), ft_strlen(tmp_join) + 1);
 		return ;
 	}
-	write(1, tmp_join, ft_strlen(tmp_join));
+	write(1, ft_strjoin(tmp_join, "\n"), ft_strlen(tmp_join) + 1);
 	add_pwd(flag_cd, tmp_join, envp);
 	free(tmp_join);
 	return ;
@@ -90,7 +90,7 @@ int		check_flag_cd(t_flag_cd *flag_cd, char **argv, char ***envp)
 		flag_cd->neg = 1;
 	else if (!(argv[x] != '\0' || argv[x] == '\0'))
 	{
-		write(2, "\033[31mcd: string not in pwd:\033[0m ", 36);
+		write(2, "\033[31mcd: string not in pwd:\033[0m ", 32);
 		write(2, ft_strjoin(argv[x], "\n"), ft_strlen(argv[x]) + 1);
 		return (-1);
 	}
@@ -107,7 +107,7 @@ void	ft_cd(char **argv, char ***envp)
 	ft_memset(&flag_cd, '\0', sizeof(flag_cd));
 	if ((x = check_flag_cd(&flag_cd, argv, envp)) == -1)
 		return ;
-	if (*envp == NULL || ((pwd = find_var_env("PWD", *envp)) == NULL))
+	if (*envp == NULL || ((pwd = find_var_env("PWD", envp)) == NULL))
 		add_pwd(&flag_cd, argv[x], envp);
 	if (flag_cd.no_ag == 1)
 		cd_no_argv(&flag_cd, envp);
