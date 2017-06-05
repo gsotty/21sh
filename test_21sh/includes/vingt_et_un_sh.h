@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/03 13:46:28 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/05 12:05:42 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@
 # include <curses.h>
 # include <sys/ioctl.h>
 
+# define PRONT "21sh $> "
+# define LEN_PRONT 8
+
 sig_atomic_t		g_sig;
 
 typedef struct		s_pos
@@ -35,7 +38,5 @@ typedef struct		s_pos
 
 void				parser(char *buf, char ***envp);
 int					vingt_et_un_sh(int argc, char **argv, char ***envp);
-int					reset_term(void);
-int					prepare_term(void);
 
 #endif

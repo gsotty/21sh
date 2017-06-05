@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/30 09:07:10 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/03 15:58:29 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/05 12:02:25 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,32 +41,37 @@ int		verif_sig(int len)
 
 int		vingt_et_un_sh(int argc, char **argv, char ***envp)
 {
-	int		x;
-	int		j;
-	int		y;
-	int		len;
-	char	tmp;
-	char	tmp_2;
-	char	buffer[3];
-	char	buf[4086];
+	int					x;
+	int					j;
+	int					y;
+	int					nbr_line;
+	int					len;
+	char				tmp;
+	char				tmp_2;
+	char				buffer[3];
+	char				buf[4086];
+	struct winsize		win;
 
 	if (prepare_term() == -1)
 		return (1);
 	while (1)
 	{
 		ft_memset(buf, 0, len + 1);
+		nbr_line = 0;
 		x = 0;
 		len = 0;
-		write(1, "$> ", 3);
+		write(1, PRONT, LEN_PRONT);
 		ft_memset(buffer, 0, 3);
 		while (!(buffer[0] == 10 && buffer[1] == 0 && buffer[2] == 0))
 		{
+			ioctl(0, TIOCGWINSZ, &win);
 			ft_memset(buffer, 0, 3);
 			len = verif_sig(len);
 			if (len == 0)
 				x = 0;
 			read(0, buffer, 3);
-	//		printf("111 = %d, %d, %d\n", buffer[0], buffer[1], buffer[2]);
+			//printf("11 = %s, %d\n", "~", '~');
+		//	printf("111 = %d, %d, %d\n", buffer[0], buffer[1], buffer[2]);
 			if (buffer[0] == 4 && buffer[1] == 0 && buffer[2] == 0)
 			{
 				if (len == 0)
@@ -98,7 +103,7 @@ int		vingt_et_un_sh(int argc, char **argv, char ***envp)
 			else if (buffer[0] == 12 && buffer[1] == 0 && buffer[2] == 0)
 			{
 				tputs(tgetstr("cl", NULL), 1 , f_putchar);
-				write(1, "$> ", 3);
+				write(1, PRONT, LEN_PRONT);
 				write(1, buf, len);
 			}
 			else if (buffer[0] == 27 && buffer[1] == 91)
@@ -123,6 +128,22 @@ int		vingt_et_un_sh(int argc, char **argv, char ***envp)
 						x--;
 					}
 				}
+				else if (buffer[2] == 51)
+				{
+					if (x < len)
+					{
+						tputs(tgetstr("dc", NULL), 1 , f_putchar);
+						y = x;
+						while (y < (len + 1))
+						{
+							buf[y] = buf[y + 1];
+							y++;
+						}
+						buf[y] = '\0';
+						len--;
+					}
+					read(0, buffer, 3);
+				}
 			}
 			else if (buffer[0] == 127 && buffer[1] == 0 && buffer[2] == 0)
 			{
@@ -139,21 +160,6 @@ int		vingt_et_un_sh(int argc, char **argv, char ***envp)
 					buf[y] = '\0';
 					len--;
 					x--;
-				}
-			}
-			else if (buffer[0] == 126 && buffer[1] == 0 && buffer[2] == 0)
-			{
-				if (x < len)
-				{
-					tputs(tgetstr("dc", NULL), 1 , f_putchar);
-					y = x;
-					while (y < (len + 1))
-					{
-						buf[y] = buf[y + 1];
-						y++;
-					}
-					buf[y] = '\0';
-					len--;
 				}
 			}
 			else if (buffer[0] != 10)

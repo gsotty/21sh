@@ -6,11 +6,11 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/11 13:59:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/03 12:31:03 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/05 12:09:06 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/vingt_et_un_sh.h"
+#include "../../includes/tools.h"
 
 int		f_putchar(int c)
 {

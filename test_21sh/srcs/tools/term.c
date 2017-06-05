@@ -6,12 +6,11 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/15 16:04:41 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/03 13:13:19 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/05 12:10:41 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/vingt_et_un_sh.h"
-#include "../includes/tools.h"
+#include "../../includes/tools.h"
 
 int		reset_term(void)
 {

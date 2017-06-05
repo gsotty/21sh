@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/06/03 15:53:20 by gsotty           ###   ########.fr        #
+#    Updated: 2017/06/05 12:07:57 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,9 +19,7 @@ INC_DIR			= includes/
 
 SRCS			= \
 				  main.c \
-				  term.c \
-				  vingt_et_un_sh.c \
-				  f_putchar.c
+				  vingt_et_un_sh.c
 
 BUILTIN			= \
 				  add_env.c \
@@ -43,6 +41,8 @@ PARSING			= \
 				  parser.c
 
 TOOLS			= \
+				  f_putchar.c \
+				  term.c \
 				  f_putchar.c \
 				  ft_strsplit_space.c
 
