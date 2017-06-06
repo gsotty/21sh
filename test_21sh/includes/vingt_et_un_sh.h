@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/05 12:05:42 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/06 10:47:51 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct		s_pos
 	int				pos_y;
 }					t_pos;
 
-void				parser(char *buf, char ***envp);
+void				parser(int len, char *buf, char ***envp);
 int					vingt_et_un_sh(int argc, char **argv, char ***envp);
 
 #endif

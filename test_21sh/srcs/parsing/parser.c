@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/01 12:29:03 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/03 14:40:30 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/06 12:32:06 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,12 @@ static void	env_fork(char **argv, char ***envp)
 	if (father > 0)
 	{
 		wait(NULL);
+		prepare_term();
 		return ;
 	}
 	if (father == 0)
 	{
+		reset_term();
 		ft_env(argv, envp);
 		free_tab(*envp);
 		exit(0);
@@ -62,14 +64,18 @@ static int	len_tab(char **argv)
 	return (x);
 }
 
-void		parser(char *buf, char ***envp)
+void		parser(int len, char *buf, char ***envp)
 {
 	int		x;
 	int		len_argv;
 	int		argc;
 	char	**argv;
 	char	**sep_exe;
+//	char	*tmp_buf;
 
+	//if ((tmp_buf = ft_memalloc(sizeof(tmp_buf) * len)) == NULL)
+	//	return ;
+//	ft_memcpy(tmp_buf, buf, len);
 	x = 0;
 	sep_exe = ft_strsplit_space(buf, ";");
 	len_argv = len_tab(sep_exe);

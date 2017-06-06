@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/10 12:49:24 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/03 15:22:50 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/06 12:32:44 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,10 +127,12 @@ void			exe_fork(int argc, char **argv, char ***envp)
 	if (father > 0)
 	{
 		wait(NULL);
+		prepare_term();
 		return ;
 	}
 	if (father == 0)
 	{
+		reset_term();
 		if (access(argv[0], F_OK | X_OK) == 0)
 			execve(argv[0], argv, *envp);
 		else
