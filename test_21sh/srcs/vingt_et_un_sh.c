@@ -6,12 +6,13 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/30 09:07:10 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/06 12:34:15 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/07 14:19:35 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/vingt_et_un_sh.h"
 #include "../includes/tools.h"
+#include "../includes/builtin.h"
 
 void	signal_int(int x, siginfo_t *siginfo, void *context)
 {
@@ -53,11 +54,13 @@ int		vingt_et_un_sh(int argc, char **argv, char ***envp)
 	char				tmp;
 	char				tmp_2;
 	char				buffer[3];
-	char				buf[4086];
+	char				buf[4096];
 	struct winsize		win;
 
 	if (prepare_term() == -1)
 		return (1);
+	len = 0;
+	x = 0;
 	while (1)
 	{
 		ft_memset(buf, 0, len + 1);
@@ -74,7 +77,6 @@ int		vingt_et_un_sh(int argc, char **argv, char ***envp)
 			if (len == 0)
 				x = 0;
 			read(0, buffer, 3);
-			//printf("11 = %s, %d\n", "~", '~');
 		//	printf("111 = %d, %d, %d\n", buffer[0], buffer[1], buffer[2]);
 			if (buffer[0] == 4 && buffer[1] == 0 && buffer[2] == 0)
 			{
@@ -82,6 +84,7 @@ int		vingt_et_un_sh(int argc, char **argv, char ***envp)
 				{
 					write(1, "exit\n", 5);
 					reset_term();
+					free_tab(*envp);
 					return (0);
 				}
 				else
@@ -217,12 +220,12 @@ int		vingt_et_un_sh(int argc, char **argv, char ***envp)
 			{
 				if (len < 4086)
 				{
-					if (ft_isprint(buffer[0]) == 1)
+					j = 0;
+					while (buffer[j] != '\0')
 					{
-						j = 0;
-						write(1, buffer, 3);
-						while (buffer[j] != '\0')
+						if (ft_isprint(buffer[j]) == 1)
 						{
+							write(1, buffer + j, 1);
 							if (buf[x] != '\0')
 							{
 								y = x;
@@ -235,15 +238,17 @@ int		vingt_et_un_sh(int argc, char **argv, char ***envp)
 									buf[y + 1] = tmp;
 									y += 2;
 								}
+								buf[y] = '\0';
 								len++;
 							}
 							else
 							{
 								buf[x] = buffer[j];
+								buf[x + 1] = '\0';
 							}
 							x++;
-							j++;
 						}
+						j++;
 					}
 				}
 			}
@@ -256,5 +261,6 @@ int		vingt_et_un_sh(int argc, char **argv, char ***envp)
 		parser(len, buf, envp);
 	}
 	reset_term();
+	free_tab(*envp);
 	return (0);
 }

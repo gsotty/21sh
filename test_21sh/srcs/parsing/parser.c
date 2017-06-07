@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/01 12:29:03 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/06 12:32:06 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/07 15:37:53 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,32 +66,95 @@ static int	len_tab(char **argv)
 
 void		parser(int len, char *buf, char ***envp)
 {
-	int		x;
-	int		len_argv;
-	int		argc;
-	char	**argv;
-	char	**sep_exe;
-//	char	*tmp_buf;
+	int				x;
+	int				j;
+	int				z;
+	int				chk_word;
+	int				len_argv;
+	int				argc;
+	int				chk_s_quote;
+	int				chk_d_quote;
+	int				chk_space;
+	char			**argv;
+	char			**sep_exe;
+	char			**cmd;
+	char			*len_cmd;
 
-	//if ((tmp_buf = ft_memalloc(sizeof(tmp_buf) * len)) == NULL)
-	//	return ;
-//	ft_memcpy(tmp_buf, buf, len);
 	x = 0;
-	sep_exe = ft_strsplit_space(buf, ";");
-	len_argv = len_tab(sep_exe);
-	while (x < len_argv)
+	j = 0;
+	chk_s_quote = 0;
+	chk_d_quote = 0;
+	chk_space = 0;
+	while (x < len)
 	{
-		if (sep_exe != NULL && sep_exe[x] != NULL)
+		if (buf[x] == '\\')
 		{
-			if ((argv = ft_strsplit_space(sep_exe[x], " \t")) != NULL)
-			{
-				argc = len_tab(argv);
-				exe_cmd(argc, argv, envp);
-				free_tab(argv);
-			}
+			buf[x] = '\0';
+			x++;
+		}
+		else if (buf[x] == '\'' && chk_d_quote == 0)
+		{
+			if (chk_s_quote == 0)
+				j++;
+			(chk_s_quote == 1 ? (chk_s_quote = 0) : (chk_s_quote = 1));
+			buf[x] = '\0';
+		}
+		else if (buf[x] == '\"' && chk_s_quote == 0)
+		{
+			if (chk_d_quote == 0)
+				j++;
+			(chk_d_quote == 1 ? (chk_d_quote = 0) : (chk_d_quote = 1));
+			buf[x] = '\0';
+		}
+		else if ((buf[x] == ' ' || buf[x] == '\t') && chk_s_quote == 0 &&
+				chk_d_quote == 0)
+		{
+			chk_space = 1;
+			buf[x] = '\0';
+		}
+		else if (buf[x] == '#')
+			break ;
+		else
+		{
+			if (chk_space == 1 && chk_s_quote == 0 && chk_d_quote == 0)
+				j++;
+			if (j == 0)
+				j = 1;
+			chk_space = 0;
 		}
 		x++;
 	}
-	free_tab(sep_exe);
+	write(1, buf, len);
+	write(1, "\n", 1);
+	if ((cmd = ft_memalloc(sizeof(cmd) * (j + 1))) == NULL)
+		return ;
+	x = 0;
+	z = 0;
+	chk_word = 0;
+	while (x < len)
+	{
+		if (buf[x] != '\0' && chk_word == 0)
+		{
+			cmd[z] = ft_strdup(buf + x);
+			chk_word = 1;
+		}
+		else if (buf[x] == '\0' && chk_word == 1)
+		{
+			z++;
+			chk_word = 0;
+		}
+		if (z == j)
+			break ;
+		x++;
+	}
+	cmd[j] = NULL;
+	x = 0;
+	while (cmd[x] != NULL)
+	{
+		printf("%s\n", cmd[x]);
+		x++;
+	}
+	exe_cmd(j, cmd, envp);
+	free_tab(cmd);
 	return ;
 }
