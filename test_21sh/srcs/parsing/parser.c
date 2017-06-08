@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/01 12:29:03 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/07 15:37:53 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/08 11:33:22 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ void		parser(int len, char *buf, char ***envp)
 	int				x;
 	int				j;
 	int				z;
+	int				i;
+	int				cont_len;
 	int				chk_word;
 	int				len_argv;
 	int				argc;
@@ -88,10 +90,7 @@ void		parser(int len, char *buf, char ***envp)
 	while (x < len)
 	{
 		if (buf[x] == '\\')
-		{
-			buf[x] = '\0';
 			x++;
-		}
 		else if (buf[x] == '\'' && chk_d_quote == 0)
 		{
 			if (chk_s_quote == 0)
@@ -124,8 +123,8 @@ void		parser(int len, char *buf, char ***envp)
 		}
 		x++;
 	}
-	write(1, buf, len);
-	write(1, "\n", 1);
+//	write(1, buf, len);
+//	write(1, "\n", 1);
 	if ((cmd = ft_memalloc(sizeof(cmd) * (j + 1))) == NULL)
 		return ;
 	x = 0;
@@ -135,7 +134,28 @@ void		parser(int len, char *buf, char ***envp)
 	{
 		if (buf[x] != '\0' && chk_word == 0)
 		{
-			cmd[z] = ft_strdup(buf + x);
+			i = 0;
+			cont_len = 0;
+			while (buf[i + x] != '\0')
+			{
+				if (buf[i + x] == '\\')
+					i++;
+				cont_len++;
+				i++;
+			}
+			if ((cmd[z] = ft_memalloc(sizeof(cmd[z]) * cont_len)) == NULL)
+				return ;
+			i = 0;
+			cont_len = 0;
+			while (buf[i + x] != '\0')
+			{
+				if (buf[i + x] == '\\')
+					i++;
+				cmd[z][cont_len] = buf[i + x];
+				cont_len++;
+				i++;
+			}
+			cmd[z][cont_len] = '\0';
 			chk_word = 1;
 		}
 		else if (buf[x] == '\0' && chk_word == 1)
@@ -148,12 +168,12 @@ void		parser(int len, char *buf, char ***envp)
 		x++;
 	}
 	cmd[j] = NULL;
-	x = 0;
-	while (cmd[x] != NULL)
-	{
-		printf("%s\n", cmd[x]);
-		x++;
-	}
+//	x = 0;
+//	while (cmd[x] != NULL)
+//	{
+//		printf("%s\n", cmd[x]);
+//		x++;
+//	}
 	exe_cmd(j, cmd, envp);
 	free_tab(cmd);
 	return ;
