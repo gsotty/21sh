@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/26 10:53:29 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/26 14:55:22 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/26 16:53:16 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,12 +180,17 @@ int		reset_term(void)
 
 char	*creat_buf(char *buffer)
 {
+	int		x;
 	int		len;
+	int		pos;
 	int		len_cmd_malloc;
 	char	*cmd;
 	char	*tmp;
+	char	tmp_cmd;
+	char	tmp_buf;
 
 	len = 0;
+	pos = 0;
 	len_cmd_malloc = 0;
 	if ((cmd = ft_memalloc(sizeof(char *) * len_cmd_malloc)) == NULL)
 		return (NULL);
@@ -215,26 +220,55 @@ char	*creat_buf(char *buffer)
 			return (NULL);
 		else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 68)
 		{
-			tputs(tgetstr("le", NULL), 0, f_putchar);
+			if (pos > 0)
+			{
+				tputs(tgetstr("le", NULL), 0, f_putchar);
+				pos--;
+			}
 		}
 		else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 67)
 		{
-			tputs(tgetstr("nd", NULL), 0, f_putchar);
+			if (pos < len)
+			{
+				tputs(tgetstr("nd", NULL), 0, f_putchar);
+				pos++;
+			}
 		}
 		if (ft_isprint(buffer[0]) == 1)
 		{
-			cmd[len] = buffer[0];
+			if (cmd[pos] == '\0')
+			{
+				cmd[pos] = buffer[0];
+			}
+			else
+			{
+				x = pos;
+				tmp_buf = buffer[0];
+				while (x < len)
+				{
+					tmp_cmd = cmd[x + 1];
+					cmd[x + 1] = cmd[x];
+					if (tmp_buf != '\0')
+						cmd[x] = tmp_buf;
+					tmp_buf = tmp_cmd;
+					x++;
+				}
+			}
 			len++;
+			pos++;
 			write(0, buffer, 1);
+		/*
 			tputs(tgetstr("sc", NULL), 0, f_putchar);
 			tputs(tgetstr("dl", NULL), 0, f_putchar);
 			tputs(tgetstr("cr", NULL), 0, f_putchar);
 			write(0, cmd, ft_strlen(cmd));
 			tputs(tgetstr("rc", NULL), 0, f_putchar);
+		*/
 		}
 	}
-	tputs(tgetstr("dl", NULL), 0, f_putchar);
-	tputs(tgetstr("cr", NULL), 0, f_putchar);
+//	tputs(tgetstr("dl", NULL), 0, f_putchar);
+//	tputs(tgetstr("cr", NULL), 0, f_putchar);
+	write(0, "\n", 1);
 	write(0, cmd, ft_strlen(cmd));
 	write(0, "\n", 1);
 	free(cmd);
