@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/26 10:53:29 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/26 16:53:16 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/06/27 12:53:32 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,23 +180,30 @@ int		reset_term(void)
 
 char	*creat_buf(char *buffer)
 {
-	int		x;
-	int		len;
-	int		pos;
-	int		len_cmd_malloc;
-	char	*cmd;
-	char	*tmp;
-	char	tmp_cmd;
-	char	tmp_buf;
+	int				x;
+	int				len;
+	int				pos;
+	int				nbr_line;
+	int				len_cmd_malloc;
+	char			*cmd;
+	char			*tmp;
+	char			tmp_cmd;
+	char			tmp_buf;
+	struct winsize	win;
 
 	len = 0;
 	pos = 0;
+	nbr_line = 0;
 	len_cmd_malloc = 0;
 	if ((cmd = ft_memalloc(sizeof(char *) * len_cmd_malloc)) == NULL)
 		return (NULL);
 	ft_memset(buffer, 0, 3);
+//	write(0, "$> ", 3);
+	tputs(tgetstr("sc", NULL), 0, f_putchar);
 	while (!(buffer[0] == 10 && buffer[1] == 0 && buffer[2] == 0))
 	{
+		ioctl(0, TIOCGWINSZ, &win);
+	//	printf("%d, %d\n", win.ws_row, win.ws_col);
 		ft_memset(buffer, 0, 3);
 		read(0, buffer, 3);
 		if (len == len_cmd_malloc)
@@ -220,17 +227,34 @@ char	*creat_buf(char *buffer)
 			return (NULL);
 		else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 68)
 		{
-			if (pos > 0)
+			if (pos > 0
+				&& (pos - (win.ws_col * nbr_line)) < win.ws_col)
 			{
 				tputs(tgetstr("le", NULL), 0, f_putchar);
+				pos--;
+			}
+			else if (pos > 0
+				&& (pos - (win.ws_col * nbr_line)) >= win.ws_col)
+			{
+				tputs(tgetstr("up", NULL), 0, f_putchar);
+				nbr_line--;
 				pos--;
 			}
 		}
 		else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 67)
 		{
-			if (pos < len)
+	//		printf("%d, %d\n", (pos - (win.ws_row * nbr_line)) , (win.ws_row - 1));
+			if (pos < len
+				&& (pos - (win.ws_col * nbr_line)) < win.ws_col)
 			{
 				tputs(tgetstr("nd", NULL), 0, f_putchar);
+				pos++;
+			}
+			else if (pos < len
+					&& (pos - (win.ws_col * nbr_line)) >= win.ws_col)
+			{
+				tputs(tgetstr("do", NULL), 0, f_putchar);
+				nbr_line++;
 				pos++;
 			}
 		}
@@ -244,26 +268,40 @@ char	*creat_buf(char *buffer)
 			{
 				x = pos;
 				tmp_buf = buffer[0];
-				while (x < len)
+				while (x < (len + 2))
 				{
-					tmp_cmd = cmd[x + 1];
-					cmd[x + 1] = cmd[x];
-					if (tmp_buf != '\0')
-						cmd[x] = tmp_buf;
-					tmp_buf = tmp_cmd;
-					x++;
+					tmp_cmd = cmd[x];
+					cmd[x] = tmp_buf;
+					tmp_buf = cmd[x + 1];
+					cmd[x + 1] = tmp_cmd;
+					x += 2;
 				}
 			}
 			len++;
 			pos++;
 			write(0, buffer, 1);
-		/*
-			tputs(tgetstr("sc", NULL), 0, f_putchar);
-			tputs(tgetstr("dl", NULL), 0, f_putchar);
+			tputs(tgetstr("rc", NULL), 0, f_putchar);
+			tputs(tgetstr("ce", NULL), 0, f_putchar);
+			tputs(tgetstr("do", NULL), 0, f_putchar);
 			tputs(tgetstr("cr", NULL), 0, f_putchar);
+			tputs(tgoto(tgetstr("DL", NULL), win.ws_col, win.ws_row), 0, f_putchar);
+			tputs(tgetstr("rc", NULL), 0, f_putchar);
 			write(0, cmd, ft_strlen(cmd));
 			tputs(tgetstr("rc", NULL), 0, f_putchar);
-		*/
+			if ((pos - (win.ws_col * nbr_line)) >= win.ws_col)
+			{
+				nbr_line++;
+				tputs(tgetstr("cr", NULL), 0, f_putchar);
+			}
+			else
+			{
+				tputs(tgoto(tgetstr("RI", NULL), 0,
+							(pos - (win.ws_col * nbr_line))), 0, f_putchar);
+			}
+			if (nbr_line > 0)
+			{
+				tputs(tgoto(tgetstr("DO", NULL), 0, nbr_line), 0, f_putchar);
+			}
 		}
 	}
 //	tputs(tgetstr("dl", NULL), 0, f_putchar);
