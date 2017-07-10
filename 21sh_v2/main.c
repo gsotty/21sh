@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/26 10:53:29 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/27 12:53:32 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/10 12:09:51 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ int		modif_prepare_term(struct termios term)
 	if (tcsetattr(0, TCSADRAIN, &term) == -1)
 		return (1);
 	tputs(tgetstr("im", NULL), 0, f_putchar);
+	tputs(tgetstr("am", NULL), 0, f_putchar);
 	return (0);
 }
 
@@ -176,7 +177,7 @@ int		reset_term(void)
 	if (is_malloc == 1)
 		free(name_term);
 	return (0);
-	}
+}
 
 char	*creat_buf(char *buffer)
 {
@@ -206,7 +207,7 @@ char	*creat_buf(char *buffer)
 	//	printf("%d, %d\n", win.ws_row, win.ws_col);
 		ft_memset(buffer, 0, 3);
 		read(0, buffer, 3);
-		if (len == len_cmd_malloc)
+		if (len >= len_cmd_malloc)
 		{
 			if ((tmp = ft_memalloc(sizeof(char *) * len_cmd_malloc)) == NULL)
 				return (NULL);
@@ -223,35 +224,40 @@ char	*creat_buf(char *buffer)
 	//	write(0, "\n", 1);
 		if (buffer[0] == 4 && buffer[1] == 0 && buffer[2] == 0)
 			return (NULL);
-		else if (buffer[0] == 27 && buffer[1] == 0 && buffer[2] == 0)
-			return (NULL);
 		else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 68)
 		{
-			if (pos > 0
-				&& (pos - (win.ws_col * nbr_line)) < win.ws_col)
+		//	printf("%d, %d\n", (pos - (win.ws_col * nbr_line)) , win.ws_col);
+		//	ft_printf("%d\n", pos - (win.ws_col * nbr_line));
+			if ((pos - (win.ws_col * nbr_line)) > 0)
+//					&& (((pos + 1) - (win.ws_col * nbr_line)) < win.ws_col))
 			{
 				tputs(tgetstr("le", NULL), 0, f_putchar);
 				pos--;
 			}
-			else if (pos > 0
-				&& (pos - (win.ws_col * nbr_line)) >= win.ws_col)
+			else if ((pos - (win.ws_col * nbr_line)) == 0 && pos > 0)
+//					&& (((pos + 1) - (win.ws_col * nbr_line)) >= win.ws_col))
 			{
 				tputs(tgetstr("up", NULL), 0, f_putchar);
+				tputs(tgoto(tgetstr("RI", NULL), 0,
+							(pos - (win.ws_col * nbr_line))), 0, f_putchar);
 				nbr_line--;
 				pos--;
 			}
 		}
 		else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 67)
 		{
-	//		printf("%d, %d\n", (pos - (win.ws_row * nbr_line)) , (win.ws_row - 1));
-			if (pos < len
-				&& (pos - (win.ws_col * nbr_line)) < win.ws_col)
+		//	printf("%d, %d\n", (pos - (win.ws_col * nbr_line)) , win.ws_col);
+			//ft_printf("%d\n", ((pos - (win.ws_col * nbr_line))
+			//		< ((len - 1) - (win.ws_col * nbr_line))));
+			if ((pos - (win.ws_col * nbr_line))
+					< (len - (win.ws_col * nbr_line)))
+					//&& ((pos - (win.ws_col * nbr_line)) < win.ws_col))
 			{
 				tputs(tgetstr("nd", NULL), 0, f_putchar);
 				pos++;
 			}
-			else if (pos < len
-					&& (pos - (win.ws_col * nbr_line)) >= win.ws_col)
+			else if ((pos - (win.ws_col * nbr_line))
+					== (len - (win.ws_col * nbr_line)) && pos > len)
 			{
 				tputs(tgetstr("do", NULL), 0, f_putchar);
 				nbr_line++;
@@ -286,6 +292,8 @@ char	*creat_buf(char *buffer)
 			tputs(tgetstr("cr", NULL), 0, f_putchar);
 			tputs(tgoto(tgetstr("DL", NULL), win.ws_col, win.ws_row), 0, f_putchar);
 			tputs(tgetstr("rc", NULL), 0, f_putchar);
+//			ft_printf("%d, %d, %d, %d\n", pos, nbr_line, win.ws_col, win.ws_row);
+		//	ft_printf("%d\n", pos - (win.ws_col * nbr_line));
 			write(0, cmd, ft_strlen(cmd));
 			tputs(tgetstr("rc", NULL), 0, f_putchar);
 			if ((pos - (win.ws_col * nbr_line)) >= win.ws_col)

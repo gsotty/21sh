@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/06/27 13:39:12 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/10 12:10:52 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define VINGT_ET_UN_SH_H
 
 # include "./libft/libft.h"
+# include "./ft_printf/ft_printf.h"
 # include <unistd.h>
 # include <signal.h>
 # include <sys/types.h>
