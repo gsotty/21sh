@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/10 12:10:52 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/11 01:57:46 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # include <sys/ioctl.h>
 
 #define LEN_REMALLOC 10
+#define SIZE_COL ((nbr_line == 0) ? (win.ws_col - 3) : win.ws_col)
 
 /*sig_atomic_t		g_sig;
 

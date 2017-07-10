@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/26 10:53:29 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/10 12:09:51 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/11 01:57:39 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,12 +199,11 @@ char	*creat_buf(char *buffer)
 	if ((cmd = ft_memalloc(sizeof(char *) * len_cmd_malloc)) == NULL)
 		return (NULL);
 	ft_memset(buffer, 0, 3);
-//	write(0, "$> ", 3);
+	write(0, "$> ", 3);
 	tputs(tgetstr("sc", NULL), 0, f_putchar);
 	while (!(buffer[0] == 10 && buffer[1] == 0 && buffer[2] == 0))
 	{
 		ioctl(0, TIOCGWINSZ, &win);
-	//	printf("%d, %d\n", win.ws_row, win.ws_col);
 		ft_memset(buffer, 0, 3);
 		read(0, buffer, 3);
 		if (len >= len_cmd_malloc)
@@ -219,45 +218,35 @@ char	*creat_buf(char *buffer)
 			ft_memcpy(cmd, tmp, (len_cmd_malloc - LEN_REMALLOC));
 			free(tmp);
 		}
-	//	printf("%d, %d, %d\n", buffer[0], buffer[1], buffer[2]);
-	//	ft_putstr(buffer);
-	//	write(0, "\n", 1);
 		if (buffer[0] == 4 && buffer[1] == 0 && buffer[2] == 0)
 			return (NULL);
 		else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 68)
 		{
-		//	printf("%d, %d\n", (pos - (win.ws_col * nbr_line)) , win.ws_col);
-		//	ft_printf("%d\n", pos - (win.ws_col * nbr_line));
-			if ((pos - (win.ws_col * nbr_line)) > 0)
-//					&& (((pos + 1) - (win.ws_col * nbr_line)) < win.ws_col))
+			if (((pos - 1) - (SIZE_COL * nbr_line)) >= 0)
 			{
 				tputs(tgetstr("le", NULL), 0, f_putchar);
 				pos--;
 			}
-			else if ((pos - (win.ws_col * nbr_line)) == 0 && pos > 0)
-//					&& (((pos + 1) - (win.ws_col * nbr_line)) >= win.ws_col))
+			else if (((pos - 1) - (SIZE_COL * nbr_line)) <= 0 && pos > 0 &&
+					nbr_line > 0)
 			{
 				tputs(tgetstr("up", NULL), 0, f_putchar);
 				tputs(tgoto(tgetstr("RI", NULL), 0,
-							(pos - (win.ws_col * nbr_line))), 0, f_putchar);
+							SIZE_COL), 0, f_putchar);
 				nbr_line--;
 				pos--;
 			}
 		}
 		else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 67)
 		{
-		//	printf("%d, %d\n", (pos - (win.ws_col * nbr_line)) , win.ws_col);
-			//ft_printf("%d\n", ((pos - (win.ws_col * nbr_line))
-			//		< ((len - 1) - (win.ws_col * nbr_line))));
-			if ((pos - (win.ws_col * nbr_line))
-					< (len - (win.ws_col * nbr_line)))
-					//&& ((pos - (win.ws_col * nbr_line)) < win.ws_col))
+			if (((pos + 1) - (SIZE_COL * nbr_line))
+					<= (len - (SIZE_COL * nbr_line)))
 			{
 				tputs(tgetstr("nd", NULL), 0, f_putchar);
 				pos++;
 			}
-			else if ((pos - (win.ws_col * nbr_line))
-					== (len - (win.ws_col * nbr_line)) && pos > len)
+			if (((pos + 1) - (SIZE_COL * nbr_line))
+					>= SIZE_COL)
 			{
 				tputs(tgetstr("do", NULL), 0, f_putchar);
 				nbr_line++;
@@ -290,13 +279,11 @@ char	*creat_buf(char *buffer)
 			tputs(tgetstr("ce", NULL), 0, f_putchar);
 			tputs(tgetstr("do", NULL), 0, f_putchar);
 			tputs(tgetstr("cr", NULL), 0, f_putchar);
-			tputs(tgoto(tgetstr("DL", NULL), win.ws_col, win.ws_row), 0, f_putchar);
+			tputs(tgoto(tgetstr("DL", NULL), SIZE_COL, win.ws_row), 0, f_putchar);
 			tputs(tgetstr("rc", NULL), 0, f_putchar);
-//			ft_printf("%d, %d, %d, %d\n", pos, nbr_line, win.ws_col, win.ws_row);
-		//	ft_printf("%d\n", pos - (win.ws_col * nbr_line));
 			write(0, cmd, ft_strlen(cmd));
 			tputs(tgetstr("rc", NULL), 0, f_putchar);
-			if ((pos - (win.ws_col * nbr_line)) >= win.ws_col)
+			if ((pos - (SIZE_COL * nbr_line)) >= SIZE_COL)
 			{
 				nbr_line++;
 				tputs(tgetstr("cr", NULL), 0, f_putchar);
@@ -304,7 +291,7 @@ char	*creat_buf(char *buffer)
 			else
 			{
 				tputs(tgoto(tgetstr("RI", NULL), 0,
-							(pos - (win.ws_col * nbr_line))), 0, f_putchar);
+							(pos - (SIZE_COL * nbr_line))), 0, f_putchar);
 			}
 			if (nbr_line > 0)
 			{
@@ -312,8 +299,6 @@ char	*creat_buf(char *buffer)
 			}
 		}
 	}
-//	tputs(tgetstr("dl", NULL), 0, f_putchar);
-//	tputs(tgetstr("cr", NULL), 0, f_putchar);
 	write(0, "\n", 1);
 	write(0, cmd, ft_strlen(cmd));
 	write(0, "\n", 1);
