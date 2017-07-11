@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/11 01:57:46 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/11 15:54:46 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,38 +26,34 @@
 # include <curses.h>
 # include <sys/ioctl.h>
 
-#define LEN_REMALLOC 10
-#define SIZE_COL ((nbr_line == 0) ? (win.ws_col - 3) : win.ws_col)
+# define LEN_REMALLOC 10
+# define SIZE_COL ((pos.nbr_line == 0) ? (win.ws_col - 3) : win.ws_col)
+# define SIZE_COL_2 ((pos->nbr_line == 0) ? (win.ws_col - 3) : win.ws_col)
 
-/*sig_atomic_t		g_sig;
-
-typedef struct		s_pos
+typedef struct	s_pos
 {
-	int				pos_x;
-	int				pos_y;
-}					t_pos;
+	int			pos;
+	int			nbr_line;
+}				t_pos;
 
-typedef struct		s_split
+typedef struct	s_len_cmd
 {
-	int				j;
-	int				x;
-}					t_split;
+	int			len;
+	int			len_cmd_malloc;
+}				t_len_cmd;
 
-void	ft_env(char **cmd);
-void	free_tab(char **tab_1);
-int		ft_echo(char **argv);
-void	ft_setenv(char **cmd);
-void	ft_unsetenv(char **cmd);
-void	cd(char **argv);
-void	exe_fork(int argc, char **argv);
-
-void	parser(char *buf, char **envp);
-int		vingt_et_un_sh(char **envp);
-int		reset_term(void);
-int		prepare_term(void);
-int		f_putchar(int c);
-char	**remalloc_env(char **envp, int after_size, int new_size);
-char	**creat_env(char **envp_begin);
-char	**ft_strsplit_space(char const *buf, char *c);*/
+char			**creat_envp(char **envp, int len_envp);
+int				len_tab(char **tableau);
+void			free_tab(char **tableau, int len_tab);
+int				f_putchar(int c);
+int				prepare_term(void);
+int				reset_term(void);
+void			ft_cursor_left(t_pos *pos, struct winsize win);
+void			ft_cursor_right(t_pos *pos, struct winsize win, int len);
+int				ft_cursor_move(char *buffer, t_pos *pos,
+		struct winsize win, int len);
+void			ft_write_cmd(char *buffer, char *cmd, t_pos *pos,
+		t_len_cmd *len);
+char			*remalloc_cmd(t_len_cmd *len, char *cmd);
 
 #endif
