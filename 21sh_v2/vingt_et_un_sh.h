@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/11 15:54:46 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/11 16:49:50 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,7 @@ int				ft_cursor_move(char *buffer, t_pos *pos,
 void			ft_write_cmd(char *buffer, char *cmd, t_pos *pos,
 		t_len_cmd *len);
 char			*remalloc_cmd(t_len_cmd *len, char *cmd);
+void			clear_win(char *cmd, t_len_cmd *len, t_pos *pos,
+		struct winsize win);
 
 #endif

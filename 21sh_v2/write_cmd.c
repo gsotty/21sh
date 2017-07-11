@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/11 14:47:57 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/11 16:11:00 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/11 17:47:04 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,23 +39,33 @@ static void		put_buffer_to_cmd(char buffer, char *cmd, t_pos *pos, int len)
 
 static void		write_new_cmd(char *cmd, t_pos *pos, int len)
 {
+	char			*tmp;
 	struct winsize	win;
 
 	ioctl(0, TIOCGWINSZ, &win);
 	tputs(tgetstr("rc", NULL), 0, f_putchar);
-	tputs(tgetstr("ce", NULL), 0, f_putchar);
-	tputs(tgetstr("do", NULL), 0, f_putchar);
-	tputs(tgetstr("cr", NULL), 0, f_putchar);
-	tputs(tgoto(tgetstr("DL", NULL), SIZE_COL_2, win.ws_row), 0, f_putchar);
-	tputs(tgetstr("rc", NULL), 0, f_putchar);
-	write(0, cmd, ft_strlen(cmd));
-	tputs(tgetstr("rc", NULL), 0, f_putchar);
-	if ((pos->pos - (SIZE_COL_2 * pos->nbr_line)) >= SIZE_COL_2)
+	if (pos->nbr_line > 0)
 	{
-		pos->nbr_line++;
+		tputs(tgoto(tgetstr("DO", NULL), 0, pos->nbr_line), 0, f_putchar);
 		tputs(tgetstr("cr", NULL), 0, f_putchar);
 	}
-	else
+	tputs(tgetstr("ce", NULL), 0, f_putchar);
+//	tputs(tgetstr("do", NULL), 0, f_putchar);
+//	tputs(tgetstr("cr", NULL), 0, f_putchar);
+//	tputs(tgoto(tgetstr("DL", NULL), SIZE_COL_2, win.ws_row), 0, f_putchar);
+	//tputs(tgetstr("rc", NULL), 0, f_putchar);
+//	ft_printf("%d, %d\n", ft_strlen(cmd + (pos->pos - (SIZE_COL_2 * pos->nbr_line))),
+//				((len - (SIZE_COL_2 * pos->nbr_line)) - (pos->pos - (SIZE_COL_2 * pos->nbr_line))));
+	tmp = cmd + (SIZE_COL_2 * pos->nbr_line);
+	ft_printf("")
+	write(0, tmp, len - (SIZE_COL_2 * pos->nbr_line));
+//	write(0, (cmd + (pos->pos - (SIZE_COL_2 * pos->nbr_line))),
+//				((len - (SIZE_COL_2 * pos->nbr_line)) -
+//				 (pos->pos - (SIZE_COL_2 * pos->nbr_line))));
+//	tputs(tgetstr("rc", NULL), 0, f_putchar);
+	if ((pos->pos - (SIZE_COL_2 * pos->nbr_line)) >= SIZE_COL_2)
+		pos->nbr_line++;
+/*	else
 	{
 		tputs(tgoto(tgetstr("RI", NULL), 0, (pos->pos -
 						(SIZE_COL_2 * pos->nbr_line))), 0, f_putchar);
@@ -64,7 +74,7 @@ static void		write_new_cmd(char *cmd, t_pos *pos, int len)
 	{
 		tputs(tgoto(tgetstr("DO", NULL), 0, pos->nbr_line), 0, f_putchar);
 	}
-}
+*/}
 
 void			ft_write_cmd(char *buffer, char *cmd, t_pos *pos,
 		t_len_cmd *len)
