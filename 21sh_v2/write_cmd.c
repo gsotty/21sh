@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/11 14:47:57 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/11 17:47:04 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/12 18:53:01 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,44 +37,112 @@ static void		put_buffer_to_cmd(char buffer, char *cmd, t_pos *pos, int len)
 	}
 }
 
-static void		write_new_cmd(char *cmd, t_pos *pos, int len)
+static void		increment_line(t_pos *pos, struct winsize win)
 {
-	char			*tmp;
-	struct winsize	win;
+	if (pos->nbr_line > 0)
+	{
+		if (pos->nbr_line == 1)
+		{
+			if ((pos->pos - (win.ws_col - 3)) >= win.ws_col)
+				pos->nbr_line++;
+		}
+		else
+		{
+			if ((pos->pos - ((win.ws_col - 3) + (win.ws_col * (pos->nbr_line
+									- 1)))) >= win.ws_col)
+				pos->nbr_line++;
+		}
+	}
+	else if (pos->pos >= (win.ws_col - 3))
+		pos->nbr_line++;
+}
 
-	ioctl(0, TIOCGWINSZ, &win);
-	tputs(tgetstr("rc", NULL), 0, f_putchar);
+static void		place_cursor(t_pos *pos, struct winsize win)
+{
+	increment_line(pos, win);
 	if (pos->nbr_line > 0)
 	{
 		tputs(tgoto(tgetstr("DO", NULL), 0, pos->nbr_line), 0, f_putchar);
 		tputs(tgetstr("cr", NULL), 0, f_putchar);
+		if (pos->nbr_line == 1)
+		{
+			if ((pos->pos - (win.ws_col - 3)) > 0)
+				tputs(tgoto(tgetstr("RI", NULL), 0, (pos->pos - (win.ws_col
+									- 3))), 0, f_putchar);
+		}
+		else
+		{
+			if ((pos->pos - ((win.ws_col - 3) + (win.ws_col *
+								(pos->nbr_line - 1)))) > 0)
+				tputs(tgoto(tgetstr("RI", NULL), 0, (pos->pos - ((win.ws_col
+										- 3) + (win.ws_col * (pos->nbr_line
+												- 1))))), 0, f_putchar);
+		}
 	}
-	tputs(tgetstr("ce", NULL), 0, f_putchar);
-//	tputs(tgetstr("do", NULL), 0, f_putchar);
-//	tputs(tgetstr("cr", NULL), 0, f_putchar);
-//	tputs(tgoto(tgetstr("DL", NULL), SIZE_COL_2, win.ws_row), 0, f_putchar);
-	//tputs(tgetstr("rc", NULL), 0, f_putchar);
-//	ft_printf("%d, %d\n", ft_strlen(cmd + (pos->pos - (SIZE_COL_2 * pos->nbr_line))),
-//				((len - (SIZE_COL_2 * pos->nbr_line)) - (pos->pos - (SIZE_COL_2 * pos->nbr_line))));
-	tmp = cmd + (SIZE_COL_2 * pos->nbr_line);
-	ft_printf("")
-	write(0, tmp, len - (SIZE_COL_2 * pos->nbr_line));
-//	write(0, (cmd + (pos->pos - (SIZE_COL_2 * pos->nbr_line))),
-//				((len - (SIZE_COL_2 * pos->nbr_line)) -
-//				 (pos->pos - (SIZE_COL_2 * pos->nbr_line))));
+	else
+		tputs(tgoto(tgetstr("RI", NULL), 0, pos->pos), 0, f_putchar);
+}
+
+static void		write_new_cmd(char *cmd, t_pos *pos, int len)
+{
+	struct winsize	win;
+
+	ioctl(0, TIOCGWINSZ, &win);
 //	tputs(tgetstr("rc", NULL), 0, f_putchar);
-	if ((pos->pos - (SIZE_COL_2 * pos->nbr_line)) >= SIZE_COL_2)
-		pos->nbr_line++;
-/*	else
-	{
-		tputs(tgoto(tgetstr("RI", NULL), 0, (pos->pos -
-						(SIZE_COL_2 * pos->nbr_line))), 0, f_putchar);
-	}
+//	tputs(tgetstr("ce", NULL), 0, f_putchar);
+//	if (len >= win.ws_col)
+//	{
+//		tputs(tgetstr("do", NULL), 0, f_putchar);
+//		tputs(tgoto(tgetstr("DL", NULL), win.ws_col, win.ws_row), 0, f_putchar);
+//	}
+//	tputs(tgetstr("rc", NULL), 0, f_putchar);
+	tputs(tgetstr("rc", NULL), 0, f_putchar);
+	tputs(tgetstr("cr", NULL), 0, f_putchar);
+	tputs(tgoto(tgetstr("DL", NULL), win.ws_col, win.ws_row), 0, f_putchar);
+	write(0, "$> ", 3);
+	write(0, cmd, len);
+	tputs(tgetstr("rc", NULL), 0, f_putchar);
+	place_cursor(pos, win);
+}
+
+static void		new_safe_place(char buffer, char *cmd, t_pos *pos, int len)
+{
+	struct winsize	win;
+	int				creat_ligne;
+	int				x;
+
+	x = 0;
+	creat_ligne = 0;
+	ioctl(0, TIOCGWINSZ, &win);
 	if (pos->nbr_line > 0)
 	{
-		tputs(tgoto(tgetstr("DO", NULL), 0, pos->nbr_line), 0, f_putchar);
+		if (pos->nbr_line == 1)
+		{
+			if ((len - (win.ws_col - 3)) >= win.ws_col)
+				creat_ligne = 1;
+		}
+		else
+		{
+			if ((len - ((win.ws_col - 3) + (win.ws_col * (pos->nbr_line
+									- 1)))) >= win.ws_col)
+				creat_ligne = 1;
+		}
 	}
-*/}
+	else if (len >= (win.ws_col - 3))
+		creat_ligne = 1;
+	if (creat_ligne == 1)
+	{
+		tputs(tgetstr("rc", NULL), 0, f_putchar);
+		while (x < (pos->nbr_line + 1))
+		{
+			tputs(tgetstr("do", NULL), 0, f_putchar);
+			x++;
+		}
+		tputs(tgoto(tgetstr("UP", NULL), 0, pos->nbr_line + 1), 0, f_putchar);
+		tputs(tgoto(tgetstr("RI", NULL), 0, 3), 0, f_putchar);
+		tputs(tgetstr("sc", NULL), 0, f_putchar);
+	}
+}
 
 void			ft_write_cmd(char *buffer, char *cmd, t_pos *pos,
 		t_len_cmd *len)
@@ -89,7 +157,7 @@ void			ft_write_cmd(char *buffer, char *cmd, t_pos *pos,
 			put_buffer_to_cmd(buffer[x], cmd, pos, len->len);
 			pos->pos++;
 			len->len++;
-			write(0, buffer + x, 1);
+			new_safe_place(buffer[x], cmd, pos, len->len);
 			write_new_cmd(cmd, pos, len->len);
 		}
 		x++;

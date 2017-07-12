@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/26 10:53:29 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/11 16:49:57 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/12 13:28:20 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 ** **************************************************************************
 */
 
-void		print_tab(char **tableau, int len_tab)
+void			print_tab(char **tableau, int len_tab)
 {
 	int		x;
 
@@ -62,11 +62,10 @@ static char		*ft_while_end_of_line(char *buffer, char *cmd,
 		clear_win(cmd, len, pos, win);
 	else if (ft_cursor_move(buffer, pos, win, len->len) == 0)
 		ft_write_cmd(buffer, cmd, pos, len);
-//	ft_printf("\"%s\"%d, %d, %d\n", buffer, buffer[0], buffer[1], buffer[2]);
 	return (cmd);
 }
 
-char		*creat_buf(char *buffer)
+char			*creat_buf(char *buffer)
 {
 	char			*cmd;
 	char			*tmp;
@@ -87,7 +86,7 @@ char		*creat_buf(char *buffer)
 	return (buffer);
 }
 
-int			main(int argc, char **argv, char **envp)
+int				main(int argc, char **argv, char **envp)
 {
 	int		len_envp;
 	char	**tab_envp;
