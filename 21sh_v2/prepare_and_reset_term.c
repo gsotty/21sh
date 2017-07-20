@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/11 13:45:15 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/12 13:59:15 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/20 14:27:37 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ int				prepare_term(void)
 	int				is_malloc;
 
 	is_malloc = 0;
+	ft_memset(&term, 0, sizeof(term));
 	if ((name_term = getenv("TERM")) == NULL)
 	{
 		if ((name_term = ft_memalloc(sizeof(char) * 5)) == NULL)
@@ -88,6 +89,7 @@ int				reset_term(void)
 	int				is_malloc;
 
 	is_malloc = 0;
+	ft_memset(&term, 0, sizeof(term));
 	if ((name_term = getenv("TERM")) == NULL)
 	{
 		if ((name_term = ft_memalloc(sizeof(char) * 5)) == NULL)

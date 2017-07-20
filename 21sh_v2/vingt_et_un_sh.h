@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/13 15:52:18 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/20 15:32:16 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,5 +57,9 @@ void			ft_write_cmd(char *buffer, char *cmd, t_pos *pos,
 char			*remalloc_cmd(t_len_cmd *len, char *cmd);
 void			clear_win(char *cmd, t_len_cmd *len, t_pos *pos,
 		struct winsize win);
+void			new_safe_place(int len);
+void			ft_delete_character(char *cmd, t_len_cmd *len,
+		t_pos *pos);
+void			write_new_cmd(char *cmd, t_pos *pos, int len);
 
 #endif

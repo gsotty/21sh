@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/26 10:53:29 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/13 15:52:21 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/20 15:32:34 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void			print_tab(char **tableau, int len_tab)
 
 /*
 ** **************************************************************************
+** ft_printf("%d, %d, %d\n", buffer[0], buffer[1], buffer[2]);
 */
 
 static char		*ini_ligne(t_len_cmd *len, t_pos *pos, char *cmd, char *buffer)
@@ -60,6 +61,8 @@ static char		*ft_while_end_of_line(char *buffer, char *cmd,
 		return (NULL);
 	else if (buffer[0] == 12 && buffer[1] == 0 && buffer[2] == 0)
 		clear_win(cmd, len, pos, win);
+	else if (buffer[0] == 127 && buffer[1] == 0 && buffer[2] == 0)
+		ft_delete_character(cmd, len, pos);
 	else if (ft_cursor_move(buffer, pos, win, len->len) == 0)
 		ft_write_cmd(buffer, cmd, pos, len);
 	return (cmd);
@@ -68,10 +71,10 @@ static char		*ft_while_end_of_line(char *buffer, char *cmd,
 char			*creat_buf(char *buffer)
 {
 	char			*cmd;
-	char			*tmp;
 	t_len_cmd		len;
 	t_pos			pos;
 
+	cmd = NULL;
 	if ((cmd = ini_ligne(&len, &pos, cmd, buffer)) == NULL)
 		return (NULL);
 	while (!(buffer[0] == 10 && buffer[1] == 0 && buffer[2] == 0))
@@ -92,6 +95,9 @@ int				main(int argc, char **argv, char **envp)
 	char	**tab_envp;
 	char	buffer[4];
 
+	if (argc && argv)
+	{
+	}
 	len_envp = len_tab(envp);
 	if ((tab_envp = creat_envp(envp, len_envp)) == NULL)
 		return (1);
