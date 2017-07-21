@@ -1,0 +1,84 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
+#    Updated: 2017/07/21 15:28:08 by gsotty           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+NAME = 21sh
+
+CC = gcc
+
+FLAG = -ltermcap -Wall -Wextra -Werror
+
+FLAG_SRC = -c -g -Wall -Wextra -Werror
+
+LIBFT = ./libft
+
+LIBPRINTF = ./ft_printf
+
+INCLUDE = ./vingt_et_un_sh.h
+
+SRC = main.c \
+	  clear_win.c \
+	  creat_envp.c \
+	  cursor_left.c \
+	  cursor_move.c \
+	  cursor_right.c \
+	  delete_character.c \
+	  delete_character_2.c \
+	  f_putchar.c \
+	  free_tab.c \
+	  key_end.c \
+	  key_home.c \
+	  len_of_nbr_ligne.c \
+	  len_tab.c \
+	  prepare_and_reset_term.c \
+	  remalloc_cmd.c \
+	  signal.c \
+	  write_cmd.c \
+	  write_cmd_fontion.c
+
+OBJ = $(SRC:.c=.o)
+
+all: $(NAME)
+
+$(NAME): $(OBJ)
+	make -s -C $(LIBFT) re
+	make -s -C $(LIBPRINTF) re
+	$(CC) $(FLAG) $(SRC) ./libft/libft.a ./ft_printf/libftprintf.a -o $(NAME)
+
+debug: $(OBJ)
+	make -s -C $(LIBFT) re
+	make -s -C $(LIBPRINTF) re
+	$(CC) -g $(FLAG) $(SRC) ./libft/libft.a ./ft_printf/libftprintf.a -o $(NAME)
+	make -s -C $(LIBFT) clean
+	make -s -C $(LIBPRINTF) clean
+	rm -Rf $(OBJ)
+
+%.o : %.c
+	$(CC) $(FLAG_SRC) $<
+
+clean:
+	make -C $(LIBFT) clean
+	make -s -C $(LIBPRINTF) clean
+	rm -Rf $(OBJ)
+
+declean:
+	make -C $(LIBFT) fclean
+	make -s -C $(LIBPRINTF) fclean
+	rm -Rf $(NAME).dSYM
+	rm -Rf $(NAME)
+
+
+fclean: clean
+	make -C $(LIBFT) fclean
+	make -s -C $(LIBPRINTF) fclean
+	rm -Rf $(NAME)
+
+re: fclean all

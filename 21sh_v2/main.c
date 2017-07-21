@@ -6,28 +6,11 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/26 10:53:29 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/20 15:32:34 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/21 15:49:11 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vingt_et_un_sh.h"
-
-/*
-** **************************************************************************
-*/
-
-void			print_tab(char **tableau, int len_tab)
-{
-	int		x;
-
-	x = 0;
-	while (x < len_tab)
-	{
-		write(0, tableau[x], ft_strlen(tableau[x]));
-		write(0, "\n", 1);
-		x++;
-	}
-}
 
 /*
 ** **************************************************************************
@@ -46,6 +29,15 @@ static char		*ini_ligne(t_len_cmd *len, t_pos *pos, char *cmd, char *buffer)
 	return (cmd);
 }
 
+static void		del_muti_line(char *buffer, char *cmd, t_pos *pos,
+		t_len_cmd *len)
+{
+	ft_memset(buffer, 0, 4);
+	read(0, buffer, 3);
+	if (buffer[0] == 126 && buffer[1] == 0 && buffer[2] == 0)
+		ft_delete_character_2(cmd, len, pos);
+}
+
 static char		*ft_while_end_of_line(char *buffer, char *cmd,
 		t_len_cmd *len, t_pos *pos)
 {
@@ -58,9 +50,20 @@ static char		*ft_while_end_of_line(char *buffer, char *cmd,
 	if ((cmd = remalloc_cmd(len, cmd)) == NULL)
 		return (NULL);
 	if (buffer[0] == 4 && buffer[1] == 0 && buffer[2] == 0)
-		return (NULL);
+	{
+		if (len->len == 0)
+			return (NULL);
+		else
+			ft_delete_character_2(cmd, len, pos);
+	}
 	else if (buffer[0] == 12 && buffer[1] == 0 && buffer[2] == 0)
-		clear_win(cmd, len, pos, win);
+		clear_win(cmd, len, pos);
+	else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 51)
+		del_muti_line(buffer, cmd, pos, len);
+	else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 72)
+		ft_key_home(cmd, pos, len);
+	else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 70)
+		ft_key_end(cmd, pos, len);
 	else if (buffer[0] == 127 && buffer[1] == 0 && buffer[2] == 0)
 		ft_delete_character(cmd, len, pos);
 	else if (ft_cursor_move(buffer, pos, win, len->len) == 0)
@@ -68,19 +71,26 @@ static char		*ft_while_end_of_line(char *buffer, char *cmd,
 	return (cmd);
 }
 
-char			*creat_buf(char *buffer)
+static char		*creat_buf(char *buffer)
 {
 	char			*cmd;
 	t_len_cmd		len;
 	t_pos			pos;
 
 	cmd = NULL;
+	ft_signal();
 	if ((cmd = ini_ligne(&len, &pos, cmd, buffer)) == NULL)
 		return (NULL);
 	while (!(buffer[0] == 10 && buffer[1] == 0 && buffer[2] == 0))
 	{
 		if ((cmd = ft_while_end_of_line(buffer, cmd, &len, &pos)) == NULL)
 			return (NULL);
+		if (g_sig == SIGINT)
+		{
+			len.len = 0;
+			cmd[0] = '\0';
+			break ;
+		}
 	}
 	write(0, "\n", 1);
 	write(0, cmd, len.len);
@@ -95,9 +105,8 @@ int				main(int argc, char **argv, char **envp)
 	char	**tab_envp;
 	char	buffer[4];
 
-	if (argc && argv)
-	{
-	}
+	(void)argc;
+	(void)argv;
 	len_envp = len_tab(envp);
 	if ((tab_envp = creat_envp(envp, len_envp)) == NULL)
 		return (1);

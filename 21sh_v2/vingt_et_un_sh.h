@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/20 15:32:16 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/21 16:20:22 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@
 # include <sys/ioctl.h>
 
 # define LEN_REMALLOC 10
-# define SIZE_COL ((pos.nbr_line == 0) ? (win.ws_col - 3) : win.ws_col)
-# define SIZE_COL_2 ((pos->nbr_line == 0) ? (win.ws_col - 3) : win.ws_col)
+
+sig_atomic_t	g_sig;
 
 typedef struct	s_pos
 {
@@ -55,11 +55,16 @@ int				ft_cursor_move(char *buffer, t_pos *pos,
 void			ft_write_cmd(char *buffer, char *cmd, t_pos *pos,
 		t_len_cmd *len);
 char			*remalloc_cmd(t_len_cmd *len, char *cmd);
-void			clear_win(char *cmd, t_len_cmd *len, t_pos *pos,
-		struct winsize win);
+void			clear_win(char *cmd, t_len_cmd *len, t_pos *pos);
 void			new_safe_place(int len);
 void			ft_delete_character(char *cmd, t_len_cmd *len,
 		t_pos *pos);
+void			ft_delete_character_2(char *cmd, t_len_cmd *len,
+		t_pos *pos);
 void			write_new_cmd(char *cmd, t_pos *pos, int len);
+int				len_of_nbr_ligne(struct winsize win, int pos);
+void			ft_key_home(char *cmd, t_pos *pos, t_len_cmd *len);
+void			ft_key_end(char *cmd, t_pos *pos, t_len_cmd *len);
+void			ft_signal(void);
 
 #endif

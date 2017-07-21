@@ -6,16 +6,16 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/20 14:41:40 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/20 14:45:07 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/21 14:58:41 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./vingt_et_un_sh.h"
 
-static int		len_of_nbr_ligne(struct winsize win, int len)
+static int		len_of_nbr_ligne_2(struct winsize win, int len)
 {
-	int		nbr_ligne_f;
-	int		tmp_len;
+	int				nbr_ligne_f;
+	int				tmp_len;
 
 	tmp_len = (len + 1);
 	nbr_ligne_f = -1;
@@ -65,7 +65,7 @@ void			new_safe_place(int len)
 
 	x = 0;
 	ioctl(0, TIOCGWINSZ, &win);
-	nbr_ligne_f = len_of_nbr_ligne(win, len);
+	nbr_ligne_f = len_of_nbr_ligne_2(win, len);
 	if (verif_creat_ligne(win, nbr_ligne_f, len) == 0)
 	{
 		if (nbr_ligne_f > 0)

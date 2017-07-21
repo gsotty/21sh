@@ -1,22 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clear_win.c                                        :+:      :+:    :+:   */
+/*   len_of_nbr_ligne.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/07/11 16:42:08 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/21 15:09:12 by gsotty           ###   ########.fr       */
+/*   Created: 2017/07/21 14:46:04 by gsotty            #+#    #+#             */
+/*   Updated: 2017/07/21 14:57:44 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./vingt_et_un_sh.h"
 
-void	clear_win(char *cmd, t_len_cmd *len, t_pos *pos)
+int			len_of_nbr_ligne(struct winsize win, int pos)
 {
-	tputs(tgetstr("cl", NULL), 0, f_putchar);
-	write(0, "$> ", 3);
-	tputs(tgetstr("sc", NULL), 0, f_putchar);
-	new_safe_place(len->len);
-	write_new_cmd(cmd, pos, len->len);
+	int		nbr_ligne;
+	int		tmp_pos;
+
+	tmp_pos = pos;
+	nbr_ligne = -1;
+	while (tmp_pos > 0)
+	{
+		if (nbr_ligne == -1)
+		{
+			tmp_pos -= (win.ws_col - 3);
+			nbr_ligne++;
+		}
+		else
+		{
+			tmp_pos -= win.ws_col;
+			nbr_ligne++;
+		}
+	}
+	return (nbr_ligne);
 }

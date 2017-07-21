@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/11 14:47:57 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/20 15:49:17 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/21 12:53:03 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ static void		place_cursor(t_pos *pos, struct winsize win)
 		tputs(tgoto(tgetstr("RI", NULL), 0, pos->pos), 0, f_putchar);
 }
 
-void		write_new_cmd(char *cmd, t_pos *pos, int len)
+void			write_new_cmd(char *cmd, t_pos *pos, int len)
 {
 	struct winsize	win;
 
