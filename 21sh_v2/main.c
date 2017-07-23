@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/26 10:53:29 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/21 15:49:11 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/23 13:56:28 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,10 @@ static char		*ft_while_end_of_line(char *buffer, char *cmd,
 	if (buffer[0] == 4 && buffer[1] == 0 && buffer[2] == 0)
 	{
 		if (len->len == 0)
+		{
+			write(0, "exit", 4);
 			return (NULL);
+		}
 		else
 			ft_delete_character_2(cmd, len, pos);
 	}
@@ -71,7 +74,7 @@ static char		*ft_while_end_of_line(char *buffer, char *cmd,
 	return (cmd);
 }
 
-static char		*creat_buf(char *buffer)
+static char		*creat_buf(char *buffer, t_struc_envp *struc_envp)
 {
 	char			*cmd;
 	t_len_cmd		len;
@@ -93,31 +96,32 @@ static char		*creat_buf(char *buffer)
 		}
 	}
 	write(0, "\n", 1);
-	write(0, cmd, len.len);
-	write(0, "\n", 1);
+	cmd[len.len] = '\0';
+	if (parser(cmd, struc_envp) == 1)
+		return (NULL);
 	free(cmd);
 	return (buffer);
 }
 
 int				main(int argc, char **argv, char **envp)
 {
-	int		len_envp;
-	char	**tab_envp;
-	char	buffer[4];
+	t_struc_envp			struc_envp;
+	char					buffer[4];
 
 	(void)argc;
 	(void)argv;
-	len_envp = len_tab(envp);
-	if ((tab_envp = creat_envp(envp, len_envp)) == NULL)
+	ft_memset(&struc_envp, 0, sizeof(struc_envp));
+	struc_envp.len = len_tab(envp);
+	if ((struc_envp.envp = creat_envp(envp, struc_envp.len)) == NULL)
 		return (1);
 	while (1)
 	{
 		if (prepare_term() != 0)
 			break ;
-		if (creat_buf(buffer) == NULL)
+		if (creat_buf(buffer, &struc_envp) == NULL)
 			break ;
 	}
-	free_tab(tab_envp, len_envp);
+	free_tab(struc_envp.envp, struc_envp.len);
 	if (reset_term() != 0)
 		return (1);
 	return (0);
