@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/23 15:36:25 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/24 10:14:38 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ int				prepare_term(void);
 int				reset_term(void);
 char			*remalloc_cmd(t_len_cmd *len, char *cmd);
 void			ft_signal(void);
+void			ft_signal_child(void);
 void			ft_write_cmd(char *buffer, char *cmd, t_pos *pos,
 		t_len_cmd *len);
 void			new_safe_place(int len);

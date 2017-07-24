@@ -6,11 +6,13 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/23 13:29:19 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/23 15:38:42 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/24 10:48:40 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./vingt_et_un_sh.h"
+
+#include <errno.h>
 
 /*
 **
@@ -37,16 +39,26 @@ void	exe_fork(int len_cmd, char **tab_cmd, t_struc_envp *struc_envp)
 	pid_t	father;
 
 	(void)len_cmd;
-	father = fork();
+	if ((father = fork()) == -1)
+		ft_printf("error fork\n");
 	if (father > 0)
 	{
-		wait(NULL);
+		ft_printf("father debut\n");
+		if (wait(NULL) == -1)
+		{
+			ft_printf("error wait\n");
+			perror("wait");
+		}
+		ft_printf("father fin\n");
 		return ;
 	}
 	if (father == 0)
 	{
+		reset_term();
+		ft_printf("child debut\n");
 		if (access(tab_cmd[0], F_OK | X_OK) == 0)
 			execve(tab_cmd[0], tab_cmd, struc_envp->envp);
+		ft_printf("child fin\n");
 		exit(0);
 	}
 }
