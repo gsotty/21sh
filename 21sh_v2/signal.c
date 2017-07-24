@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/21 15:15:00 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/24 10:48:47 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/24 12:08:08 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	signal_act(int x, siginfo_t *siginfo, void *context)
 {
 	(void)siginfo;
 	(void)context;
+	ft_printf("signal (%d)\n", x);
 	g_sig = x;
 }
 

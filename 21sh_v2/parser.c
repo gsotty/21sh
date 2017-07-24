@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/23 13:29:19 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/24 11:29:02 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/24 14:27:56 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	print_tab(char **tableau, int len_tab)
 void	exe_fork(int len_cmd, char **tab_cmd, t_struc_envp *struc_envp)
 {
 	pid_t	father;
+	int		status;
 
 	(void)len_cmd;
 	if ((father = fork()) == -1)
@@ -44,16 +45,22 @@ void	exe_fork(int len_cmd, char **tab_cmd, t_struc_envp *struc_envp)
 	if (father > 0)
 	{
 		ft_printf("father debut\n");
-		if (wait(NULL) == -1)
+		if (waitpid(-1, &status, WUNTRACED) == -1)
 		{
 			ft_printf("error wait\n");
 			perror("wait");
+		}
+		if (WIFEXITED(status) == 1)
+		{
+			ft_printf("fils bon ^^\n");
 		}
 		ft_printf("father fin\n");
 		return ;
 	}
 	if (father == 0)
 	{
+		ft_signal();
+	//	signal(SIGINT, SIG_IGN);
 		reset_term();
 		ft_printf("child debut\n");
 		if (access(tab_cmd[0], F_OK | X_OK) == 0)
