@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/24 10:14:38 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/25 14:05:34 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void			ft_delete_character(char *cmd, t_len_cmd *len,
 void			ft_delete_character_2(char *cmd, t_len_cmd *len,
 		t_pos *pos);
 int				f_putchar(int c);
+char			*find_var_env(char *name, t_struc_envp *struc_envp);
 void			free_tab(char **tableau, int len_tab);
 char			**ft_strsplit_space(char const *buf, char *c);
 void			ft_key_end(char *cmd, t_pos *pos, t_len_cmd *len);

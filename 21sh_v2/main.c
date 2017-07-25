@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/26 10:53:29 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/24 11:23:28 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/25 15:05:12 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static char		*ft_while_end_of_line(char *buffer, char *cmd,
 	{
 		if (len->len == 0)
 		{
-			write(0, "exit", 4);
+			write(0, "exit\n", 5);
 			return (NULL);
 		}
 		else
@@ -74,7 +74,7 @@ static char		*ft_while_end_of_line(char *buffer, char *cmd,
 	return (cmd);
 }
 
-static char		*creat_buf(char *buffer, t_struc_envp *struc_envp)
+static char		*creat_buf(char *buffer)
 {
 	char			*cmd;
 	t_len_cmd		len;
@@ -97,16 +97,14 @@ static char		*creat_buf(char *buffer, t_struc_envp *struc_envp)
 	}
 	write(0, "\n", 1);
 	cmd[len.len] = '\0';
-	if (parser(cmd, struc_envp) == 1)
-		return (NULL);
-	free(cmd);
-	return (buffer);
+	return (cmd);
 }
 
 int				main(int argc, char **argv, char **envp)
 {
 	t_struc_envp			struc_envp;
 	char					buffer[4];
+	char					*cmd;
 
 	(void)argc;
 	(void)argv;
@@ -118,8 +116,13 @@ int				main(int argc, char **argv, char **envp)
 	{
 		if (prepare_term() != 0)
 			break ;
-		if (creat_buf(buffer, &struc_envp) == NULL)
+		if ((cmd = creat_buf(buffer)) == NULL)
 			break ;
+		if (reset_term() != 0)
+			break ;
+		if (parser(cmd, &struc_envp) == 1)
+			break ;
+		free(cmd);
 	}
 	free_tab(struc_envp.envp, struc_envp.len);
 	if (reset_term() != 0)

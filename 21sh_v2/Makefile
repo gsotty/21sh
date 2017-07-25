@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/07/23 14:43:11 by gsotty           ###   ########.fr        #
+#    Updated: 2017/07/25 14:06:24 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,7 @@ SRC = main.c \
 	  delete_character.c \
 	  delete_character_2.c \
 	  f_putchar.c \
+	  find_var_env.c \
 	  free_tab.c \
 	  ft_strsplit_space.c \
 	  key_end.c \
