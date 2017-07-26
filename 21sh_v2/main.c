@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/26 10:53:29 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/25 15:05:12 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/26 14:58:11 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ static char		*ini_ligne(t_len_cmd *len, t_pos *pos, char *cmd, char *buffer)
 {
 	ft_memset(len, 0, sizeof(*len));
 	ft_memset(pos, 0, sizeof(*pos));
-	if ((cmd = ft_memalloc(sizeof(char *) * len->len_cmd_malloc)) == NULL)
+	if ((cmd = ft_memalloc(sizeof(char *) * (len->len_cmd_malloc + 1))) == NULL)
 		return (NULL);
-	ft_memset(buffer, 0, 4);
+	ft_memset(buffer, 0, sizeof(buffer) * 4);
 	write(0, "$> ", 3);
 	tputs(tgetstr("sc", NULL), 0, f_putchar);
 	return (cmd);
@@ -32,7 +32,7 @@ static char		*ini_ligne(t_len_cmd *len, t_pos *pos, char *cmd, char *buffer)
 static void		del_muti_line(char *buffer, char *cmd, t_pos *pos,
 		t_len_cmd *len)
 {
-	ft_memset(buffer, 0, 4);
+	ft_memset(buffer, 0, sizeof(buffer) * 4);
 	read(0, buffer, 3);
 	if (buffer[0] == 126 && buffer[1] == 0 && buffer[2] == 0)
 		ft_delete_character_2(cmd, len, pos);
@@ -122,7 +122,6 @@ int				main(int argc, char **argv, char **envp)
 			break ;
 		if (parser(cmd, &struc_envp) == 1)
 			break ;
-		free(cmd);
 	}
 	free_tab(struc_envp.envp, struc_envp.len);
 	if (reset_term() != 0)

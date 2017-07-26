@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/11 13:39:31 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/23 14:51:35 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/26 13:48:18 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,5 @@ char	**creat_envp(char **envp, int len_envp)
 		new_envp[x][len_envp_var] = '\0';
 		x++;
 	}
-	new_envp[x] = NULL;
 	return (new_envp);
 }

@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/23 13:29:19 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/25 16:24:16 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/07/26 14:19:08 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,11 +98,13 @@ int		parser(char *cmd, t_struc_envp *struc_envp)
 	char	**tab_cmd;
 	int		len_cmd;
 
+	(void)struc_envp;
 	tab_cmd = ft_strsplit_space(cmd, " \t");
 	len_cmd = len_tab(tab_cmd);
 	if (ft_strcmp(cmd, "exit") == 0)
 		return (1);
-	exe_fork(len_cmd, tab_cmd, struc_envp);
+//	exe_fork(len_cmd, tab_cmd, struc_envp);
 	free_tab(tab_cmd, len_cmd);
+	free(cmd);
 	return (0);
 }
