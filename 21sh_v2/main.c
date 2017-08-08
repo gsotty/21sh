@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/26 10:53:29 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/26 14:58:11 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/08 15:31:09 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static char		*ini_ligne(t_len_cmd *len, t_pos *pos, char *cmd, char *buffer)
 	ft_memset(pos, 0, sizeof(*pos));
 	if ((cmd = ft_memalloc(sizeof(char *) * (len->len_cmd_malloc + 1))) == NULL)
 		return (NULL);
-	ft_memset(buffer, 0, sizeof(buffer) * 4);
+	ft_memset(buffer, 0, sizeof(*buffer) * 4);
 	write(0, "$> ", 3);
 	tputs(tgetstr("sc", NULL), 0, f_putchar);
 	return (cmd);
@@ -32,7 +32,7 @@ static char		*ini_ligne(t_len_cmd *len, t_pos *pos, char *cmd, char *buffer)
 static void		del_muti_line(char *buffer, char *cmd, t_pos *pos,
 		t_len_cmd *len)
 {
-	ft_memset(buffer, 0, sizeof(buffer) * 4);
+	ft_memset(buffer, 0, sizeof(*buffer) * 4);
 	read(0, buffer, 3);
 	if (buffer[0] == 126 && buffer[1] == 0 && buffer[2] == 0)
 		ft_delete_character_2(cmd, len, pos);
@@ -45,7 +45,7 @@ static char		*ft_while_end_of_line(char *buffer, char *cmd,
 
 	ft_memset(&win, 0, sizeof(win));
 	ioctl(0, TIOCGWINSZ, &win);
-	ft_memset(buffer, 0, 4);
+	ft_memset(buffer, 0, sizeof(*buffer) * 4);
 	read(0, buffer, 3);
 	if ((cmd = remalloc_cmd(len, cmd)) == NULL)
 		return (NULL);
@@ -95,6 +95,7 @@ static char		*creat_buf(char *buffer)
 			break ;
 		}
 	}
+	historique(1, cmd, len.len);
 	write(0, "\n", 1);
 	cmd[len.len] = '\0';
 	return (cmd);

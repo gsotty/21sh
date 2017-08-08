@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/23 13:29:19 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/26 14:19:08 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/08 13:47:18 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,11 @@
  **
  */
 
-void	print_tab(char **tableau, int len_tab)
+void	print_tab(char **tableau)
 {
 	int		x;
 
 	x = 0;
-	(void)len_tab;
 	while (tableau[x] != NULL)
 	{
 		write(0, tableau[x], ft_strlen(tableau[x]));
@@ -103,7 +102,7 @@ int		parser(char *cmd, t_struc_envp *struc_envp)
 	len_cmd = len_tab(tab_cmd);
 	if (ft_strcmp(cmd, "exit") == 0)
 		return (1);
-//	exe_fork(len_cmd, tab_cmd, struc_envp);
+	exe_fork(len_cmd, tab_cmd, struc_envp);
 	free_tab(tab_cmd, len_cmd);
 	free(cmd);
 	return (0);

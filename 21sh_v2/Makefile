@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/07/26 13:46:51 by gsotty           ###   ########.fr        #
+#    Updated: 2017/08/08 15:33:48 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,6 +36,7 @@ SRC = main.c \
 	  find_var_env.c \
 	  free_tab.c \
 	  ft_strsplit_space.c \
+	  historique.c \
 	  key_end.c \
 	  key_home.c \
 	  len_of_nbr_ligne.c \
@@ -83,5 +84,8 @@ fclean: clean
 	make -C $(LIBFT) fclean
 	make -s -C $(LIBPRINTF) fclean
 	rm -Rf $(NAME)
+
+clean_history:
+	rm .21sh_history
 
 re: fclean all

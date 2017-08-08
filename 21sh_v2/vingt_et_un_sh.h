@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/26 14:30:57 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/08 15:51:34 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 
-# define LEN_REMALLOC 10
+# define LEN_REMALLOC 100
 
 sig_atomic_t	g_sig;
 
@@ -69,6 +69,7 @@ int				f_putchar(int c);
 char			*find_var_env(char *name, t_struc_envp *struc_envp);
 void			free_tab(char **tableau, int len_tab);
 char			**ft_strsplit_space(char const *buf, char *c);
+int				historique(int act, char *cmd, int len_cmd);
 void			ft_key_end(char *cmd, t_pos *pos, t_len_cmd *len);
 void			ft_key_home(char *cmd, t_pos *pos, t_len_cmd *len);
 int				len_of_nbr_ligne(struct winsize win, int pos);
