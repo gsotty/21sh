@@ -6,14 +6,14 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/04 08:39:57 by gsotty            #+#    #+#             */
-/*   Updated: 2017/03/30 16:04:22 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/09 13:22:32 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 
-# define BUFF_SIZE 100
+# define BUFF_SIZE 10
 # include <string.h>
 
 typedef struct			s_file

@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/26 10:53:29 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/08 15:31:09 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/09 17:05:00 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,20 @@ static char		*ft_while_end_of_line(char *buffer, char *cmd,
 		ft_key_home(cmd, pos, len);
 	else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 70)
 		ft_key_end(cmd, pos, len);
+	else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 65)
+	{
+		historique(2, &cmd, len);
+		pos->nbr_line = len_of_nbr_ligne(win, pos->pos);
+		new_safe_place(len->len);
+		write_new_cmd(cmd, pos, len->len);
+	}
+	else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 66)
+	{
+		historique(3, &cmd, len);
+		pos->nbr_line = len_of_nbr_ligne(win, pos->pos);
+		new_safe_place(len->len);
+		write_new_cmd(cmd, pos, len->len);
+	}
 	else if (buffer[0] == 127 && buffer[1] == 0 && buffer[2] == 0)
 		ft_delete_character(cmd, len, pos);
 	else if (ft_cursor_move(buffer, pos, win, len->len) == 0)
@@ -95,9 +109,9 @@ static char		*creat_buf(char *buffer)
 			break ;
 		}
 	}
-	historique(1, cmd, len.len);
 	write(0, "\n", 1);
 	cmd[len.len] = '\0';
+	historique(1, &cmd, &len);
 	return (cmd);
 }
 

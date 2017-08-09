@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 14:11:05 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/08 16:21:59 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/09 17:01:46 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,59 +22,152 @@
 **
 */
 
-int		historique(int act, char *cmd, int len_cmd)
+int		nbr_ligne_of_file(void)
 {
+	int		x;
+	int		fd;
+	int		ret;
+	char	*ligne;
+
+	x = 0;
+	ret = 0;
+	if ((fd = open(".21sh_history", O_RDONLY)) == -1)
+		return (-1);
+	while ((ret = get_next_line(fd, &ligne)) > 0)
+	{
+		if (ret == -1)
+			return (-1);
+		x++;
+	}
+	return (x);
+}
+
+int		historique(int act, char **cmd, t_len_cmd *len)
+{
+	int				x;
 	int				ret;
 	int				fd;
-	int				x;
-	char			*nbr_ligne_char;
-	char			*history_ligne;
-	static int		nbr_ligne;
+	int				nbr_ligne;
+	char			*ligne;
+	static char		**history;
+	static int		verif;
+	static int		pos_history;
 
 	x = 0;
 	ret = 0;
 	if (act == 1)
 	{
-		if ((fd = open(".21sh_history", O_WRONLY | O_CREAT | O_EXCL,
-						S_IRUSR | S_IWUSR)) != -1)
-			nbr_ligne = 0;
-		close(fd);
-		if ((fd = open(".21sh_history", O_RDWR | O_APPEND)) == -1)
+		if (verif == 1)
+		{
+			verif = 0;
+			while (history[x] != NULL)
+			{
+			//	free(history[x]);
+				x++;
+			}
+			//free(history);
+			x = 0;
+		}
+		if ((fd = open(".21sh_history", O_RDWR | O_CREAT | O_APPEND,
+						S_IRUSR | S_IWUSR)) == -1)
 			return (1);
-		if (nbr_ligne == 0)
+		if (len->len > 0)
 		{
-			while ((ret = get_next_line(fd, &history_ligne)) > 0)
-			{
-				if (ret == -1)
-					return (1);
-				if (ret == 0)
-					break ;
-			//	free(history_ligne);
-			}
-			if (history_ligne != NULL)
-			{
-				nbr_ligne = (ft_atoi(history_ligne) + 1);
-			//	free(history_ligne);
-			}
-		}
-		if (len_cmd > 0)
-		{
-			nbr_ligne_char = ft_itoa(nbr_ligne);
-			write(fd, nbr_ligne_char, ft_strlen(nbr_ligne_char));
-			write(fd, " ", 1);
-			write(fd, cmd, len_cmd);
+			write(fd, *cmd, len->len);
 			write(fd, "\n", 1);
-			nbr_ligne++;
 		}
 		close(fd);
+		nbr_ligne = nbr_ligne_of_file();
+		if ((history = ft_memalloc(sizeof(char *) * nbr_ligne)) == NULL)
+			return (1);
+		if ((fd = open(".21sh_history", O_RDONLY)) == -1)
+			return (-1);
+		while ((ret = get_next_line(fd, &ligne)) > 0)
+		{
+			if (ret == -1)
+				return (1);
+			history[x] = ft_strdup(ligne);
+			x++;
+		}
+		pos_history = (nbr_ligne - 1);
+		close(fd);
+		verif = 1;
 	}
 	else if (act == 2)
 	{
-		
+		nbr_ligne = nbr_ligne_of_file();
+		if (verif == 0)
+		{
+			if ((fd = open(".21sh_history", O_RDWR | O_CREAT | O_APPEND,
+							S_IRUSR | S_IWUSR)) == -1)
+				return (1);
+			close(fd);
+			if ((history = ft_memalloc(sizeof(char *) * nbr_ligne)) == NULL)
+				return (1);
+			if ((fd = open(".21sh_history", O_RDONLY)) == -1)
+				return (-1);
+			while ((ret = get_next_line(fd, &ligne)) > 0)
+			{
+				if (ret == -1)
+					return (1);
+				history[x] = ft_strdup(ligne);
+				x++;
+			}
+			pos_history = (nbr_ligne - 1);
+			close(fd);
+			verif = 1;
+		}
+		x = 0;
+		while (history[x] != NULL)
+		{
+			if (x == pos_history)
+			{
+			//	ft_printf("%s", history[x]);
+				*cmd = ft_strdup(history[x]);
+				len->len = ft_strlen(history[x]);
+			}
+			x++;
+		}
+		if (pos_history > 0)
+			pos_history = pos_history - 1;
 	}
 	else if (act == 3)
 	{
-		
+		nbr_ligne = nbr_ligne_of_file();
+		if (verif == 0)
+		{
+			if ((fd = open(".21sh_history", O_RDWR | O_CREAT | O_APPEND,
+							S_IRUSR | S_IWUSR)) == -1)
+				return (1);
+			close(fd);
+			if ((history = ft_memalloc(sizeof(char *) * nbr_ligne)) == NULL)
+				return (1);
+			if ((fd = open(".21sh_history", O_RDONLY)) == -1)
+				return (-1);
+			while ((ret = get_next_line(fd, &ligne)) > 0)
+			{
+				if (ret == -1)
+					return (1);
+				history[x] = ft_strdup(ligne);
+				x++;
+			}
+			pos_history = (nbr_ligne - 1);
+			close(fd);
+			verif = 1;
+		}
+		x = 0;
+		while (history[x] != NULL)
+		{
+			if (x == pos_history)
+			{
+			//	ft_printf("%s", history[x]);
+				*cmd = ft_strdup(history[x]);
+				len->len = ft_strlen(history[x]);
+			}
+			x++;
+		}
+		if ((pos_history + 1) < nbr_ligne)
+			pos_history = pos_history + 1;
 	}
 	return (0);
 }
