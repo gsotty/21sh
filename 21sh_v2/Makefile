@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/08/17 09:28:53 by gsotty           ###   ########.fr        #
+#    Updated: 2017/08/17 15:01:12 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ SRC = main.c \
 	  clear_win.c \
 	  creat_envp.c \
 	  creat_history.c \
+	  creat_cpy_his.c \
 	  cursor_left.c \
 	  cursor_move.c \
 	  cursor_right.c \

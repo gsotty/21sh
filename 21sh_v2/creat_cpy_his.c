@@ -1,35 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   creat_envp.c                                       :+:      :+:    :+:   */
+/*   creat_cpy_his.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/07/11 13:39:31 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/17 16:04:52 by gsotty           ###   ########.fr       */
+/*   Created: 2017/08/17 14:54:56 by gsotty            #+#    #+#             */
+/*   Updated: 2017/08/17 16:14:54 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./vingt_et_un_sh.h"
 
-char	**creat_envp(char **envp, int len_envp)
+char	**creat_cpy_his(t_history *history)
 {
+	char	**tmp;
 	int		x;
-	int		len_envp_var;
-	char	**new_envp;
 
-	if ((new_envp = ft_memalloc(sizeof(char *) * (len_envp + 1))) == NULL)
-		return (NULL);
 	x = 0;
-	while (envp[x] != NULL)
+	if ((tmp = ft_memalloc(sizeof(char *) * (history->len + 2))) == NULL)
+		return (NULL);
+	while (x < history->len)
 	{
-		len_envp_var = ft_strlen(envp[x]);
-		if ((new_envp[x] = ft_memalloc(sizeof(char *) * len_envp_var)) == NULL)
-			return (NULL);
-		ft_memcpy(new_envp[x], envp[x], len_envp_var);
-		new_envp[x][len_envp_var] = '\0';
+		tmp[x] = ft_strdup(history->history[x]);
 		x++;
 	}
-	new_envp[x] = NULL;
-	return (new_envp);
+	tmp[x] = NULL;
+	return (tmp);
 }

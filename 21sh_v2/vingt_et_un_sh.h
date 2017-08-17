@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/17 13:40:56 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/17 15:00:49 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ int				add_history(t_history *history, char *cmd, int len);
 void			clear_win(char *cmd, t_len_cmd *len, t_pos *pos);
 char			**creat_envp(char **envp, int len_envp);
 char			**creat_history(t_history *history);
+char			**creat_cpy_his(t_history *history);
 void			ft_cursor_left(t_pos *pos, struct winsize win);
 int				ft_cursor_move(char *buffer, t_pos *pos, struct winsize win,
 		int len);

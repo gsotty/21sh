@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/26 10:53:29 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/17 13:50:22 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/17 16:32:32 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ static void		del_muti_line(char *buffer, char *cmd, t_pos *pos,
 		ft_delete_character_2(cmd, len, pos);
 }
 
-static char		*ft_while_end_of_line(char *buffer, char *cmd,
-		t_len_cmd *len, t_pos *pos, t_history *history)
+static char		*ft_while_end_of_line(char *buffer,
+		t_len_cmd *len, t_pos *pos, t_history history, char **tmp)
 {
 	struct winsize	win;
 	int				len_history;
@@ -48,102 +48,96 @@ static char		*ft_while_end_of_line(char *buffer, char *cmd,
 	ioctl(0, TIOCGWINSZ, &win);
 	ft_memset(buffer, 0, sizeof(*buffer) * 4);
 	read(0, buffer, 3);
-	if ((cmd = remalloc_cmd(len, cmd)) == NULL)
+	if ((tmp[pos->history] = remalloc_cmd(len,
+					tmp[pos->history])) == NULL)
 		return (NULL);
 	if (buffer[0] == 4 && buffer[1] == 0 && buffer[2] == 0)
 	{
 		if (len->len == 0)
 		{
 			write(0, "exit\n", 5);
+			free(tmp[pos->history]);
 			return (NULL);
 		}
 		else
-			ft_delete_character_2(cmd, len, pos);
+			ft_delete_character_2(tmp[pos->history], len, pos);
 	}
 	else if (buffer[0] == 12 && buffer[1] == 0 && buffer[2] == 0)
-		clear_win(cmd, len, pos);
+		clear_win(tmp[pos->history], len, pos);
 	else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 51)
-		del_muti_line(buffer, cmd, pos, len);
+		del_muti_line(buffer, tmp[pos->history], pos, len);
 	else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 72)
-		ft_key_home(cmd, pos, len);
+		ft_key_home(tmp[pos->history], pos, len);
 	else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 70)
-		ft_key_end(cmd, pos, len);
+		ft_key_end(tmp[pos->history], pos, len);
 	else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 65) // bas
 	{
-/*		historique(2, &cmd, len);
-		pos->nbr_line = len_of_nbr_ligne(win, pos->pos);
-		new_safe_place(len->len);
-		write_new_cmd(cmd, pos, len->len);
-*/
-		if (history->pos > 0)
+		if (pos->history > 0)
 		{
-			history->pos -= 1;
-			len_history = ft_strlen(history->history[history->pos]);
+			pos->history -= 1;
+			len_history = ft_strlen(tmp[pos->history]);
 			pos->pos = len_history;
 			pos->nbr_line = len_of_nbr_ligne(win, pos->pos);
-			cmd = ft_strdup(history->history[history->pos]);
 			len->len = len_history;
 			len->len_cmd_malloc = len_history;
 			new_safe_place(len->len);
-			write_new_cmd(history->history[history->pos], pos, len_history);
+			write_new_cmd(tmp[pos->history], pos, len_history);
 		}
 	}
 	else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 66) // haut
 	{
-/*		historique(3, &cmd, len);
-		pos->nbr_line = len_of_nbr_ligne(win, pos->pos);
-		new_safe_place(len->len);
-		write_new_cmd(cmd, pos, len->len);
-*/
-		if ((history->pos + 1) == history->len)
+		if ((pos->history) < history.len)
 		{
-		}
-		else if ((history->pos + 1) < history->len)
-		{
-			history->pos += 1;
-			len_history = ft_strlen(history->history[history->pos]);
+			pos->history += 1;
+			len_history = ft_strlen(tmp[pos->history]);
 			pos->pos = len_history;
 			pos->nbr_line = len_of_nbr_ligne(win, pos->pos);
-			cmd = ft_strdup(history->history[history->pos]);
 			len->len = len_history;
 			len->len_cmd_malloc = len_history;
 			new_safe_place(len->len);
-			write_new_cmd(history->history[history->pos], pos, len_history);
+			write_new_cmd(tmp[pos->history], pos, len_history);
 		}
 	}
 	else if (buffer[0] == 127 && buffer[1] == 0 && buffer[2] == 0)
-		ft_delete_character(cmd, len, pos);
+		ft_delete_character(tmp[pos->history], len, pos);
 	else if (ft_cursor_move(buffer, pos, win, len->len) == 0)
-		ft_write_cmd(buffer, cmd, pos, len);
-	return (cmd);
+		ft_write_cmd(buffer, tmp[pos->history], pos, len);
+	return (tmp[pos->history]);
 }
 
-static char		*creat_buf(char *buffer, t_history *history)
+static char		*creat_buf(char *buffer, t_history history)
 {
-	char			*cmd;
 	t_len_cmd		len;
 	t_pos			pos;
+	char			**tmp;
+	char			*cmd;
 
-	cmd = NULL;
+	tmp = creat_cpy_his(&history);
+	tmp[history.len] = NULL;
 	ft_signal();
-	if ((cmd = ini_ligne(&len, &pos, cmd, buffer)) == NULL)
+	if ((tmp[history.len] = ini_ligne(&len, &pos,
+					tmp[history.len], buffer)) == NULL)
 		return (NULL);
-	history->pos = history->len;
+	pos.history = history.len;
 	while (!(buffer[0] == 10 && buffer[1] == 0 && buffer[2] == 0))
 	{
-		if ((cmd = ft_while_end_of_line(buffer, cmd, &len, &pos,
-						history)) == NULL)
+		if ((tmp[pos.history] = ft_while_end_of_line(buffer,
+						&len, &pos, history, tmp)) == NULL)
+		{
+			free_tab(tmp, history.len);
 			return (NULL);
+		}
 		if (g_sig == SIGINT)
 		{
 			len.len = 0;
-			cmd[0] = '\0';
+			tmp[pos.history][0] = '\0';
 			break ;
 		}
 	}
 	write(0, "\n", 1);
-	cmd[len.len] = '\0';
-	add_history(history, cmd, len.len);
+	tmp[pos.history][len.len] = '\0';
+	cmd = ft_strdup(tmp[pos.history]);
+	free_tab(tmp, history.len);
 	return (cmd);
 }
 
@@ -167,7 +161,9 @@ int				main(int argc, char **argv, char **envp)
 	{
 		if (prepare_term() != 0)
 			break ;
-		if ((cmd = creat_buf(buffer, &history)) == NULL)
+		if ((cmd = creat_buf(buffer, history)) == NULL)
+			break ;
+		if (add_history(&history, cmd, ft_strlen(cmd)) == 1)
 			break ;
 		if (reset_term() != 0)
 			break ;
