@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/08 14:11:05 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/09 17:01:46 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/17 08:54:14 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ int		historique(int act, char **cmd, t_len_cmd *len)
 			}
 			x++;
 		}
-		if ((pos_history + 1) < nbr_ligne)
+		if ((pos_history) < nbr_ligne)
 			pos_history = pos_history + 1;
 	}
 	return (0);

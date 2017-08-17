@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/08/08 15:33:48 by gsotty           ###   ########.fr        #
+#    Updated: 2017/08/17 09:28:53 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,13 +25,16 @@ LIBPRINTF = ./ft_printf
 INCLUDE = ./vingt_et_un_sh.h
 
 SRC = main.c \
+	  add_history.c \
 	  clear_win.c \
 	  creat_envp.c \
+	  creat_history.c \
 	  cursor_left.c \
 	  cursor_move.c \
 	  cursor_right.c \
 	  delete_character.c \
 	  delete_character_2.c \
+	  export_history.c \
 	  f_putchar.c \
 	  find_var_env.c \
 	  free_tab.c \
@@ -44,6 +47,7 @@ SRC = main.c \
 	  parser.c \
 	  prepare_and_reset_term.c \
 	  remalloc_cmd.c \
+	  remalloc_history.c \
 	  signal.c \
 	  write_cmd.c \
 	  write_cmd_fontion.c
