@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/18 11:24:50 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/18 11:47:48 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/18 12:25:39 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,11 @@ static int			key_of_keyboard_2(char *buffer, t_len_cmd *len, t_pos *pos,
 		history_down(pos, len, history, win);
 	else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 66)
 		history_up(pos, len, history, win);
-	else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 70)
+	else if ((buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 70) ||
+			(buffer[0] == 5 && buffer[1] == 0 && buffer[2] == 0))
 		ft_key_end(history->history[pos->history], pos, len);
-	else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 72)
+	else if ((buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 72) ||
+			(buffer[0] == 1 && buffer[1] == 0 && buffer[2] == 0))
 		ft_key_home(history->history[pos->history], pos, len);
 	else if (buffer[0] == 127 && buffer[1] == 0 && buffer[2] == 0)
 		ft_delete_character(history->history[pos->history], len, pos);
