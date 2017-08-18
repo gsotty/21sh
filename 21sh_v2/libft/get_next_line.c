@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/13 12:11:12 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/17 17:40:21 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/18 11:52:53 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-int		buffer_to_stock(int fd, char **stock, int*bytes_read)
+int		buffer_to_stock(int fd, char **stock, int *bytes_read)
 {
 	char	*buffer;
 	char	*tmp;
@@ -48,7 +48,7 @@ void	cut_stock(char **stock, char *str)
 int		file_end(char **line, char **stock)
 {
 	if (ft_strlen(*stock))
-	{		
+	{
 		*line = ft_strdup(*stock);
 		ft_strdel(stock);
 		return (1);
@@ -58,7 +58,7 @@ int		file_end(char **line, char **stock)
 
 int		error_handling(char **stock)
 {
-	if(stock)
+	if (stock)
 		ft_strdel(stock);
 	return (-1);
 }
@@ -77,7 +77,7 @@ int		get_next_line(const int fd, char **line)
 	{
 		if (!(buffer_to_stock(fd, &stock, &bytes_read)))
 			return (error_handling(&stock));
-		if(bytes_read == 0)
+		if (bytes_read == 0)
 			return (file_end(line, &stock));
 	}
 	str = ft_strchr(stock, '\n');

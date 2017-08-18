@@ -1,31 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   del_multi_line.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/07/21 15:15:00 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/18 10:41:36 by gsotty           ###   ########.fr       */
+/*   Created: 2017/08/18 11:28:27 by gsotty            #+#    #+#             */
+/*   Updated: 2017/08/18 11:29:36 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./vingt_et_un_sh.h"
 
-void	signal_act(int x, siginfo_t *siginfo, void *context)
+void		del_multi_line(char *buffer, char *cmd, t_pos *pos, t_len_cmd *len)
 {
-	(void)siginfo;
-	(void)context;
-	g_sig = x;
-}
-
-void	ft_signal(void)
-{
-	struct sigaction	act;
-
-	g_sig = 0;
-	ft_memset(&act, '\0', sizeof(act));
-	act.sa_sigaction = &signal_act;
-	act.sa_flags = SA_SIGINFO;
-	sigaction(SIGINT, &act, NULL);
+	ft_memset(buffer, 0, sizeof(*buffer) * 4);
+	read(0, buffer, 3);
+	if (buffer[0] == 126 && buffer[1] == 0 && buffer[2] == 0)
+		ft_delete_character_2(cmd, len, pos);
 }

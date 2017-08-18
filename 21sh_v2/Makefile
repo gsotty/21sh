@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/08/17 15:01:12 by gsotty           ###   ########.fr        #
+#    Updated: 2017/08/18 11:50:23 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,12 +27,15 @@ INCLUDE = ./vingt_et_un_sh.h
 SRC = main.c \
 	  add_history.c \
 	  clear_win.c \
+	  creat_buf.c \
 	  creat_envp.c \
 	  creat_history.c \
+	  ctrl_d.c \
 	  creat_cpy_his.c \
 	  cursor_left.c \
 	  cursor_move.c \
 	  cursor_right.c \
+	  del_multi_line.c \
 	  delete_character.c \
 	  delete_character_2.c \
 	  export_history.c \
@@ -40,9 +43,11 @@ SRC = main.c \
 	  find_var_env.c \
 	  free_tab.c \
 	  ft_strsplit_space.c \
-	  historique.c \
+	  history_down.c \
+	  history_up.c \
 	  key_end.c \
 	  key_home.c \
+	  key_of_keyboard.c \
 	  len_of_nbr_ligne.c \
 	  len_tab.c \
 	  parser.c \

@@ -6,25 +6,29 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/17 14:54:56 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/17 16:14:54 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/18 09:35:16 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./vingt_et_un_sh.h"
 
-char	**creat_cpy_his(t_history *history)
+t_history	creat_cpy_history(t_history *history)
 {
-	char	**tmp;
-	int		x;
+	int			x;
+	t_history	new_history;
 
 	x = 0;
-	if ((tmp = ft_memalloc(sizeof(char *) * (history->len + 2))) == NULL)
-		return (NULL);
+	ft_memset(&new_history, 0, sizeof(new_history));
+	new_history.len = history->len;
+	new_history.len_malloc = history->len_malloc;
+	if ((new_history.history = ft_memalloc(sizeof(char *) *
+					(history->len + 2))) == NULL)
+		return (new_history);
 	while (x < history->len)
 	{
-		tmp[x] = ft_strdup(history->history[x]);
+		new_history.history[x] = ft_strdup(history->history[x]);
 		x++;
 	}
-	tmp[x] = NULL;
-	return (tmp);
+	new_history.history[x] = NULL;
+	return (new_history);
 }

@@ -6,13 +6,13 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/17 08:32:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/17 16:29:24 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/18 11:21:27 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./vingt_et_un_sh.h"
 
-static int	len_file_history()
+static int		len_file_history(void)
 {
 	int			x;
 	int			fd;
@@ -33,17 +33,28 @@ static int	len_file_history()
 	return (x);
 }
 
-char	**creat_history(t_history *history)
+static int		creat_history_loop(int fd, char **new_history, int x)
+{
+	char		*ligne;
+
+	if (get_next_line(fd, &ligne) == -1)
+		return (1);
+	new_history[x] = ft_strdup(ligne);
+	free(ligne);
+	return (0);
+}
+
+char			**creat_history(t_history *history)
 {
 	char		**new_history;
-	char		*ligne;
 	int			fd;
 	int			x;
 
 	x = 0;
 	if ((history->len = len_file_history()) == -1)
 		return (NULL);
-	if ((new_history = ft_memalloc(sizeof(char *) * (history->len + 2))) == NULL)
+	if ((new_history = ft_memalloc(sizeof(char *) *
+					(history->len + 2))) == NULL)
 		return (NULL);
 	history->len_malloc = history->len;
 	if ((fd = open(PATH_HISTORY, O_RDWR | O_CREAT | O_APPEND, S_IRUSR |
@@ -51,10 +62,7 @@ char	**creat_history(t_history *history)
 		return (NULL);
 	while (x < history->len)
 	{
-		if (get_next_line(fd, &ligne) == -1)
-			return (NULL);
-		new_history[x] = ft_strdup(ligne);
-		free(ligne);
+		creat_history_loop(fd, new_history, x);
 		x++;
 	}
 	new_history[x] = NULL;

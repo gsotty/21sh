@@ -1,26 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   move_history.c                                     :+:      :+:    :+:   */
+/*   ctrl_d.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/08/17 09:30:47 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/17 10:09:25 by gsotty           ###   ########.fr       */
+/*   Created: 2017/08/18 10:55:04 by gsotty            #+#    #+#             */
+/*   Updated: 2017/08/18 10:56:46 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./vingt_et_un_sh.h"
 
-/*
-**
-** act = 1 remonte dans l'history
-** act = 2 descendre dans l'history
-**
-*/
-
-char	*move_history(int act, t_history history)
+int		ctrl_d(t_pos *pos, t_len_cmd *len, t_history *history)
 {
-	static int		pos_history;
-	return (NULL);
+	if (len->len == 0)
+	{
+		write(0, "exit\n", 5);
+		free(history->history[pos->history]);
+		return (1);
+	}
+	else
+		ft_delete_character_2(history->history[pos->history], len, pos);
+	return (0);
 }

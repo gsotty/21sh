@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/17 15:00:49 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/18 11:50:33 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,6 @@ typedef struct	s_history
 {
 	int			len;
 	int			len_malloc;
-	int			pos;
-	char		*cmd;
 	char		**history;
 }				t_history;
 
@@ -68,13 +66,17 @@ typedef struct	s_len_cmd
 
 int				add_history(t_history *history, char *cmd, int len);
 void			clear_win(char *cmd, t_len_cmd *len, t_pos *pos);
+char			*creat_buf(char *buffer, t_history *history);
 char			**creat_envp(char **envp, int len_envp);
 char			**creat_history(t_history *history);
-char			**creat_cpy_his(t_history *history);
+int				ctrl_d(t_pos *pos, t_len_cmd *len, t_history *history);
+t_history		creat_cpy_history(t_history *history);
 void			ft_cursor_left(t_pos *pos, struct winsize win);
 int				ft_cursor_move(char *buffer, t_pos *pos, struct winsize win,
 		int len);
 void			ft_cursor_right(t_pos *pos, struct winsize win, int len);
+void			del_multi_line(char *buffer, char *cmd, t_pos *pos,
+		t_len_cmd *len);
 void			ft_delete_character(char *cmd, t_len_cmd *len,
 		t_pos *pos);
 void			ft_delete_character_2(char *cmd, t_len_cmd *len,
@@ -84,9 +86,14 @@ int				f_putchar(int c);
 char			*find_var_env(char *name, t_struc_envp *struc_envp);
 void			free_tab(char **tableau, int len_tab);
 char			**ft_strsplit_space(char const *buf, char *c);
-int				historique(int act, char **cmd, t_len_cmd *len);
+int				history_down(t_pos *pos, t_len_cmd *cmd, t_history *history,
+		struct winsize win);
+int				history_up(t_pos *pos, t_len_cmd *cmd, t_history *history,
+		struct winsize win);
 void			ft_key_end(char *cmd, t_pos *pos, t_len_cmd *len);
 void			ft_key_home(char *cmd, t_pos *pos, t_len_cmd *len);
+int				key_of_keyboard(char *buffer, t_len_cmd *len, t_pos *pos,
+		t_history *history);
 int				len_of_nbr_ligne(struct winsize win, int pos);
 int				len_tab(char **tableau);
 int				parser(char *cmd, t_struc_envp *struc_envp);
