@@ -6,27 +6,11 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/26 10:53:29 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/18 12:04:02 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/20 11:17:18 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vingt_et_un_sh.h"
-
-static int		main_loop(char *buffer, t_history *history,
-		t_struc_envp *struc_envp, char *cmd)
-{
-	if (prepare_term() != 0)
-		return (1);
-	if ((cmd = creat_buf(buffer, history)) == NULL)
-		return (1);
-	if (add_history(history, cmd, ft_strlen(cmd)) == 1)
-		return (1);
-	if (reset_term() != 0)
-		return (1);
-	if (parser(cmd, struc_envp) == 1)
-		return (1);
-	return (0);
-}
 
 static int		main_ini_envp(int argc, char **argv, char **envp,
 		t_struc_envp *struc_envp)
@@ -44,6 +28,25 @@ static int		main_ini_history(t_history *history)
 {
 	ft_memset(history, 0, sizeof(history));
 	if ((history->history = creat_history(history)) == NULL)
+		return (1);
+	return (0);
+}
+
+static int		main_loop(char *buffer, t_history *history,
+		t_struc_envp *struc_envp, char *cmd)
+{
+	t_len_cmd		len;
+
+	ft_memset(&len, 0, sizeof(len));
+	if (prepare_term() != 0)
+		return (1);
+	if ((cmd = creat_buf(buffer, &len, history)) == NULL)
+		return (1);
+	if (add_history(history, cmd, len.len) == 1)
+		return (1);
+	if (reset_term() != 0)
+		return (1);
+	if (parser(cmd, &len, struc_envp) == 1)
 		return (1);
 	return (0);
 }

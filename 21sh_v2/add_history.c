@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/17 09:09:36 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/18 11:17:56 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/20 15:05:44 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,12 @@ int			add_history(t_history *history, char *cmd, int len)
 	{
 		if (history->len - 1 > 0)
 		{
-			if (ft_strcmp(cmd, history->history[history->len - 1]) != 0)
+			history->history[history->len] = ft_strdup(cmd);
+			history->len++;
+			if (history->len >= history->len_malloc)
 			{
-				history->history[history->len] = ft_strdup(cmd);
-				history->len++;
-				if (history->len >= history->len_malloc)
-				{
-					if (remalloc_history(history) == 1)
-						return (1);
-				}
+				if (remalloc_history(history) == 1)
+					return (1);
 			}
 		}
 		else

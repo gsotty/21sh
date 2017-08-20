@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/18 09:07:55 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/18 13:12:47 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/20 11:14:45 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,17 +72,16 @@ static char			*buf_loop(char *buffer, t_history history, char *cmd,
 	return (cmd);
 }
 
-char				*creat_buf(char *buffer, t_history *history)
+char				*creat_buf(char *buffer, t_len_cmd *len,
+		t_history *history)
 {
 	char			*cmd;
-	t_len_cmd		len;
 
 	ft_signal();
-	ft_memset(&len, 0, sizeof(len));
 	if ((cmd = buf_loop(buffer, creat_cpy_history(history), NULL,
-					&len)) == NULL)
+					len)) == NULL)
 		return (NULL);
-	if (add_history(history, cmd, len.len) == 1)
+	if (add_history(history, cmd, len->len) == 1)
 		return (NULL);
 	return (cmd);
 }

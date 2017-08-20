@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/08/18 11:50:23 by gsotty           ###   ########.fr        #
+#    Updated: 2017/08/20 14:37:40 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,6 +38,7 @@ SRC = main.c \
 	  del_multi_line.c \
 	  delete_character.c \
 	  delete_character_2.c \
+	  exe_cmd.c \
 	  export_history.c \
 	  f_putchar.c \
 	  find_var_env.c \

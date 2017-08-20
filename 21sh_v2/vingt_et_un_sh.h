@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/18 11:50:33 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/20 14:35:58 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ typedef struct	s_len_cmd
 
 int				add_history(t_history *history, char *cmd, int len);
 void			clear_win(char *cmd, t_len_cmd *len, t_pos *pos);
-char			*creat_buf(char *buffer, t_history *history);
+char			*creat_buf(char *buffer, t_len_cmd *len, t_history *history);
 char			**creat_envp(char **envp, int len_envp);
 char			**creat_history(t_history *history);
 int				ctrl_d(t_pos *pos, t_len_cmd *len, t_history *history);
@@ -81,6 +81,7 @@ void			ft_delete_character(char *cmd, t_len_cmd *len,
 		t_pos *pos);
 void			ft_delete_character_2(char *cmd, t_len_cmd *len,
 		t_pos *pos);
+void			ft_exe(char **tab_cmd, t_struc_envp *struc_envp);
 int				export_history(t_history *history);
 int				f_putchar(int c);
 char			*find_var_env(char *name, t_struc_envp *struc_envp);
@@ -96,7 +97,7 @@ int				key_of_keyboard(char *buffer, t_len_cmd *len, t_pos *pos,
 		t_history *history);
 int				len_of_nbr_ligne(struct winsize win, int pos);
 int				len_tab(char **tableau);
-int				parser(char *cmd, t_struc_envp *struc_envp);
+int				parser(char *cmd, t_len_cmd *len, t_struc_envp *struc_envp);
 int				prepare_term(void);
 int				reset_term(void);
 char			*remalloc_cmd(t_len_cmd *len, char *cmd);
