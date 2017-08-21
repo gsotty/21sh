@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/26 10:53:29 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/20 11:17:18 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/21 13:52:21 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ static int		main_loop(char *buffer, t_history *history,
 	if (prepare_term() != 0)
 		return (1);
 	if ((cmd = creat_buf(buffer, &len, history)) == NULL)
-		return (1);
-	if (add_history(history, cmd, len.len) == 1)
 		return (1);
 	if (reset_term() != 0)
 		return (1);

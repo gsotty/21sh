@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/08/20 14:37:40 by gsotty           ###   ########.fr        #
+#    Updated: 2017/08/21 12:27:17 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,6 +43,7 @@ SRC = main.c \
 	  f_putchar.c \
 	  find_var_env.c \
 	  free_tab.c \
+	  ft_memcpy_modif.c \
 	  ft_strsplit_space.c \
 	  history_down.c \
 	  history_up.c \

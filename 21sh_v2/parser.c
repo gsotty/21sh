@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/23 13:29:19 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/20 17:47:46 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/21 15:24:12 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,13 +105,11 @@ int			nbr_of_cmd_argc(char *cmd)
 	int		in_single_quote;
 
 	x = 0;
-	cmd_argc = 0;
+	cmd_argc = 1;
 	in_double_quote = 0;
 	in_single_quote = 0;
 	while (cmd[x] != '\0')
 	{
-		ft_printf("%d\n", x);
-		write(1, "111\n", 4);
 		if (cmd[x] == '\\')
 		{
 			if (cmd[x + 1] != '\0')
@@ -119,19 +117,15 @@ int			nbr_of_cmd_argc(char *cmd)
 			else
 				x++;
 		}
-		else if (cmd[x] != ' ' && cmd[x] != '\t' && cmd[x] != '\0')
+		else if (cmd[x] != ' ' && cmd[x] != '\t')
 		{
-			cmd_argc++;
 			while (cmd[x] != ' ' && cmd[x] != '\t' && cmd[x] != '\0')
 			{
-				write(1, "122\n", 4);
-				if (cmd[x] == '\'' && cmd[x - 1] == ' ' && cmd[x - 1] == '\t')
+				if (cmd[x] == '\'')
 				{
 					x++;
 					while (cmd[x] != '\0')
 					{
-						ft_printf("%c ", cmd[x]);
-				write(1, "133\n", 4);
 						if (cmd[x] == '\'')
 						{
 							x++;
@@ -139,15 +133,12 @@ int			nbr_of_cmd_argc(char *cmd)
 						}
 						x++;
 					}
-					break ;
 				}
-				else if (cmd[x] == '\"' && cmd[x - 1] == ' ' && cmd[x - 1] == '\t')
+				else if (cmd[x] == '\"')
 				{
 					x++;
 					while (cmd[x] != '\0')
 					{
-						ft_printf("%c ", cmd[x]);
-				write(1, "144\n", 4);
 						if (cmd[x] == '\"')
 						{
 							x++;
@@ -155,20 +146,19 @@ int			nbr_of_cmd_argc(char *cmd)
 						}
 						x++;
 					}
-					break ;
 				}
 				else
 				{
 					x++;
 				}
 			}
+			cmd_argc++;
 		}
 		else
 		{
 			x++;
 		}
 	}
-	ft_printf("%d\n", cmd_argc);
 	return (cmd_argc);
 }
 
@@ -182,8 +172,10 @@ int			parser(char *cmd, t_len_cmd *len, t_struc_envp *struc_envp)
 	int		in_double_quote;
 	int		in_single_quote;
 	int		pos_cmd;
+	int		start;
 
-	if ((tab_cmd = ft_memalloc(sizeof(char *) * nbr_of_cmd_argc(cmd))) == NULL)
+	if ((tab_cmd = ft_memalloc(sizeof(char *) * (nbr_of_cmd_argc(cmd) + 1)))
+			== NULL)
 		return (1);
 	x = 0;
 	pos_cmd = 0;
@@ -192,7 +184,6 @@ int			parser(char *cmd, t_len_cmd *len, t_struc_envp *struc_envp)
 	in_single_quote = 0;
 	while (cmd[x] != '\0')
 	{
-		write(1, "211\n", 4);
 		if (cmd[x] == '\\')
 		{
 			if (cmd[x + 1] != '\0')
@@ -202,50 +193,57 @@ int			parser(char *cmd, t_len_cmd *len, t_struc_envp *struc_envp)
 		}
 		else if (cmd[x] != ' ' && cmd[x] != '\t')
 		{
-			pos_cmd = x;
+			start = -1;
 			while (cmd[x] != ' ' && cmd[x] != '\t' && cmd[x] != '\0')
 			{
-				write(1, "222\n", 4);
-				if (cmd[x] == '\'' && cmd[x - 1] == ' ' && cmd[x - 1] == '\t')
+				if (cmd[x] == '\'')
 				{
+					if (start == -1)
+						start = (x + 1);
+					else
+						cmd[x] = '\0';
 					x++;
 					while (cmd[x] != '\0')
 					{
-						write(1, "233\n", 4);
 						if (cmd[x] == '\'')
 						{
+							cmd[x] = '\0';
 							x++;
 							break ;
 						}
 						x++;
 					}
-					break ;
 				}
-				else if (cmd[x] == '\"' && cmd[x - 1] == ' ' && cmd[x - 1] == '\t')
+				else if (cmd[x] == '\"')
 				{
+					if (start == -1)
+						start = (x + 1);
+					else
+						cmd[x] = '\0';
 					x++;
 					while (cmd[x] != '\0')
 					{
-						write(1, "244\n", 4);
 						if (cmd[x] == '\"')
 						{
+							cmd[x] = '\0';
 							x++;
 							break ;
 						}
 						x++;
 					}
-					break ;
 				}
 				else
 				{
+					if (start == -1)
+						start = x;
 					x++;
 				}
 			}
 			if ((tab_cmd[cmd_argc] = ft_memalloc(sizeof(char) *
-							(x - pos_cmd))) == NULL)
+							(x - start))) == NULL)
 				return (1);
-			ft_memcpy(tab_cmd[cmd_argc], cmd + pos_cmd, (x - pos_cmd));
-			tab_cmd[cmd_argc][x - pos_cmd] = '\0';
+			ft_memcpy_modif(tab_cmd[cmd_argc], cmd + start, (x - start));
+			tab_cmd[cmd_argc][x - start] = '\0';
 			cmd_argc++;
 		}
 		else
@@ -253,22 +251,16 @@ int			parser(char *cmd, t_len_cmd *len, t_struc_envp *struc_envp)
 			x++;
 		}
 	}
-	/*if ((tab_cmd[cmd_argc] = ft_memalloc(sizeof(char) *
-					(x - pos_cmd))) == NULL)
-		return (1);
-	ft_memcpy(tab_cmd[cmd_argc], cmd + pos_cmd, (x - pos_cmd));
-	tab_cmd[cmd_argc][x - pos_cmd] = '\0';
-	pos_cmd = x;
-	*/ft_printf("%d\n", cmd_argc);
+	tab_cmd[cmd_argc] = NULL;
 	int		a=0;
 	while (a < cmd_argc)
 	{
-		ft_printf("%s\n", tab_cmd[a]);
+		ft_printf("(%s)\n", tab_cmd[a]);
 		a++;
 	}
 	test = ft_strsplit_space(cmd, "#");
 	cmd = replace_var_envp(cmd, len, struc_envp);
-	tab_cmd = ft_strsplit_space(cmd, " \t");
+	//tab_cmd = ft_strsplit_space(cmd, " \t");
 	len_cmd = len_tab(tab_cmd);
 	if (ft_strcmp(cmd, "exit") == 0)
 		return (1);

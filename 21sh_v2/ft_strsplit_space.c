@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/06 15:59:07 by gsotty            #+#    #+#             */
-/*   Updated: 2017/07/23 14:42:30 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/21 14:17:20 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,11 @@ char			**ft_strsplit_space(char const *buf, char *c)
 		while (is_char(buf[len.j], c) == 1 && buf[len.j] != '\0')
 			len.j++;
 		len.x++;
+	}
+	if (len.x > MAX_CANON)
+	{
+		write(2, "21sh: command too long:", 23);
+		return (NULL);
 	}
 	return (tab_2);
 }

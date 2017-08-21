@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/20 14:35:58 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/21 12:26:17 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ int				export_history(t_history *history);
 int				f_putchar(int c);
 char			*find_var_env(char *name, t_struc_envp *struc_envp);
 void			free_tab(char **tableau, int len_tab);
+void			*ft_memcpy_modif(void *dest, const void *src, size_t n);
 char			**ft_strsplit_space(char const *buf, char *c);
 int				history_down(t_pos *pos, t_len_cmd *cmd, t_history *history,
 		struct winsize win);
