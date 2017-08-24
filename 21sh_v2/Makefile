@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/08/24 16:04:20 by gsotty           ###   ########.fr        #
+#    Updated: 2017/08/24 16:32:23 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -62,37 +62,24 @@ SRC = main.c \
 	  write_cmd_fontion.c
 
 OBJ = $(SRC:.c=.o)
-VPATH = srcs:srcs/creat_cmd_and_edit_line:srcs/envp:srcs/history:srcs/interpreteur:srcs/parser:srcs/tools
+
+VPATH = srcs:srcs/creat_cmd_and_edit_line:srcs/envp:srcs/history:\
+	srcs/interpreteur:srcs/parser:srcs/tools
 
 %.o : %.c
-	$(CC) $(FLAG_SRC) $< -o $@
+	$(CC) $(FLAG_SRC)  $< -o $@
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	make -s -C $(LIBFT) re
-	make -s -C $(LIBPRINTF) re
+	make -s -C $(LIBFT)
+	make -s -C $(LIBPRINTF)
 	$(CC) $(FLAG) $^ ./libft/libft.a ./ft_printf/libftprintf.a -o $(NAME)
-
-debug: $(OBJ)
-	make -s -C $(LIBFT) re
-	make -s -C $(LIBPRINTF) re
-	$(CC) -g $(FLAG) $(SRC) ./libft/libft.a ./ft_printf/libftprintf.a -o $(NAME)
-	make -s -C $(LIBFT) clean
-	make -s -C $(LIBPRINTF) clean
-	rm -Rf $(OBJ)
 
 clean:
 	make -s -C $(LIBFT) clean
 	make -s -C $(LIBPRINTF) clean
 	rm -Rf $(OBJ)
-
-declean:
-	make -s -C $(LIBFT) fclean
-	make -s -C $(LIBPRINTF) fclean
-	rm -Rf $(NAME).dSYM
-	rm -Rf $(NAME)
-
 
 fclean: clean
 	make -s -C $(LIBFT) fclean

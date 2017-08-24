@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/20 14:33:09 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/24 15:49:13 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/24 16:27:16 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ static int		ft_exe_path(int len_cmd, int x, char **tab_cmd,
 	while (x < nbr_path)
 	{
 		len_path = ft_strlen(path[x]);
-		if ((new_cmd = ft_memalloc(sizeof(char) *
-						(len_path + len_cmd + 2))) == NULL)
+		if (!(new_cmd = ft_memalloc(sizeof(char) * (len_path + len_cmd + 2))))
 			return (1);
 		ft_memcpy(new_cmd, path[x], len_path);
 		ft_memcpy(new_cmd + len_path, "/", 1);
