@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/21 12:26:17 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/24 13:26:16 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,13 @@
 # define PATH_HISTORY ".21sh_history"
 
 sig_atomic_t	g_sig;
+
+typedef struct		s_token
+{
+	int				type;
+	char			*str;
+	struct s_token	*next;
+}					t_token;
 
 typedef struct	s_split
 {
@@ -105,6 +112,7 @@ char			*remalloc_cmd(t_len_cmd *len, char *cmd);
 int				remalloc_history(t_history *history);
 void			ft_signal(void);
 void			ft_signal_child(void);
+char			***strsplit_to_tab(int len_cmd, char **cmd_tab, const char *c);
 void			ft_write_cmd(char *buffer, char *cmd, t_pos *pos,
 		t_len_cmd *len);
 void			new_safe_place(int len);
