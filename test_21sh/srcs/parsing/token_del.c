@@ -1,37 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy_modif.c                                  :+:      :+:    :+:   */
+/*   ft_lstdel.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/08/21 12:25:33 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/27 14:18:41 by gsotty           ###   ########.fr       */
+/*   Created: 2016/11/12 10:11:05 by gsotty            #+#    #+#             */
+/*   Updated: 2016/11/12 16:12:34 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./../../vingt_et_un_sh.h"
+#include "libft.h"
+#include <stdlib.h>
 
-void	*ft_memcpy_modif(void *dest, const void *src, size_t n)
+void	ft_lstdel(t_list **alst, void (*del)(void *, size_t))
 {
-	size_t				x;
-	size_t				y;
-	const unsigned char	*tabsrc;
-	unsigned char		*tabdest;
+	t_list	*tmp;
 
-	x = 0;
-	y = 0;
-	tabsrc = src;
-	tabdest = dest;
-	while (x < n)
+	if (alst == NULL || del == NULL)
+		return ;
+	while (*alst)
 	{
-		if (tabsrc[x] != '\0')
-		{
-			tabdest[y] = tabsrc[x];
-			y++;
-		}
-		x++;
+		tmp = (*alst)->next;
+		del((*alst)->content, (*alst)->content_size);
+		free(*alst);
+		*alst = tmp;
 	}
-	tabdest[y] = '\0';
-	return (tabdest);
+	*alst = NULL;
 }

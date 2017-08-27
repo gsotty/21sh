@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/24 16:29:37 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/27 13:01:31 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,24 @@
 
 # define LEN_REMALLOC 100
 # define PATH_HISTORY ".21sh_history"
+
+# define _WORD 1
+# define _ASSIGNEMENT_WORD 2
+# define _NAME 3
+# define _NEWLINE 4
+# define _IO_NUMBER 5
+
+# define _LESS 6
+# define _GREAT 7
+# define _DLESS 8
+# define _DGREAT 9
+# define _DUP_OUTPUT 10
+# define _DUP_INPUT 11
+# define _PIPE 12
+# define _SEP 13
+
+# define _EOF 14
+# define _EOL 15
 
 sig_atomic_t		g_sig;
 
@@ -70,6 +88,10 @@ typedef struct		s_len_cmd
 	int				len;
 	int				len_cmd_malloc;
 }					t_len_cmd;
+
+t_token				*token_new(void const *content, size_t content_size,
+		int nbr_token);
+void				token_del(t_token **alst);
 
 int					add_history(t_history *history, char *cmd, int len);
 void				clear_win(char *cmd, t_len_cmd *len, t_pos *pos);

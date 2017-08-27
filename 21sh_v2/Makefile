@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/08/24 16:32:23 by gsotty           ###   ########.fr        #
+#    Updated: 2017/08/27 11:20:30 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -59,7 +59,9 @@ SRC = main.c \
 	  signal.c \
 	  strsplit_to_tab.c \
 	  write_cmd.c \
-	  write_cmd_fontion.c
+	  write_cmd_fontion.c \
+	  token_new.c \
+	  token_del.c
 
 OBJ = $(SRC:.c=.o)
 

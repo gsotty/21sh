@@ -6,266 +6,264 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/23 13:29:19 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/24 16:23:39 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/27 18:55:51 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
 /*
-** il me faut un char ** qui contien tous les cmd a exe dans le bonne ordre.
-*/
+ ** il me faut un char ** qui contien tous les cmd a exe dans le bonne ordre.
+ */
 
-static void	exe_fork(int len_cmd, char **tab_cmd, t_struc_envp *struc_envp)
+int			add_token(char *cmd, int start, int end, t_token *token)
 {
-	pid_t	father;
-	int		status;
-
-	if (len_cmd == 0)
-		return ;
-	if ((father = fork()) == -1)
-		ft_printf("error fork\n");
-	if (father > 0)
-	{
-		signal(SIGINT, SIG_IGN);
-		if ((wait(&status)) == -1)
-			perror("wait");
-		if (WIFSIGNALED(status) == 1)
-			write(0, "\n", 1);
-		return ;
-	}
-	if (father == 0)
-	{
-		ft_exe(tab_cmd, struc_envp);
-		exit(0);
-	}
+	if ((token->str = ft_memalloc(sizeof(char) * ((end - start) + 1))) == NULL)
+		return (1);
+	ft_memcpy(token->str, cmd + start, end - start);
+	token->str[end - start] = '\0';
+	token->type = _WORD;
+	token->next = NULL;
+	return (0);
 }
 
-static char	*replace_var_envp(char *cmd, t_len_cmd *len,
-		t_struc_envp *struc_envp)
+int			is_type(char *cmd)
+{
+	if (ft_strcmp(cmd, "<") == 0)
+		return (6);
+	else if (ft_strcmp(cmd, ">") == 0)
+		return (7);
+	else if (ft_strcmp(cmd, "<<") == 0)
+		return (8);
+	else if (ft_strcmp(cmd, ">>") == 0)
+		return (9);
+	else if (ft_strcmp(cmd, "<&") == 0)
+		return (10);
+	else if (ft_strcmp(cmd, ">&") == 0)
+		return (11);
+	else if (ft_strcmp(cmd, "|") == 0)
+		return (12);
+	else if (ft_strcmp(cmd, ";") == 0)
+		return (13);
+	return (1);
+}
+
+int			test(char *cmd, t_len_cmd *len, char *delim, t_token **begin_token)
 {
 	int		x;
 	int		y;
-	int		len_replace;
-	char	*tmp;
-	char	*replace;
-	char	*new_cmd;
+	int		start;
+	int		end;
+	int		start_token;
+	t_token	*token;
 
 	x = 0;
-	(void)struc_envp;
-	while ((x < len->len) && (cmd[x] != '\0'))
+	start = 0;
+	end = 0;
+	start_token = 1;
+	while (x < len->len)
 	{
-		if (cmd[x] == '\\')
+		y = 0;
+		while (delim[y] != '\0')
 		{
-		}
-		else if (cmd[x] == '$')
-		{
-			y = x + 1;
-			while (cmd[y] != ' ' && cmd[y] != '\t' && cmd[y] != '\0')
-				y++;
-			if ((tmp = ft_memalloc(sizeof(char) * (y + 1))) == NULL)
-				return (NULL);
-			ft_memcpy(tmp, cmd + x, y);
-			tmp[y - x] = '\0';
-			ft_printf("%s\n", tmp);
-			if ((replace = find_var_env(tmp + 1, struc_envp)) == NULL)
+			if (cmd[x] == delim[y])
 			{
-				if ((new_cmd = ft_memalloc(sizeof(char) *
-								(len->len_cmd_malloc))) == NULL)
-					return (NULL);
-				ft_memcpy(new_cmd, cmd, x);
-				ft_memcpy(new_cmd + x, cmd + y, len->len - y);
-				new_cmd[x + (len->len - y)] = '\0';
-				cmd = new_cmd;
-			}
-			else
-			{
-				len_replace = ft_strlen(replace);
-				len->len_cmd_malloc += len_replace;
-				if ((new_cmd = ft_memalloc(sizeof(char) *
-								len->len_cmd_malloc)) == NULL)
-					return (NULL);
-				ft_memcpy(new_cmd, cmd, x);
-				ft_memcpy(new_cmd + x, replace, len_replace);
-				ft_memcpy(new_cmd + len_replace + x, cmd + y, len->len - y);
-				new_cmd[x + len_replace + (len->len - y)] = '\0';
-				cmd = new_cmd;
-			}
-		}
-		x++;
-	}
-	return (cmd);
-}
-
-int			nbr_of_cmd_argc(char *cmd)
-{
-	int		x;
-	int		cmd_argc;
-	int		in_double_quote;
-	int		in_single_quote;
-
-	x = 0;
-	cmd_argc = 1;
-	in_double_quote = 0;
-	in_single_quote = 0;
-	while (cmd[x] != '\0')
-	{
-		if (cmd[x] == '\\')
-		{
-			if (cmd[x + 1] != '\0')
-				x += 2;
-			else
-				x++;
-		}
-		else if (cmd[x] != ' ' && cmd[x] != '\t')
-		{
-			while (cmd[x] != ' ' && cmd[x] != '\t' && cmd[x] != '\0')
-			{
-				if (cmd[x] == '\'')
+				end = x;
+				if (start_token == 1)
 				{
-					x++;
-					while (cmd[x] != '\0')
-					{
-						if (cmd[x] == '\'')
-						{
-							x++;
-							break ;
-						}
-						x++;
-					}
-				}
-				else if (cmd[x] == '\"')
-				{
-					x++;
-					while (cmd[x] != '\0')
-					{
-						if (cmd[x] == '\"')
-						{
-							x++;
-							break ;
-						}
-						x++;
-					}
+					*begin_token = token_new(cmd + start, end - start, 0);
+					token = *begin_token;
+					token->type = is_type(token->str);
+					start_token = 0;
 				}
 				else
 				{
-					x++;
+					token->next = token_new(cmd + start, end - start, 0);
+					token->type = is_type(token->str);
+					token = token->next;
 				}
+				start = x;
+				x++;
+				end = x;
+				if (start_token == 1)
+				{
+					*begin_token = token_new(cmd + start, end - start, 0);
+					token = *begin_token;
+					token->type = is_type(token->str);
+					start_token = 0;
+				}
+				else
+				{
+					token->next = token_new(cmd + start, end - start, 0);
+					token->type = is_type(token->str);
+					token = token->next;
+				}
+				start = x;
 			}
-			cmd_argc++;
+			y++;
+		}
+		x++;
+	}
+	end = x;
+	if (start_token == 1)
+	{
+		*begin_token = token_new(cmd + start, end - start, 0);
+		token = *begin_token;
+		token->type = is_type(token->str);
+		start_token = 0;
+	}
+	else
+	{
+		token->next = token_new(cmd + start, end - start, 0);
+		token->type = is_type(token->str);
+		token = token->next;
+	}
+	start = x;
+	return (0);
+}
+
+int			lexer_cmd(char *cmd, t_len_cmd *len, t_token **begin_token)
+{
+	int		x;
+	int		start;
+	int		end;
+	int		start_token;
+	int		is_char;
+	t_token	*token;
+
+	x = 0;
+	start = 0;
+	end = 0;
+	is_char = 1;
+	start_token = 1;
+	token = *begin_token;
+	while (x < len->len)
+	{
+		ft_printf("%c\n", cmd[x]);
+		if (cmd[x] != ' ' && cmd[x] != '\t' && is_char == 1)
+		{
+			is_char = 0;
+			start = x;
+		}
+		if (cmd[x] == '\'' && is_char == 0)
+		{
+			cmd[x] = '\0';
+			x++;
+			while (cmd[x] != '\'' && cmd[x] != '\0')
+				x++;
+			end = x;
+			cmd[x] = '\0';
+			x++;
+		}
+		else if (cmd[x] == '\"' && is_char == 0)
+		{
+			cmd[x] = '\0';
+			x++;
+			while (cmd[x] != '\"' && cmd[x] != '\0')
+				x++;
+			end = x;
+			cmd[x] = '\0';
+			x++;
+		}
+		else if (cmd[x] == '|' && is_char == 0)
+		{
+			if (cmd[x - 1] != ' ' && cmd[x - 1] != '\t')
+			{
+				end = x;
+				if (start_token == 1)
+				{
+					*begin_token = token_new(cmd + start, end - start, 0);
+					token = *begin_token;
+					token->type = is_type(token->str);
+					start_token = 0;
+				}
+				else
+				{
+					token->next = token_new(cmd + start, end - start, 0);
+					token->type = is_type(token->str);
+					token = token->next;
+				}
+				start = x;
+			}
+			x++;
+			end = x;
+			if (start_token == 1)
+			{
+				*begin_token = token_new(cmd + start, end - start, 0);
+				token = *begin_token;
+				token->type = is_type(token->str);
+				start_token = 0;
+			}
+			else
+			{
+				token->next = token_new(cmd + start, end - start, 0);
+				token->type = is_type(token->str);
+				token = token->next;
+			}
+			ft_printf("cmd = %d\n", cmd[x]);
+			start = x;
+			while (cmd[x] != ' ' && cmd[x] != '\t')
+				x++;
+			ft_printf("cmd = %d\n", cmd[x]);
+		}
+		else if ((cmd[x] == ' ' || cmd[x] == '\t') && is_char == 0)
+		{
+			end = x;
+			if (start_token == 1)
+			{
+				*begin_token = token_new(cmd + start, end - start, 0);
+				token = *begin_token;
+				token->type = is_type(token->str);
+				start_token = 0;
+			}
+			else
+			{
+				token->next = token_new(cmd + start, end - start, 0);
+				token->type = is_type(token->str);
+				token = token->next;
+			}
+			while (cmd[x] == ' ' || cmd[x] == '\t')
+				x++;
+			start = x;
+		}
+		else
+			x++;
+	}
+	if (cmd[x - 1] != ' ' && cmd[x - 1] != '\t')
+	{
+		end = x;
+		if (start_token == 1)
+		{
+			*begin_token = token_new(cmd + start, end - start, 0);
+			token = *begin_token;
+			token->type = is_type(token->str);
+			start_token = 0;
 		}
 		else
 		{
-			x++;
+			token->next = token_new(cmd + start, end - start, 0);
+			token->type = is_type(token->str);
+			token = token->next;
 		}
 	}
-	return (cmd_argc);
+	return (0);
 }
 
 int			parser(char *cmd, t_len_cmd *len, t_struc_envp *struc_envp)
 {
-	char	**tab_cmd;
-	int		len_cmd;
-	char	**test;
-	int		x;
-	int		cmd_argc;
-	int		in_double_quote;
-	int		in_single_quote;
-	int		pos_cmd;
-	int		start;
+	t_token		*begin_token;
+	t_token		*tmp;
 
-	if ((tab_cmd = ft_memalloc(sizeof(char *) * (nbr_of_cmd_argc(cmd) + 1)))
-			== NULL)
+	(void)struc_envp;
+	if ((begin_token = ft_memalloc(sizeof(*begin_token))) == NULL)
 		return (1);
-	x = 0;
-	pos_cmd = 0;
-	cmd_argc = 0;
-	in_double_quote = 0;
-	in_single_quote = 0;
-	while (cmd[x] != '\0')
+	//lexer_cmd(cmd, len, &begin_token);
+	test(cmd, len, "|", &begin_token);
+	tmp = begin_token;
+	while (tmp != NULL)
 	{
-		if (cmd[x] == '\\')
-		{
-			if (cmd[x + 1] != '\0')
-				x += 2;
-			else
-				x++;
-		}
-		else if (cmd[x] != ' ' && cmd[x] != '\t')
-		{
-			start = -1;
-			while (cmd[x] != ' ' && cmd[x] != '\t' && cmd[x] != '\0')
-			{
-				if (cmd[x] == '\'')
-				{
-					if (start == -1)
-						start = (x + 1);
-					else
-						cmd[x] = '\0';
-					x++;
-					while (cmd[x] != '\0')
-					{
-						if (cmd[x] == '\'')
-						{
-							cmd[x] = '\0';
-							x++;
-							break ;
-						}
-						x++;
-					}
-				}
-				else if (cmd[x] == '\"')
-				{
-					if (start == -1)
-						start = (x + 1);
-					else
-						cmd[x] = '\0';
-					x++;
-					while (cmd[x] != '\0')
-					{
-						if (cmd[x] == '\"')
-						{
-							cmd[x] = '\0';
-							x++;
-							break ;
-						}
-						x++;
-					}
-				}
-				else
-				{
-					if (start == -1)
-						start = x;
-					x++;
-				}
-			}
-			if ((tab_cmd[cmd_argc] = ft_memalloc(sizeof(char) *
-							(x - start))) == NULL)
-				return (1);
-			ft_memcpy_modif(tab_cmd[cmd_argc], cmd + start, (x - start));
-			tab_cmd[cmd_argc][x - start] = '\0';
-			cmd_argc++;
-		}
-		else
-		{
-			x++;
-		}
+		ft_printf("[%d], [%s]\n", tmp->type, tmp->str);
+		tmp = tmp->next;
 	}
-	tab_cmd[cmd_argc] = NULL;
-	int		a=0;
-	while (a < cmd_argc)
-	{
-		ft_printf("(%s)\n", tab_cmd[a]);
-		a++;
-	}
-	test = ft_strsplit_space(cmd, "#");
-	cmd = replace_var_envp(cmd, len, struc_envp);
-	//tab_cmd = ft_strsplit_space(cmd, " \t");
-	len_cmd = len_tab(tab_cmd);
-	if (ft_strcmp(cmd, "exit") == 0)
-		return (1);
-	exe_fork(len_cmd, tab_cmd, struc_envp);
-	free_tab(tab_cmd, len_cmd);
-	free(cmd);
 	return (0);
 }

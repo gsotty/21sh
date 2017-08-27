@@ -1,37 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy_modif.c                                  :+:      :+:    :+:   */
+/*   token_new.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/08/21 12:25:33 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/27 14:18:41 by gsotty           ###   ########.fr       */
+/*   Created: 2017/08/27 11:10:50 by gsotty            #+#    #+#             */
+/*   Updated: 2017/08/27 14:17:24 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-void	*ft_memcpy_modif(void *dest, const void *src, size_t n)
+t_token	*token_new(void const *content, size_t content_size, int nbr_token)
 {
-	size_t				x;
-	size_t				y;
-	const unsigned char	*tabsrc;
-	unsigned char		*tabdest;
+	t_token	*new;
 
-	x = 0;
-	y = 0;
-	tabsrc = src;
-	tabdest = dest;
-	while (x < n)
+	if ((new = (t_token *)malloc(sizeof(*new))) == NULL)
+		return (0);
+	new->type = nbr_token;
+	if (content != NULL)
 	{
-		if (tabsrc[x] != '\0')
-		{
-			tabdest[y] = tabsrc[x];
-			y++;
-		}
-		x++;
+		if ((new->str = malloc(sizeof(*content) * content_size)) == NULL)
+			return (0);
+		ft_memcpy_modif(new->str, content, content_size);
+		new->str[content_size] = '\0';
 	}
-	tabdest[y] = '\0';
-	return (tabdest);
+	else
+	{
+		new->str = NULL;
+	}
+	new->next = NULL;
+	return (new);
 }

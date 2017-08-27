@@ -1,37 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy_modif.c                                  :+:      :+:    :+:   */
+/*   token_del.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/08/21 12:25:33 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/27 14:18:41 by gsotty           ###   ########.fr       */
+/*   Created: 2017/08/27 11:08:47 by gsotty            #+#    #+#             */
+/*   Updated: 2017/08/27 11:09:02 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-void	*ft_memcpy_modif(void *dest, const void *src, size_t n)
+void	token_del(t_token **alst)
 {
-	size_t				x;
-	size_t				y;
-	const unsigned char	*tabsrc;
-	unsigned char		*tabdest;
+	t_token		*tmp;
 
-	x = 0;
-	y = 0;
-	tabsrc = src;
-	tabdest = dest;
-	while (x < n)
+	if (alst == NULL)
+		return ;
+	while (*alst)
 	{
-		if (tabsrc[x] != '\0')
-		{
-			tabdest[y] = tabsrc[x];
-			y++;
-		}
-		x++;
+		tmp = (*alst)->next;
+		free((*alst)->str);
+		free(*alst);
+		*alst = tmp;
 	}
-	tabdest[y] = '\0';
-	return (tabdest);
+	*alst = NULL;
 }
