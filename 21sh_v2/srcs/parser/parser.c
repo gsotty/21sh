@@ -79,7 +79,7 @@ int			test(char *cmd, t_len_cmd *len, char *delim, t_token **begin_token)
 				else
 				{
 					token->next = token_new(cmd + start, end - start, 0);
-					token->type = is_type(token->str);
+					token->next->type = is_type(token->next->str);
 					token = token->next;
 				}
 				start = x;
@@ -95,7 +95,7 @@ int			test(char *cmd, t_len_cmd *len, char *delim, t_token **begin_token)
 				else
 				{
 					token->next = token_new(cmd + start, end - start, 0);
-					token->type = is_type(token->str);
+					token->next->type = is_type(token->next->str);
 					token = token->next;
 				}
 				start = x;
@@ -115,7 +115,7 @@ int			test(char *cmd, t_len_cmd *len, char *delim, t_token **begin_token)
 	else
 	{
 		token->next = token_new(cmd + start, end - start, 0);
-		token->type = is_type(token->str);
+		token->next->type = is_type(token->next->str);
 		token = token->next;
 	}
 	start = x;
@@ -252,18 +252,33 @@ int			lexer_cmd(char *cmd, t_len_cmd *len, t_token **begin_token)
 int			parser(char *cmd, t_len_cmd *len, t_struc_envp *struc_envp)
 {
 	t_token		*begin_token;
-	t_token		*tmp;
+	t_lexer		s;
+	int			first_call;
+	int			first_call_1;
 
+	ft_memset(&s, 0, sizeof(t_lexer));
 	(void)struc_envp;
 	if ((begin_token = ft_memalloc(sizeof(*begin_token))) == NULL)
 		return (1);
 	//lexer_cmd(cmd, len, &begin_token);
-	test(cmd, len, "|", &begin_token);
-	tmp = begin_token;
-	while (tmp != NULL)
+	test(cmd, len, ";", &begin_token);
+//	tmp = begin_token;
+//	while (tmp != NULL)
+//	{
+//		ft_printf("[%d], [%s]\n", tmp->type, tmp->str);
+///		tmp = tmp->next;
+//	}
+	first_call = 1;
+	while ((s.sep = creat_token(cmd, len->len, ";", first_call)) != NULL)
 	{
-		ft_printf("[%d], [%s]\n", tmp->type, tmp->str);
-		tmp = tmp->next;
+		first_call_1 = 1;
+		while ((s.pipe = creat_token_2(s.sep->str, ft_strlen(s.sep->str), "|", first_call_1)) != NULL)
+		{
+			s.pipe->type = is_type(s.pipe->str);
+			ft_printf("[%d] [%s]\n", s.pipe->type, s.pipe->str);
+			first_call_1 = 0;
+		}
+		first_call = 0;
 	}
 	return (0);
 }

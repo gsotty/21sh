@@ -50,7 +50,7 @@ char		*write_c(t_struc *struc, char *buf, t_len *len, va_list ap)
 		return (buf);
 	}
 	tmp = ft_strnew(2);
-	tmp[0] = (char)va_arg(ap, char *);
+	tmp[0] = (char)va_arg(ap, int);
 	tmp[1] = '\0';
 	len->len_tmp = 1;
 	buf = ft_remalloc(buf, len->pos_buf + len->len_tmp, len->pos_buf);

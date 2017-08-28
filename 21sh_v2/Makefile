@@ -12,7 +12,7 @@
 
 NAME = 21sh
 
-CC = gcc
+CC = clang
 
 FLAG = -ltermcap -g -Wall -Wextra -Werror
 
@@ -61,7 +61,8 @@ SRC = main.c \
 	  write_cmd.c \
 	  write_cmd_fontion.c \
 	  token_new.c \
-	  token_del.c
+	  token_del.c \
+	  creat_token.c
 
 OBJ = $(SRC:.c=.o)
 

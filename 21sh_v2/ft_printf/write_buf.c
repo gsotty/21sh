@@ -105,9 +105,6 @@ static char	*write_buf_1(t_struc *struc, char *buf, t_len *len, va_list ap)
 
 char		*write_buf(t_struc *struc, char *buf, t_len *len, va_list ap)
 {
-	char*tmp;
-
-	tmp = NULL;
 	if (struc->specifier.s == 1)
 	{
 		buf = write_s(struc, buf, len, ap);

@@ -89,9 +89,19 @@ typedef struct		s_len_cmd
 	int				len_cmd_malloc;
 }					t_len_cmd;
 
+typedef struct		s_lexer
+{
+	t_token			*sep;
+	t_token			*pipe;
+}					t_lexer;
+
 t_token				*token_new(void const *content, size_t content_size,
 		int nbr_token);
 void				token_del(t_token **alst);
+t_token				*creat_token(char *cmd, int len, char *delim,
+int first_call);
+t_token				*creat_token_2(char *cmd, int len, char *delim,
+int first_call);
 
 int					add_history(t_history *history, char *cmd, int len);
 void				clear_win(char *cmd, t_len_cmd *len, t_pos *pos);
