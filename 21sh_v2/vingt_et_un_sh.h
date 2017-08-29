@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/27 13:01:31 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/29 16:28:57 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,9 @@
 # define _DUP_INPUT 11
 # define _PIPE 12
 # define _SEP 13
+# define _OR_IF 14
+# define _AND_IF 15
+# define _SPACE 16
 
 # define _EOF 14
 # define _EOL 15
@@ -92,16 +95,31 @@ typedef struct		s_len_cmd
 typedef struct		s_lexer
 {
 	t_token			*sep;
+	int				first_call_sep;
+	t_token			*and_or;
+	int				first_call_and_or;
 	t_token			*pipe;
+	int				first_call_pipe;
+	t_token			*dg_dl;
+	int				first_call_dg_dl;
+	t_token			*gr_le;
+	int				first_call_gr_le;
+	t_token			*space;
+	int				first_call_space;
 }					t_lexer;
 
 t_token				*token_new(void const *content, size_t content_size,
 		int nbr_token);
 void				token_del(t_token **alst);
-t_token				*creat_token(char *cmd, int len, char *delim,
-int first_call);
-t_token				*creat_token_2(char *cmd, int len, char *delim,
-int first_call);
+t_token				*creat_token_sep(char *cmd, int len, int first_call);
+t_token				*creat_token_and_or(char *cmd, int len, int first_call);
+t_token				*creat_token_pipe(char *cmd, int len, int first_call,
+		int type);
+t_token				*creat_token_dg_dl(char *cmd, int len,
+		int first_call);
+t_token				*creat_token_gr_le(char *cmd, int len,
+		int first_call, int type);
+t_token				*creat_token_space(char *cmd, int len, int first_call);
 
 int					add_history(t_history *history, char *cmd, int len);
 void				clear_win(char *cmd, t_len_cmd *len, t_pos *pos);

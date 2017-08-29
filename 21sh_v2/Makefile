@@ -6,13 +6,13 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/08/27 11:20:30 by gsotty           ###   ########.fr        #
+#    Updated: 2017/08/29 17:46:03 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = 21sh
 
-CC = clang
+CC = gcc
 
 FLAG = -ltermcap -g -Wall -Wextra -Werror
 

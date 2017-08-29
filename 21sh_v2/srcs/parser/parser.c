@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/23 13:29:19 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/27 18:55:51 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/29 17:42:28 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,25 +29,36 @@ int			add_token(char *cmd, int start, int end, t_token *token)
 
 int			is_type(char *cmd)
 {
-	if (ft_strcmp(cmd, "<") == 0)
-		return (6);
+	if (cmd == NULL)
+		return (_SPACE);
+	else if (ft_strcmp(cmd, "<") == 0)
+		return (_LESS);
 	else if (ft_strcmp(cmd, ">") == 0)
-		return (7);
+		return (_GREAT);
 	else if (ft_strcmp(cmd, "<<") == 0)
-		return (8);
+		return (_DLESS);
 	else if (ft_strcmp(cmd, ">>") == 0)
-		return (9);
+		return (_DGREAT);
 	else if (ft_strcmp(cmd, "<&") == 0)
-		return (10);
+		return (_DUP_OUTPUT);
 	else if (ft_strcmp(cmd, ">&") == 0)
-		return (11);
+		return (_DUP_INPUT);
 	else if (ft_strcmp(cmd, "|") == 0)
-		return (12);
+		return (_PIPE);
 	else if (ft_strcmp(cmd, ";") == 0)
-		return (13);
-	return (1);
+		return (_SEP);
+	else if (ft_strcmp(cmd, "||") == 0)
+		return (_OR_IF);
+	else if (ft_strcmp(cmd, "&&") == 0)
+		return (_AND_IF);
+	else if (ft_strchr(cmd, ' ') != NULL)
+		return (_SPACE);
+	else if (cmd[0] == '\0')
+		return (_SPACE);
+	return (_WORD);
 }
 
+/*
 int			test(char *cmd, t_len_cmd *len, char *delim, t_token **begin_token)
 {
 	int		x;
@@ -248,37 +259,75 @@ int			lexer_cmd(char *cmd, t_len_cmd *len, t_token **begin_token)
 	}
 	return (0);
 }
-
+*/
 int			parser(char *cmd, t_len_cmd *len, t_struc_envp *struc_envp)
 {
 	t_token		*begin_token;
 	t_lexer		s;
-	int			first_call;
-	int			first_call_1;
 
 	ft_memset(&s, 0, sizeof(t_lexer));
 	(void)struc_envp;
 	if ((begin_token = ft_memalloc(sizeof(*begin_token))) == NULL)
 		return (1);
 	//lexer_cmd(cmd, len, &begin_token);
-	test(cmd, len, ";", &begin_token);
+//	test(cmd, len, ";", &begin_token);
 //	tmp = begin_token;
 //	while (tmp != NULL)
 //	{
 //		ft_printf("[%d], [%s]\n", tmp->type, tmp->str);
 ///		tmp = tmp->next;
 //	}
-	first_call = 1;
-	while ((s.sep = creat_token(cmd, len->len, ";", first_call)) != NULL)
+	s.first_call_sep = 1;
+	while ((s.sep = creat_token_sep(cmd, len->len, s.first_call_sep)) != NULL)
 	{
-		first_call_1 = 1;
-		while ((s.pipe = creat_token_2(s.sep->str, ft_strlen(s.sep->str), "|", first_call_1)) != NULL)
+		s.sep->type = is_type(s.sep->str);
+		s.first_call_and_or = 1;
+	//	printf("sep = [%d] [%s]\n", s.sep->type, s.sep->str);
+		while ((s.and_or = creat_token_and_or(s.sep->str, ft_strlen(s.sep->str),
+						s.first_call_and_or)) != NULL)
 		{
-			s.pipe->type = is_type(s.pipe->str);
-			ft_printf("[%d] [%s]\n", s.pipe->type, s.pipe->str);
-			first_call_1 = 0;
+			s.and_or->type = is_type(s.and_or->str);
+			s.first_call_pipe = 1;
+	//		printf("and_or = [%d] [%s]\n", s.and_or->type, s.and_or->str);
+			while ((s.pipe = creat_token_pipe(s.and_or->str,
+							ft_strlen(s.and_or->str), s.first_call_pipe,
+							s.and_or->type)) != NULL)
+			{
+				s.pipe->type = is_type(s.pipe->str);
+				s.first_call_dg_dl = 1;
+	//			ft_printf("pipe = [%d] [%s]\n", s.pipe->type, s.pipe->str);
+				while ((s.dg_dl = creat_token_dg_dl(s.pipe->str,
+								ft_strlen(s.pipe->str), s.first_call_dg_dl)))
+				{
+					s.dg_dl->type = is_type(s.dg_dl->str);
+					s.first_call_gr_le = 1;
+	//				ft_printf("dg_dl = [%d] [%s]\n", s.dg_dl->type, s.dg_dl->str);
+					while ((s.gr_le = creat_token_gr_le(s.dg_dl->str,
+									ft_strlen(s.dg_dl->str), s.first_call_gr_le
+									, s.dg_dl->type)))
+					{
+						s.gr_le->type = is_type(s.gr_le->str);
+						s.first_call_space = 1;
+	//					ft_printf("gr_le = [%d] [%s]\n", s.gr_le->type,
+	//							s.gr_le->str);
+						while ((s.space = creat_token_space(s.gr_le->str,
+									ft_strlen(s.gr_le->str),
+									s.first_call_space)))
+						{
+							s.space->type = is_type(s.space->str);
+							ft_printf("space = [%d] [%s]\n", s.space->type,
+									s.space->str);
+							s.first_call_space = 0;
+						}
+						s.first_call_gr_le = 0;
+					}
+					s.first_call_dg_dl = 0;
+				}
+				s.first_call_pipe = 0;
+			}
+			s.first_call_and_or = 0;
 		}
-		first_call = 0;
+		s.first_call_sep = 0;
 	}
 	return (0);
 }
