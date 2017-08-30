@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/08/29 17:46:03 by gsotty           ###   ########.fr        #
+#    Updated: 2017/08/30 14:46:40 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,12 +57,19 @@ SRC = main.c \
 	  remalloc_cmd.c \
 	  remalloc_history.c \
 	  signal.c \
-	  strsplit_to_tab.c \
 	  write_cmd.c \
 	  write_cmd_fontion.c \
 	  token_new.c \
 	  token_del.c \
-	  creat_token.c
+	  is_type.c \
+	  ft_print_type.c \
+	  creat_token_space.c \
+	  creat_token_gr_le.c \
+	  creat_token_dg_dl.c \
+	  creat_token_pipe.c \
+	  creat_token_and_or.c \
+	  creat_token_sep.c \
+	  skip_quote_and_blakslash.c
 
 OBJ = $(SRC:.c=.o)
 

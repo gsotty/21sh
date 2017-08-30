@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/29 16:28:57 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/30 14:12:00 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,40 @@
 # define _EOL 15
 
 sig_atomic_t		g_sig;
+
+typedef struct		s_gr_le
+{
+	int				x;
+	int				cut_gr;
+	int				cut_le;
+	int				start;
+	int				type;
+}					t_gr_le;
+
+typedef struct		s_dg_dl
+{
+	int				x;
+	int				cut_dgreat;
+	int				cut_dless;
+	int				start;
+}					t_dg_dl;
+
+typedef struct		s_pipe
+{
+	int				x;
+	int				cut_pipe;
+	int				start;
+	int				type;
+}					t_pipe;
+
+typedef struct		s_and_or
+{
+	int				x;
+	int				cut_and;
+	int				cut_or;
+	int				start;
+	int				type;
+}					t_and_or;
 
 typedef struct		s_token
 {
@@ -108,6 +142,9 @@ typedef struct		s_lexer
 	int				first_call_space;
 }					t_lexer;
 
+int					skip_quote_and_backslash(char *cmd, int len, int *count);
+int					is_type(char *cmd);
+char				*ft_print_type(int x);
 t_token				*token_new(void const *content, size_t content_size,
 		int nbr_token);
 void				token_del(t_token **alst);
