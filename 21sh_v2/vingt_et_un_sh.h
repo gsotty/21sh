@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/30 14:12:00 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/08/30 16:28:31 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,34 @@
 # define _EOL 15
 
 sig_atomic_t		g_sig;
+
+typedef struct		s_cmd
+{
+	char			*cmd;
+	char			**argv;
+}					t_cmd;
+
+typedef struct		s_pipe_exec
+{
+	t_cmd			cmd;
+}					t_pipe_exec;
+
+typedef struct		s_redirection
+{
+	int				fd;
+}					t_redirection;
+
+typedef struct		s_commande
+{
+	t_cmd			cmd;
+	t_pipe_exec		pipe;
+	t_redirection	redi;
+}					t_commande;
+
+typedef struct		s_exec
+{
+	t_commande		*commmande;
+}					t_exec;
 
 typedef struct		s_gr_le
 {
