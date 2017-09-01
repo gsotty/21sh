@@ -6,15 +6,15 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/23 13:29:19 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/30 12:01:04 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/01 13:52:13 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
 /*
-** il me faut un char ** qui contien tous les cmd a exe dans le bonne ordre.
-*/
+ ** il me faut un char ** qui contien tous les cmd a exe dans le bonne ordre.
+ */
 
 static int		ft_while_parser_tri(t_lexer *s, t_token **begin_token,
 		t_token **token, int *first_call)
@@ -24,8 +24,8 @@ static int		ft_while_parser_tri(t_lexer *s, t_token **begin_token,
 					ft_strlen(s->gr_le->str),
 					s->first_call_space)))
 	{
-		ft_printf("space = [%s] [%s]\n",
-				ft_print_type(s->space->type), s->space->str);
+		//	ft_printf("space = [%s] [%s]\n",
+		//			ft_print_type(s->space->type), s->space->str);
 		s->first_call_space = 0;
 		if (s->space->type != _SPACE)
 		{
@@ -86,15 +86,59 @@ static int		ft_while_parser(t_lexer *s, t_token **begin_token,
 	return (0);
 }
 
+int				print_tree(t_exec *c, t_nbr_lexer *nbr)
+{
+	int    a = 0;
+	int    b = 0;
+	int    d = 0;
+	int    e = 0;
+	while (a < nbr->_sep)
+	{
+		ft_printf("commande:\n");
+		if (c->sep[a].cmd.cmd != NULL)
+		{
+			b = 0;
+			ft_printf("		cmd:[%s]\n", c->sep[a].cmd.cmd);
+			while (c->sep[a].cmd.argv[b] != NULL)
+			{
+				ft_printf("		argv:[%s]\n", c->sep[a].cmd.argv[b]);
+				b++;
+			}
+			e = 0;
+			while (e < nbr->_pipe)
+			{
+				if (c->sep[a].pipe[e].cmd != NULL)
+				{
+					ft_printf("		pipe:\n");
+					ft_printf("			cmd:[%s]\n",
+							c->sep[a].pipe[e].cmd);
+					d = 0;
+					while (c->sep[a].pipe[e].argv[d] != NULL)
+					{
+						ft_printf("			argv:[%s]\n",
+								c->sep[a].pipe[e].argv[d]);
+						d++;
+					}
+				}
+				e++;
+			}
+		}
+		a++;
+	}
+	return (0);
+}
+
 int				parser(char *cmd, t_len_cmd *len, t_struc_envp *struc_envp)
 {
 	t_token		*begin_token;
 	t_token		*token;
-	t_token		*tmp;
+	t_nbr_lexer	nbr;
 	t_lexer		s;
+	t_exec		c;
 	int			first_call;
 
 	ft_memset(&s, 0, sizeof(t_lexer));
+	ft_memset(&c, 0, sizeof(t_exec));
 	(void)struc_envp;
 	token = NULL;
 	if ((begin_token = ft_memalloc(sizeof(*begin_token))) == NULL)
@@ -105,11 +149,10 @@ int				parser(char *cmd, t_len_cmd *len, t_struc_envp *struc_envp)
 	{
 		ft_while_parser(&s, &begin_token, &token, &first_call);
 	}
-	tmp = begin_token;
-	while (tmp != NULL)
-	{
-		ft_printf("[%s], [%s]\n", ft_print_type(tmp->type), tmp->str);
-		tmp = tmp->next;
-	}
+	ft_memset(&nbr, 0, sizeof(nbr));
+	count_nbr_lexer(&nbr, begin_token);
+	creat_tab_cmd(&nbr, &c, begin_token);
+	//print_tree(&c, &nbr);
+	exe_tree(&c, &nbr, struc_envp);
 	return (0);
 }

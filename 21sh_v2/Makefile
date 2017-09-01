@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/08/30 14:46:40 by gsotty           ###   ########.fr        #
+#    Updated: 2017/09/01 13:15:46 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -69,7 +69,10 @@ SRC = main.c \
 	  creat_token_pipe.c \
 	  creat_token_and_or.c \
 	  creat_token_sep.c \
-	  skip_quote_and_blakslash.c
+	  skip_quote_and_blakslash.c \
+	  creat_tab_cmd.c \
+	  count_nbr_lexer.c \
+	  exe_tree.c
 
 OBJ = $(SRC:.c=.o)
 

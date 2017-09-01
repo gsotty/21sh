@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/26 10:53:29 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/24 15:31:25 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/01 13:57:56 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,9 @@ static int		main_loop(char *buffer, t_history *history,
 		return (1);
 	if (reset_term() != 0)
 		return (1);
-	if (parser(cmd, &len, struc_envp) == 1)
-		return (1);
+	if (cmd != NULL && cmd[0] != '\0')
+		if (parser(cmd, &len, struc_envp) == 1)
+			return (1);
 	return (0);
 }
 

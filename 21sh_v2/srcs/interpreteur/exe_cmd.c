@@ -6,13 +6,13 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/20 14:33:09 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/24 16:27:16 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/01 13:20:19 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-static int		ft_exe_path(int len_cmd, int x, char **tab_cmd,
+static int		ft_exe_path(int len_cmd, int x, t_cmd *cmd,
 		t_struc_envp *struc_envp)
 {
 	int			len_path;
@@ -29,11 +29,13 @@ static int		ft_exe_path(int len_cmd, int x, char **tab_cmd,
 			return (1);
 		ft_memcpy(new_cmd, path[x], len_path);
 		ft_memcpy(new_cmd + len_path, "/", 1);
-		ft_memcpy(new_cmd + len_path + 1, tab_cmd[0], len_cmd);
+		ft_memcpy(new_cmd + len_path + 1, cmd->cmd, len_cmd);
 		if (access(new_cmd, F_OK | X_OK) == 0)
 		{
-			execve(new_cmd, tab_cmd, struc_envp->envp);
+			free(cmd->cmd);
+			cmd->cmd = ft_strdup(new_cmd);
 			free(new_cmd);
+			execve(cmd->cmd, cmd->argv, struc_envp->envp);
 			return (0);
 		}
 		free(new_cmd);
@@ -42,19 +44,19 @@ static int		ft_exe_path(int len_cmd, int x, char **tab_cmd,
 	return (1);
 }
 
-void			ft_exe(char **tab_cmd, t_struc_envp *struc_envp)
+void			ft_exe(t_cmd *cmd, t_struc_envp *struc_envp)
 {
 	int		len_cmd;
 
-	len_cmd = ft_strlen(tab_cmd[0]);
-	if (access(tab_cmd[0], F_OK | X_OK) == 0)
-		execve(tab_cmd[0], tab_cmd, struc_envp->envp);
+	len_cmd = ft_strlen(cmd->cmd);
+	if (access(cmd->cmd, F_OK | X_OK) == 0)
+		execve(cmd->cmd, cmd->argv, struc_envp->envp);
 	else
 	{
-		if (ft_exe_path(len_cmd, 0, tab_cmd, struc_envp) == 1)
+		if (ft_exe_path(len_cmd, 0, cmd, struc_envp) == 1)
 		{
 			write(2, "21sh: command not found: ", 25);
-			write(2, tab_cmd[0], len_cmd);
+			write(2, cmd->cmd, len_cmd);
 			write(2, "\n", 1);
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 16:27:48 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/30 16:33:11 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/01 13:28:18 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@
 #include <string.h>
 #include "./../vingt_et_un_sh.h"
 
-	int
-main(int argc, char *argv[], char **envp)
+int			main(int argc, char **argv, char **envp)
 {
 	int		pipefd[2];
 	pid_t	cpid;

@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/30 16:28:31 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/01 13:15:30 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ sig_atomic_t		g_sig;
 typedef struct		s_cmd
 {
 	char			*cmd;
-	char			**argv;
+	char			*argv[1024];
 }					t_cmd;
 
 typedef struct		s_pipe_exec
@@ -72,13 +72,13 @@ typedef struct		s_redirection
 typedef struct		s_commande
 {
 	t_cmd			cmd;
-	t_pipe_exec		pipe;
+	t_cmd			*pipe;
 	t_redirection	redi;
 }					t_commande;
 
 typedef struct		s_exec
 {
-	t_commande		*commmande;
+	t_commande		*sep;
 }					t_exec;
 
 typedef struct		s_gr_le
@@ -154,6 +154,18 @@ typedef struct		s_len_cmd
 	int				len_cmd_malloc;
 }					t_len_cmd;
 
+typedef struct		s_nbr_lexer
+{
+	int				_sep;
+	int				_and;
+	int				_or;
+	int				_pipe;
+	int				_dgreat;
+	int				_dless;
+	int				_great;
+	int				_less;
+}					t_nbr_lexer;
+
 typedef struct		s_lexer
 {
 	t_token			*sep;
@@ -170,6 +182,11 @@ typedef struct		s_lexer
 	int				first_call_space;
 }					t_lexer;
 
+int					exe_tree(t_exec *c, t_nbr_lexer *nbr,
+		t_struc_envp *struc_envp);
+int					count_nbr_lexer(t_nbr_lexer *nbr, t_token *token);
+int					creat_tab_cmd(t_nbr_lexer *nbr, t_exec *c,
+		t_token *begin_token);
 int					skip_quote_and_backslash(char *cmd, int len, int *count);
 int					is_type(char *cmd);
 char				*ft_print_type(int x);
@@ -204,7 +221,7 @@ void				ft_delete_character(char *cmd, t_len_cmd *len,
 		t_pos *pos);
 void				ft_delete_character_2(char *cmd, t_len_cmd *len,
 		t_pos *pos);
-void				ft_exe(char **tab_cmd, t_struc_envp *struc_envp);
+void				ft_exe(t_cmd *cmd, t_struc_envp *struc_envp);
 int					export_history(t_history *history);
 int					f_putchar(int c);
 char				*find_var_env(char *name, t_struc_envp *struc_envp);
