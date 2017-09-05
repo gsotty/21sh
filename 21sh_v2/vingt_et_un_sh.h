@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/01 13:15:30 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/05 17:44:32 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,14 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 
-# define LEN_REMALLOC 100
+# define LEN_REMALLOC 1024
 # define PATH_HISTORY ".21sh_history"
+
+# define _IS_PIPE 1
+# define _IS_ROUT 2
+# define _IS_RINT 3
+# define _IS_RAPP 4
+# define _IS_RAND 5
 
 # define _WORD 1
 # define _ASSIGNEMENT_WORD 2
@@ -37,7 +43,7 @@
 # define _IO_NUMBER 5
 
 # define _LESS 6
-# define _GREAT 7
+# define _REDIR 7
 # define _DLESS 8
 # define _DGREAT 9
 # define _DUP_OUTPUT 10
@@ -67,18 +73,26 @@ typedef struct		s_pipe_exec
 typedef struct		s_redirection
 {
 	int				fd;
+	char			*file_name;
 }					t_redirection;
 
 typedef struct		s_commande
 {
+	int				cmd_is;
+	int				fd_start;
+	int				fd_end;
 	t_cmd			cmd;
-	t_cmd			*pipe;
-	t_redirection	redi;
+	char			*file_name;
 }					t_commande;
+
+typedef struct		s_sep
+{
+	t_commande		**cmd;
+}					t_sep;
 
 typedef struct		s_exec
 {
-	t_commande		*sep;
+	t_sep			**sep;
 }					t_exec;
 
 typedef struct		s_gr_le
@@ -164,6 +178,7 @@ typedef struct		s_nbr_lexer
 	int				_dless;
 	int				_great;
 	int				_less;
+	int				_max;
 }					t_nbr_lexer;
 
 typedef struct		s_lexer

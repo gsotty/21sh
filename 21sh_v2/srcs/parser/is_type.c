@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 11:32:38 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/31 11:24:25 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/05 10:36:24 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,25 @@ static int		only_space(char *cmd)
 		return (0);
 }
 
+static int		only_nbr(char *cmd)
+{
+	int		x;
+	int		y;
+
+	x = 0;
+	y = 0;
+	while (cmd[x] != '\0')
+	{
+		if (ft_isdigit(cmd[x]) == 1)
+			y++;
+		x++;
+	}
+	if (y - x == 0)
+		return (1);
+	else
+		return (0);
+}
+
 static int		is_type_2(char *cmd)
 {
 	if (ft_strstr(cmd, "||") != NULL)
@@ -43,6 +62,8 @@ static int		is_type_2(char *cmd)
 		return (_SEP);
 	else if (only_space(cmd) == 1)
 		return (_SPACE);
+	else if (only_nbr(cmd) == 1)
+		return (_IO_NUMBER);
 	else if (cmd[0] == '\0')
 		return (_SPACE);
 	return (_WORD);
@@ -63,7 +84,7 @@ int				is_type(char *cmd)
 	else if (ft_strstr(cmd, "<") != NULL)
 		return (_LESS);
 	else if (ft_strstr(cmd, ">") != NULL)
-		return (_GREAT);
+		return (_REDIR);
 	else
 		return (is_type_2(cmd));
 }

@@ -47,8 +47,8 @@ char			*ft_print_type(int x)
 		return ("_IO_NUMBER");
 	else if (x == _LESS)
 		return ("_LESS");
-	else if (x == _GREAT)
-		return ("_GREAT");
+	else if (x == _REDIR)
+		return ("_REDIR");
 	else if (x == _DLESS)
 		return ("_DLESS");
 	else

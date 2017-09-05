@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/01 12:53:03 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/01 12:54:00 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/05 17:40:03 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,12 @@ int		count_nbr_lexer(t_nbr_lexer *nbr, t_token *token)
 			nbr->_dgreat++;
 		else if (token->type == _DLESS)
 			nbr->_dless++;
-		else if (token->type == _GREAT)
+		else if (token->type == _REDIR)
 			nbr->_great++;
 		else if (token->type == _LESS)
 			nbr->_less++;
 		token = token->next;
 	}
+	nbr->_max = (nbr->_pipe + 1);
 	return (0);
 }

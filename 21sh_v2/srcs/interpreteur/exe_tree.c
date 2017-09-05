@@ -6,26 +6,26 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/01 12:58:33 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/01 16:37:42 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/05 15:30:18 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-static char		*exe_pipe(int len, char *sorti, t_cmd *cmd,
-		t_struc_envp *struc_envp)
+static char		*exe_pipe(char *sorti, t_cmd *cmd, t_struc_envp *struc_envp)
 {
 	int		pipefd[2];
 	int		pipefd_2[2];
-	int		y;
 	pid_t	father;
 	pid_t	father_2;
 	char	buf;
 	char	*sorti_2;
+	t_len_cmd	len_sorti_2;
 
-	y = 0;
-	(void)len;
-	if ((sorti_2 = ft_memalloc(sizeof(char *) * 2048)) == NULL)
+	ft_memset(&len_sorti_2, 0, sizeof(t_len_cmd));
+	len_sorti_2.len = 0;
+	len_sorti_2.len_cmd_malloc = LEN_REMALLOC;
+	if ((sorti_2 = ft_memalloc(sizeof(char *) * LEN_REMALLOC)) == NULL)
 		return (NULL);
 	if (pipe(pipefd) == -1)
 	{
@@ -69,30 +69,45 @@ static char		*exe_pipe(int len, char *sorti, t_cmd *cmd,
 			close(pipefd[1]);
 			close(pipefd_2[1]);
 			while (read(pipefd_2[0], &buf, 1) > 0)
-				sorti_2[y++] = buf;
-			sorti_2[y] = '\0';
+			{
+				sorti_2[len_sorti_2.len] = buf;
+				len_sorti_2.len++;
+				sorti_2 = remalloc_cmd(&len_sorti_2, sorti_2);
+			}
+			sorti_2[len_sorti_2.len] = '\0';
 			close(pipefd_2[0]);
 			wait(NULL);
 		}
+		else
+		{
+			write(2, "error\n", 6);
+			return (NULL);
+		}
 		wait(NULL);
-		//ft_printf("sorti = [%s]\n", sorti_2);
+	}
+	else
+	{
+		write(2, "error\n", 6);
+		return (NULL);
 	}
 	return (sorti_2);
 }
 
 int				exe_tree(t_exec *c, t_nbr_lexer *nbr, t_struc_envp *struc_envp)
 {
-	int		x;
-	int		y;
-	int		z;
-	int		pipefd[2];
-	char	buf;
-	char	*sorti;
-	pid_t	father;
+	int			x;
+	int			z;
+	int			pipefd[2];
+	char		buf;
+	char		*sorti;
+	t_len_cmd	len_sorti;
+	pid_t		father;
 
 	x = 0;
-	y = 0;
-	if ((sorti = ft_memalloc(sizeof(char *) * 2048)) == NULL)
+	ft_memset(&len_sorti, 0, sizeof(t_len_cmd));
+	len_sorti.len = 0;
+	len_sorti.len_cmd_malloc = LEN_REMALLOC;
+	if ((sorti = ft_memalloc(sizeof(char *) * LEN_REMALLOC)) == NULL)
 		return (1);
 	if (pipe(pipefd) == -1)
 	{
@@ -109,7 +124,7 @@ int				exe_tree(t_exec *c, t_nbr_lexer *nbr, t_struc_envp *struc_envp)
 				close(pipefd[0]);
 				if (dup2(pipefd[1], 1) == -1)
 					ft_printf("error\n");
-				ft_exe(&c->sep[x].cmd, struc_envp);
+				ft_exe(&c->sep[x]->cmd[0]->cmd, struc_envp);
 				close(pipefd[1]);
 				exit(0);
 			}
@@ -117,7 +132,7 @@ int				exe_tree(t_exec *c, t_nbr_lexer *nbr, t_struc_envp *struc_envp)
 			{
 				close(pipefd[0]);
 				close(pipefd[1]);
-				ft_exe(&c->sep[x].cmd, struc_envp);
+				ft_exe(&c->sep[x]->cmd[0]->cmd, struc_envp);
 				exit(0);
 			}
 		}
@@ -127,14 +142,18 @@ int				exe_tree(t_exec *c, t_nbr_lexer *nbr, t_struc_envp *struc_envp)
 			{
 				close(pipefd[1]);
 				while (read(pipefd[0], &buf, 1) > 0)
-					sorti[y++] = buf;
-				sorti[y] = '\0';
+				{
+					sorti[len_sorti.len] = buf;
+					len_sorti.len++;
+					sorti = remalloc_cmd(&len_sorti, sorti);
+				}
+				sorti[len_sorti.len] = '\0';
 				close(pipefd[0]);
 				wait(NULL);
 				z = 0;
-				while (c->sep[x].pipe[z].cmd != NULL)
+				while (c->sep[x]->cmd[z]->cmd_is != _IS_PIPE)
 				{
-					sorti = exe_pipe(y, sorti, &c->sep[x].pipe[z], struc_envp);
+					sorti = exe_pipe(sorti, &c->sep[x]->cmd[0]->cmd, struc_envp);
 					z++;
 				}
 			}
@@ -146,6 +165,11 @@ int				exe_tree(t_exec *c, t_nbr_lexer *nbr, t_struc_envp *struc_envp)
 			}
 			ft_printf("sorti = [%s]\n", sorti);
 			x++;
+		}
+		else
+		{
+			write(2, "error\n", 6);
+			return (1);
 		}
 	}
 	return (0);
