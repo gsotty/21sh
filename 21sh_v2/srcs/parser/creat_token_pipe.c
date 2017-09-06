@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 13:58:41 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/30 14:08:28 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/06 14:01:54 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 t_token			*creat_token_pipe_bis(t_pipe *s, char *cmd)
 {
-	if (cmd[s->x] == '|' && s->cut_pipe == 0 && s->type != _OR_IF)
+	if (cmd[s->x] == '|' && s->cut_pipe == 0)
 	{
 		s->cut_pipe = 1;
 		return (token_new(cmd + s->start, s->x - s->start, 0));
 	}
-	if (cmd[s->x] == '|' && s->cut_pipe == 1 && s->type != _OR_IF)
+	if (cmd[s->x] == '|' && s->cut_pipe == 1)
 	{
 		s->x++;
 		s->cut_pipe = 0;

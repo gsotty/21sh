@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   creat_token_dg_dl.c                                :+:      :+:    :+:   */
+/*   creat_token_appredir.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/08/30 13:46:11 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/30 13:55:43 by gsotty           ###   ########.fr       */
+/*   Created: 2017/09/06 14:35:18 by gsotty            #+#    #+#             */
+/*   Updated: 2017/09/06 14:35:40 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-t_token			*creat_token_dg_dl_bis(t_dg_dl *s, char *cmd)
+t_token			*creat_token_appredir_bis(t_dg_dl *s, char *cmd)
 {
 	if (cmd[s->x] == '>' && cmd[s->x + 1] == '>' && s->cut_dgreat == 0)
 	{
@@ -39,7 +39,7 @@ t_token			*creat_token_dg_dl_bis(t_dg_dl *s, char *cmd)
 	return (NULL);
 }
 
-t_token			*creat_token_dg_dl(char *cmd, int len, int first_call)
+t_token			*creat_token_appredir(char *cmd, int len, int first_call)
 {
 	static t_dg_dl	s;
 	t_token			*ret;
@@ -51,7 +51,7 @@ t_token			*creat_token_dg_dl(char *cmd, int len, int first_call)
 	{
 		if (skip_quote_and_backslash(cmd, len, &s.x) == 0)
 		{
-			if ((ret = creat_token_dg_dl_bis(&s, cmd)))
+			if ((ret = creat_token_appredir_bis(&s, cmd)))
 				return (ret);
 		}
 		s.x++;

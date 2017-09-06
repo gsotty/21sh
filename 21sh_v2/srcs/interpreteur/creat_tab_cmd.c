@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 15:37:14 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/05 17:41:53 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/06 14:02:51 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ int		malloc_sep(t_exec *c, t_nbr_lexer *nbr, int x)
 
 	y = 0;
 	if ((c->sep[x]->cmd = ft_memalloc(sizeof(*c->sep[x]->cmd) *
-					(nbr->_max + 1))) == NULL)
+					(nbr->to_max + 1))) == NULL)
 		return (1);
-	while (y < nbr->_max)
+	while (y < nbr->to_max)
 	{
 		if ((c->sep[x]->cmd[y] = ft_memalloc(sizeof(*c->sep[x]->cmd[y])))
 				== NULL)
@@ -36,9 +36,9 @@ int		malloc_exec(t_exec *c, t_nbr_lexer *nbr)
 	int		x;
 
 	x = 0;
-	if ((c->sep = ft_memalloc(sizeof(*c->sep) * (nbr->_sep + 1))) == NULL)
+	if ((c->sep = ft_memalloc(sizeof(*c->sep) * (nbr->to_sep + 1))) == NULL)
 		return (1);
-	while (x < nbr->_sep)
+	while (x < nbr->to_sep)
 	{
 		if ((c->sep[x] = ft_memalloc(sizeof(*c->sep[x]))) == NULL)
 			return (1);
@@ -67,7 +67,6 @@ int		creat_tab_cmd(t_nbr_lexer *nbr, t_exec *c, t_token *begin_token)
 	tmp_nbr = -1;
 	while (token != NULL)
 	{
-		ft_printf("[%s], [%s]\n", ft_print_type(token->type), token->str);
 		if (c->sep[x]->cmd[y]->cmd.cmd == NULL && token->type == _WORD)
 		{
 			c->sep[x]->cmd[y]->cmd.cmd = ft_strdup(token->str);
@@ -89,7 +88,7 @@ int		creat_tab_cmd(t_nbr_lexer *nbr, t_exec *c, t_token *begin_token)
 			nbr_argv = 0;
 			y++;
 		}
-		else if (token->type == _REDIR)
+		else if (token->type == _ROUT)
 		{
 			token = token->next;
 			if (c->sep[x]->cmd[y]->file_name != NULL)
@@ -97,19 +96,7 @@ int		creat_tab_cmd(t_nbr_lexer *nbr, t_exec *c, t_token *begin_token)
 			c->sep[x]->cmd[y]->file_name = ft_strdup(token->str);
 		//	y++;
 		}
-		else if (token->type == _LESS)
-		{
-			nbr_argv = 0;
-			y++;
-		}
-		else if (token->type == _DGREAT)
-		{
-			token = token->next;
-			if (c->sep[x]->cmd[y]->file_name != NULL)
-				free(c->sep[x]->cmd[y]->file_name);
-			c->sep[x]->cmd[y]->file_name = ft_strdup(token->str);
-		}
-		else if (token->type == _DLESS)
+		else if (token->type == _RINT)
 		{
 			nbr_argv = 0;
 			y++;

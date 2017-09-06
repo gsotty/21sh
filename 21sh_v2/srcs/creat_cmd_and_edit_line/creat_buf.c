@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/18 09:07:55 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/30 15:06:57 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/06 16:52:15 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int			buf_ini(t_len_cmd *len, t_pos *pos, t_history *history,
 					(len->len_cmd_malloc + 2))) == NULL)
 		return (1);
 	pos->history = history->len;
-	write(0, "$> ", 3);
+	write(0, _PROMPT, _PROMPT_LEN_WRITE);
 	tputs(tgetstr("sc", NULL), 0, f_putchar);
 	return (0);
 }

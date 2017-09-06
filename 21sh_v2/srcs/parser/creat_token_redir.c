@@ -1,36 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   creat_token_gr_le.c                                :+:      :+:    :+:   */
+/*   creat_token_redir.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/08/30 13:04:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/05 12:54:32 by gsotty           ###   ########.fr       */
+/*   Created: 2017/09/06 14:41:48 by gsotty            #+#    #+#             */
+/*   Updated: 2017/09/06 14:42:06 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-t_token		*creat_token_gr_le_bis(t_gr_le *s, char *cmd)
+t_token		*creat_token_redir_bis(t_gr_le *s, char *cmd)
 {
-	if (cmd[s->x] == '>' && s->cut_gr == 0 && s->type != _DGREAT)
+	if (cmd[s->x] == '>' && s->cut_gr == 0 && s->type != _APPROUT)
 	{
 		s->cut_gr = 1;
 		return (token_new(cmd + s->start, s->x - s->start, 0));
 	}
-	if (cmd[s->x] == '>' && s->cut_gr == 1 && s->type != _DGREAT)
+	if (cmd[s->x] == '>' && s->cut_gr == 1 && s->type != _APPROUT)
 	{
 		s->x++;
 		s->cut_gr = 0;
 		return (token_new(cmd + s->start, s->x - s->start, 0));
 	}
-	if (cmd[s->x] == '<' && s->cut_le == 0 && s->type != _DLESS)
+	if (cmd[s->x] == '<' && s->cut_le == 0 && s->type != _HEREDOC)
 	{
 		s->cut_le = 1;
 		return (token_new(cmd + s->start, s->x - s->start, 0));
 	}
-	if (cmd[s->x] == '<' && s->cut_le == 1 && s->type != _DLESS)
+	if (cmd[s->x] == '<' && s->cut_le == 1 && s->type != _HEREDOC)
 	{
 		s->x++;
 		s->cut_le = 0;
@@ -39,7 +39,7 @@ t_token		*creat_token_gr_le_bis(t_gr_le *s, char *cmd)
 	return (NULL);
 }
 
-t_token		*creat_token_gr_le(char *cmd, int len, int first_call, int type)
+t_token		*creat_token_redir(char *cmd, int len, int first_call, int type)
 {
 	static t_gr_le	s;
 	t_token			*ret;
@@ -52,7 +52,7 @@ t_token		*creat_token_gr_le(char *cmd, int len, int first_call, int type)
 	{
 		if (skip_quote_and_backslash(cmd, len, &s.x) == 0)
 		{
-			if ((ret = creat_token_gr_le_bis(&s, cmd)))
+			if ((ret = creat_token_redir_bis(&s, cmd)))
 				return (ret);
 		}
 		s.x++;

@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/01 12:53:03 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/05 17:40:03 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/06 14:08:58 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,26 +16,28 @@ int		count_nbr_lexer(t_nbr_lexer *nbr, t_token *token)
 {
 	while (token != NULL)
 	{
-		if (nbr->_sep == 0)
-			nbr->_sep = 1;
+		if (nbr->to_sep == 0)
+			nbr->to_sep = 1;
 		else if (token->type == _SEP)
-			nbr->_sep++;
-		else if (token->type == _OR_IF)
-			nbr->_or++;
-		else if (token->type == _AND_IF)
-			nbr->_and++;
+			nbr->to_sep++;
 		else if (token->type == _PIPE)
-			nbr->_pipe++;
-		else if (token->type == _DGREAT)
-			nbr->_dgreat++;
-		else if (token->type == _DLESS)
-			nbr->_dless++;
-		else if (token->type == _REDIR)
-			nbr->_great++;
-		else if (token->type == _LESS)
-			nbr->_less++;
+			nbr->to_pipe++;
+		else if (token->type == _APPROUT)
+			nbr->to_approut++;
+		else if (token->type == _HEREDOC)
+			nbr->to_heredoc++;
+		else if (token->type == _ROUT)
+			nbr->to_rout++;
+		else if (token->type == _RINT)
+			nbr->to_rint++;
+		else if (token->type == _ROUTERR)
+			nbr->to_routerr++;
+		else if (token->type == _DUP_INPUT)
+			nbr->to_dup_input++;
+		else if (token->type == _DUP_OUTPUT)
+			nbr->to_dup_output++;
 		token = token->next;
 	}
-	nbr->_max = (nbr->_pipe + 1);
+	nbr->to_max = (nbr->to_pipe + 1);
 	return (0);
 }

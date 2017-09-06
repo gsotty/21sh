@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/09/01 13:15:46 by gsotty           ###   ########.fr        #
+#    Updated: 2017/09/06 14:42:14 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,8 +64,8 @@ SRC = main.c \
 	  is_type.c \
 	  ft_print_type.c \
 	  creat_token_space.c \
-	  creat_token_gr_le.c \
-	  creat_token_dg_dl.c \
+	  creat_token_redir.c \
+	  creat_token_appredir.c \
 	  creat_token_pipe.c \
 	  creat_token_and_or.c \
 	  creat_token_sep.c \

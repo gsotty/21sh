@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/01 12:58:33 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/05 15:30:18 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/06 14:09:36 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,12 +114,12 @@ int				exe_tree(t_exec *c, t_nbr_lexer *nbr, t_struc_envp *struc_envp)
 		write(2, "error\n", 6);
 		return (1);
 	}
-	while (x < nbr->_sep)
+	while (x < nbr->to_sep)
 	{
 		father = fork();
 		if (father == 0)
 		{
-			if (nbr->_pipe > 0)
+			if (nbr->to_pipe > 0)
 			{
 				close(pipefd[0]);
 				if (dup2(pipefd[1], 1) == -1)
@@ -138,7 +138,7 @@ int				exe_tree(t_exec *c, t_nbr_lexer *nbr, t_struc_envp *struc_envp)
 		}
 		else if (father > 0)
 		{
-			if (nbr->_pipe > 0)
+			if (nbr->to_pipe > 0)
 			{
 				close(pipefd[1]);
 				while (read(pipefd[0], &buf, 1) > 0)

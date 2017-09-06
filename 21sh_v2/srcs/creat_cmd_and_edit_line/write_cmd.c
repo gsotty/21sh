@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/11 14:47:57 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/24 14:12:45 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/06 16:52:42 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,17 +43,17 @@ static void		increment_line(t_pos *pos, struct winsize win)
 	{
 		if (pos->nbr_line == 1)
 		{
-			if ((pos->pos - (win.ws_col - 3)) >= win.ws_col)
+			if ((pos->pos - (win.ws_col - _PROMPT_LEN)) >= win.ws_col)
 				pos->nbr_line++;
 		}
 		else
 		{
-			if ((pos->pos - ((win.ws_col - 3) + (win.ws_col * (pos->nbr_line
-									- 1)))) >= win.ws_col)
+			if ((pos->pos - ((win.ws_col - _PROMPT_LEN) + (win.ws_col *
+								(pos->nbr_line - 1)))) >= win.ws_col)
 				pos->nbr_line++;
 		}
 	}
-	else if (pos->pos >= (win.ws_col - 3))
+	else if (pos->pos >= (win.ws_col - _PROMPT_LEN))
 		pos->nbr_line++;
 }
 
@@ -66,17 +66,18 @@ static void		place_cursor(t_pos *pos, struct winsize win)
 		tputs(tgetstr("cr", NULL), 0, f_putchar);
 		if (pos->nbr_line == 1)
 		{
-			if ((pos->pos - (win.ws_col - 3)) > 0)
+			if ((pos->pos - (win.ws_col - _PROMPT_LEN)) > 0)
 				tputs(tgoto(tgetstr("RI", NULL), 0, (pos->pos - (win.ws_col
-									- 3))), 0, f_putchar);
+									- _PROMPT_LEN))), 0, f_putchar);
 		}
 		else
 		{
-			if ((pos->pos - ((win.ws_col - 3) + (win.ws_col *
+			if ((pos->pos - ((win.ws_col - _PROMPT_LEN) + (win.ws_col *
 								(pos->nbr_line - 1)))) > 0)
-				tputs(tgoto(tgetstr("RI", NULL), 0, (pos->pos - ((win.ws_col
-										- 3) + (win.ws_col * (pos->nbr_line
-												- 1))))), 0, f_putchar);
+				tputs(tgoto(tgetstr("RI", NULL), 0, (pos->pos - ((win.ws_col -
+										_PROMPT_LEN) + (win.ws_col *
+											(pos->nbr_line - 1))))), 0,
+						f_putchar);
 		}
 	}
 	else if (pos->pos > 0)
@@ -91,7 +92,7 @@ void			write_new_cmd(char *cmd, t_pos *pos, int len)
 	tputs(tgetstr("rc", NULL), 0, f_putchar);
 	tputs(tgetstr("cr", NULL), 0, f_putchar);
 	tputs(tgoto(tgetstr("DL", NULL), win.ws_col, win.ws_row), 0, f_putchar);
-	write(0, "$> ", 3);
+	write(0, _PROMPT, _PROMPT_LEN_WRITE);
 	write(0, cmd, len);
 	tputs(tgetstr("rc", NULL), 0, f_putchar);
 	place_cursor(pos, win);

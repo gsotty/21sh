@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/20 14:41:40 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/24 14:13:05 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/06 15:15:31 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int		len_of_nbr_ligne_2(struct winsize win, int len)
 	{
 		if (nbr_ligne_f == -1)
 		{
-			tmp_len -= (win.ws_col - 3);
+			tmp_len -= (win.ws_col - _PROMPT_LEN);
 			nbr_ligne_f++;
 		}
 		else
@@ -42,17 +42,17 @@ static int		verif_creat_ligne(struct winsize win, int nbr_ligne_f,
 	{
 		if (nbr_ligne_f == 1)
 		{
-			if ((len - (win.ws_col - 3)) >= win.ws_col)
+			if ((len - (win.ws_col - _PROMPT_LEN)) >= win.ws_col)
 				return (1);
 		}
 		else
 		{
-			if ((len - ((win.ws_col - 3) + (win.ws_col * (nbr_ligne_f
+			if ((len - ((win.ws_col - _PROMPT_LEN) + (win.ws_col * (nbr_ligne_f
 									- 1)))) >= win.ws_col)
 				return (1);
 		}
 	}
-	else if (len >= (win.ws_col - 3))
+	else if (len >= (win.ws_col - _PROMPT_LEN))
 		return (1);
 	return (0);
 }
@@ -77,7 +77,7 @@ void			new_safe_place(int len)
 				x++;
 			}
 			tputs(tgoto(tgetstr("UP", NULL), 0, nbr_ligne_f), 0, f_putchar);
-			tputs(tgoto(tgetstr("RI", NULL), 0, 3), 0, f_putchar);
+			tputs(tgoto(tgetstr("RI", NULL), 0, _PROMPT_LEN), 0, f_putchar);
 			tputs(tgetstr("sc", NULL), 0, f_putchar);
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/05 17:44:32 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/06 16:54:18 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,31 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 
+/*
+**	1er block:
+**		_SEP = separateur: [;]
+**	2eme block:
+**		_PIPE = pipe: [|]
+**	3eme block:
+**		_APPROUT = append redirection output: [>>]
+**		_HEREDOC = Here documents: [<<]
+**	4eme block:
+**		_RINT = redirection input: [<]
+**		_ROUT = redirection output: [>]
+**		_ROUTERR = redirection output est erreur: [&>] || [>&]
+**		_DUP_INPUT = dupication input: [<&]
+**		_DUP_OUTPUT = dupication output: [>&]
+**	5eme block:
+**		_FD = les fd pour les redirection: avant une redirection [*0-9]
+**		_FILE = fichier pour les redirection: aprait une redirection
+**		_WORD = cmd est argv: c'est les mot restant
+**		_SPACE = espace: [ ]
+*/
+
+# define _PROMPT "\033[36m$>\033[0m "
+# define _PROMPT_LEN 3
+# define _PROMPT_LEN_WRITE 12
+
 # define LEN_REMALLOC 1024
 # define PATH_HISTORY ".21sh_history"
 
@@ -36,45 +61,41 @@
 # define _IS_RAPP 4
 # define _IS_RAND 5
 
-# define _WORD 1
-# define _ASSIGNEMENT_WORD 2
-# define _NAME 3
-# define _NEWLINE 4
-# define _IO_NUMBER 5
-
-# define _LESS 6
-# define _REDIR 7
-# define _DLESS 8
-# define _DGREAT 9
-# define _DUP_OUTPUT 10
-# define _DUP_INPUT 11
-# define _PIPE 12
-# define _SEP 13
-# define _OR_IF 14
-# define _AND_IF 15
-# define _SPACE 16
-
-# define _EOF 14
-# define _EOL 15
+# define _SEP 1
+# define _PIPE 2
+# define _APPROUT 3
+# define _HEREDOC 4
+# define _RINT 5
+# define _ROUT 6
+# define _ROUTERR 7
+# define _DUP_INPUT 8
+# define _DUP_OUTPUT 9
+# define _FD 10
+# define _FILE 11
+# define _WORD 12
+# define _SPACE 13
 
 sig_atomic_t		g_sig;
+
+typedef struct		s_nbr_lexer
+{
+	int				to_sep;
+	int				to_pipe;
+	int				to_approut;
+	int				to_heredoc;
+	int				to_rint;
+	int				to_rout;
+	int				to_routerr;
+	int				to_dup_input;
+	int				to_dup_output;
+	int				to_max;
+}					t_nbr_lexer;
 
 typedef struct		s_cmd
 {
 	char			*cmd;
 	char			*argv[1024];
 }					t_cmd;
-
-typedef struct		s_pipe_exec
-{
-	t_cmd			cmd;
-}					t_pipe_exec;
-
-typedef struct		s_redirection
-{
-	int				fd;
-	char			*file_name;
-}					t_redirection;
 
 typedef struct		s_commande
 {
@@ -132,6 +153,7 @@ typedef struct		s_and_or
 typedef struct		s_token
 {
 	int				type;
+	int				fd;
 	char			*str;
 	struct s_token	*next;
 }					t_token;
@@ -168,31 +190,16 @@ typedef struct		s_len_cmd
 	int				len_cmd_malloc;
 }					t_len_cmd;
 
-typedef struct		s_nbr_lexer
-{
-	int				_sep;
-	int				_and;
-	int				_or;
-	int				_pipe;
-	int				_dgreat;
-	int				_dless;
-	int				_great;
-	int				_less;
-	int				_max;
-}					t_nbr_lexer;
-
 typedef struct		s_lexer
 {
 	t_token			*sep;
 	int				first_call_sep;
-	t_token			*and_or;
-	int				first_call_and_or;
 	t_token			*pipe;
 	int				first_call_pipe;
-	t_token			*dg_dl;
-	int				first_call_dg_dl;
-	t_token			*gr_le;
-	int				first_call_gr_le;
+	t_token			*appredir;
+	int				first_call_appredir;
+	t_token			*redir;
+	int				first_call_redir;
 	t_token			*space;
 	int				first_call_space;
 }					t_lexer;
@@ -212,9 +219,9 @@ t_token				*creat_token_sep(char *cmd, int len, int first_call);
 t_token				*creat_token_and_or(char *cmd, int len, int first_call);
 t_token				*creat_token_pipe(char *cmd, int len, int first_call,
 		int type);
-t_token				*creat_token_dg_dl(char *cmd, int len,
+t_token				*creat_token_appredir(char *cmd, int len,
 		int first_call);
-t_token				*creat_token_gr_le(char *cmd, int len,
+t_token				*creat_token_redir(char *cmd, int len,
 		int first_call, int type);
 t_token				*creat_token_space(char *cmd, int len, int first_call);
 

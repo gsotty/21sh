@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/11 13:56:27 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/24 15:42:52 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/06 15:13:02 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void		one_ligne(t_pos *pos, struct winsize win)
 {
-	if (((pos->pos - 1) - (win.ws_col - 3)) < 0)
+	if (((pos->pos - 1) - (win.ws_col - _PROMPT_LEN)) < 0)
 	{
 		tputs(tgetstr("up", NULL), 0, f_putchar);
 		tputs(tgoto(tgetstr("RI", NULL), 0, win.ws_col), 0, f_putchar);
@@ -30,7 +30,7 @@ static void		one_ligne(t_pos *pos, struct winsize win)
 
 static void		multi_ligne(t_pos *pos, struct winsize win)
 {
-	if (((pos->pos - 1) - ((win.ws_col - 3) + (win.ws_col *
+	if (((pos->pos - 1) - ((win.ws_col - _PROMPT_LEN) + (win.ws_col *
 						(pos->nbr_line - 1)))) < 0)
 	{
 		tputs(tgetstr("up", NULL), 0, f_putchar);

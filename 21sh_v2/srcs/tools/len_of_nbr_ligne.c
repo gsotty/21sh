@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/21 14:46:04 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/24 14:16:22 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/06 15:15:57 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int			len_of_nbr_ligne(struct winsize win, int pos)
 	{
 		if (nbr_ligne == -1)
 		{
-			tmp_pos -= (win.ws_col - 3);
+			tmp_pos -= (win.ws_col - _PROMPT_LEN);
 			nbr_ligne++;
 		}
 		else
