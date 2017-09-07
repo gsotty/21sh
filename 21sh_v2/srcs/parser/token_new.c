@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/27 11:10:50 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/06 16:41:27 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/07 09:56:26 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ t_token	*token_new(void const *content, size_t content_size, int nbr_token)
 
 	if ((new = ft_memalloc(sizeof(*new))) == NULL)
 		return (0);
-	new->type = nbr_token;
 	if (content != NULL)
 	{
 		if ((new->str = ft_memalloc(sizeof(*content) *
@@ -26,7 +25,7 @@ t_token	*token_new(void const *content, size_t content_size, int nbr_token)
 			return (0);
 		ft_memcpy_modif(new->str, content, content_size);
 		new->str[content_size] = '\0';
-		new->type = is_type(new->str);
+		new->type = is_type(new->str, nbr_token);
 	}
 	else
 	{

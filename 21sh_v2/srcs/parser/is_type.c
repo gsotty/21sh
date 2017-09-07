@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 11:32:38 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/06 15:36:06 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/07 09:56:23 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int		only_space(char *cmd)
 		return (0);
 }
 
-int				is_type(char *cmd)
+int				is_type(char *cmd, int nbr_token)
 {
 	if (cmd == NULL)
 		return (_SPACE);
@@ -39,6 +39,8 @@ int				is_type(char *cmd)
 		return (_SPACE);
 	else if (cmd[0] == '\0')
 		return (_SPACE);
+	else if (nbr_token != 0 && nbr_token >= 1 && nbr_token <= 13)
+		return (nbr_token);
 	else
 		return (_WORD);
 }

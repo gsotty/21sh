@@ -6,11 +6,32 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 15:37:14 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/06 14:02:51 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/07 19:28:47 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
+
+int		malloc_redir(t_exec *c, t_nbr_lexer *nbr, int x, int y)
+{
+	int		z;
+
+	z = 0;
+	if ((c->sep[x]->cmd[y]->redir = ft_memalloc(
+					sizeof(*c->sep[x]->cmd[y]->redir) *
+					(nbr->to_redir + 1))) == NULL)
+		return (1);
+	while (z < nbr->to_redir)
+	{
+		if ((c->sep[x]->cmd[y]->redir[z] =
+					ft_memalloc(sizeof(*c->sep[x]->cmd[y]->redir[z])))
+				== NULL)
+			return (1);
+		z++;
+	}
+	c->sep[x]->cmd[y]->redir[z] = NULL;
+	return (0);
+}
 
 int		malloc_sep(t_exec *c, t_nbr_lexer *nbr, int x)
 {
@@ -18,13 +39,15 @@ int		malloc_sep(t_exec *c, t_nbr_lexer *nbr, int x)
 
 	y = 0;
 	if ((c->sep[x]->cmd = ft_memalloc(sizeof(*c->sep[x]->cmd) *
-					(nbr->to_max + 1))) == NULL)
+					(nbr->to_pipe + 2))) == NULL)
 		return (1);
-	while (y < nbr->to_max)
+	while (y < (nbr->to_pipe + 1))
 	{
 		if ((c->sep[x]->cmd[y] = ft_memalloc(sizeof(*c->sep[x]->cmd[y])))
 				== NULL)
 			return (1);
+	//	if (malloc_redir(c, nbr, x, y) == 1)
+	//		return (1);
 		y++;
 	}
 	c->sep[x]->cmd[y] = NULL;
@@ -42,7 +65,8 @@ int		malloc_exec(t_exec *c, t_nbr_lexer *nbr)
 	{
 		if ((c->sep[x] = ft_memalloc(sizeof(*c->sep[x]))) == NULL)
 			return (1);
-		malloc_sep(c, nbr, x);
+		if (malloc_sep(c, nbr, x) == 1)
+			return (1);
 		x++;
 	}
 	c->sep[x] = NULL;
@@ -51,93 +75,16 @@ int		malloc_exec(t_exec *c, t_nbr_lexer *nbr)
 
 int		creat_tab_cmd(t_nbr_lexer *nbr, t_exec *c, t_token *begin_token)
 {
-	int			x;
-	int			y;
-	int			nbr_argv;
-	int			tmp_nbr;
-	int			is_redi;
 	t_token		*token;
 
-	x = 0;
-	y = 0;
-	is_redi = 0;
-	nbr_argv = 0;
+	(void)c;
+	(void)nbr;
 	token = begin_token;
-	malloc_exec(c, nbr);
-	tmp_nbr = -1;
+	if (malloc_exec(c, nbr) == 1)
+		return (1);
 	while (token != NULL)
 	{
-		if (c->sep[x]->cmd[y]->cmd.cmd == NULL && token->type == _WORD)
-		{
-			c->sep[x]->cmd[y]->cmd.cmd = ft_strdup(token->str);
-			c->sep[x]->cmd[y]->cmd.argv[nbr_argv] = ft_strdup(token->str);
-			nbr_argv++;
-		}
-		else if (c->sep[x]->cmd[y]->cmd.cmd != NULL && token->type == _WORD)
-		{
-			c->sep[x]->cmd[y]->cmd.argv[nbr_argv] = ft_strdup(token->str);
-			nbr_argv++;
-		}
-		if (token->type == _SEP)
-		{
-			nbr_argv = 0;
-			y++;
-		}
-		else if (token->type == _PIPE)
-		{
-			nbr_argv = 0;
-			y++;
-		}
-		else if (token->type == _ROUT)
-		{
-			token = token->next;
-			if (c->sep[x]->cmd[y]->file_name != NULL)
-				free(c->sep[x]->cmd[y]->file_name);
-			c->sep[x]->cmd[y]->file_name = ft_strdup(token->str);
-		//	y++;
-		}
-		else if (token->type == _RINT)
-		{
-			nbr_argv = 0;
-			y++;
-		}
-/*		if (token->type == _SEP)
-		{
-			x++;
-		}
-		else if (token->type == _IO_NUMBER)
-		{
-			tmp_nbr = ft_atoi(token->str);
-		}
-		else if (token->type == _REDIR)
-		{
-			c->sep[x]->cmd[y]->cmd_is = _IS_ROUT;
-			if (tmp_nbr == -1)
-				c->sep[x]->cmd[y]->fd_start = 1;
-			else
-				c->sep[x]->cmd[y]->fd_start = tmp_nbr;
-			c->sep[x]->cmd[y]->fd_end = 0;
-			c->sep[x]->cmd[y]->cmd.cmd = NULL;
-			c->sep[x]->cmd[y]->file_name = ft_strdup(token->next->str);
-			y++;
-		}
-		else if (token->type == _LESS)
-		{
-			c->sep[x]->cmd[y]->cmd_is = _IS_RINT;
-			c->sep[x]->cmd[y]->fd_start = 1;
-			if (tmp_nbr == -1)
-				c->sep[x]->cmd[y]->fd_end = 0;
-			else
-				c->sep[x]->cmd[y]->fd_end = tmp_nbr;
-			c->sep[x]->cmd[y]->cmd.cmd = NULL;
-			c->sep[x]->cmd[y]->file_name = ft_strdup(token->str);
-			y++;
-		}
-		else if (token->type == _PIPE)
-		{
-			y++;
-		}
-*/		token = token->next;
+		token = token->next;
 	}
 	return (0);
 }

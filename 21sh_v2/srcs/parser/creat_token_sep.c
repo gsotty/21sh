@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 14:40:35 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/30 14:46:10 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/07 15:26:26 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_token			*creat_token_sep_bis(char *cmd, int *x, int *cut_sep, int start)
 	{
 		(*x)++;
 		*cut_sep = 0;
-		return (token_new(cmd + start, *x - start, 0));
+		return (token_new(cmd + start, *x - start, _SEP));
 	}
 	return (NULL);
 }

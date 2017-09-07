@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/06 16:54:18 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/07 19:13:51 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,18 @@
 
 /*
 **	1er block:
-**		_SEP = separateur: [;]
+**		_SEP = separateur: {;}
 **	2eme block:
-**		_PIPE = pipe: [|]
+**		_PIPE = pipe: {|}
 **	3eme block:
-**		_APPROUT = append redirection output: [>>]
-**		_HEREDOC = Here documents: [<<]
+**		_ROUTERR = redirection output est erreur: {&>} || {>&}
+**		_DUP_INPUT = dupication input: {[N]<&digit[-]}
+**		_DUP_OUTPUT = dupication output: {[N]>&digit[-]}
+**		_APPROUT = append redirection output: {[N]>>}
+**		_HEREDOC = Here documents: {<<[-]}
 **	4eme block:
-**		_RINT = redirection input: [<]
-**		_ROUT = redirection output: [>]
-**		_ROUTERR = redirection output est erreur: [&>] || [>&]
-**		_DUP_INPUT = dupication input: [<&]
-**		_DUP_OUTPUT = dupication output: [>&]
+**		_RINT = redirection input: {[N]<}
+**		_ROUT = redirection output: {[N]>[|]}
 **	5eme block:
 **		_FD = les fd pour les redirection: avant une redirection [*0-9]
 **		_FILE = fichier pour les redirection: aprait une redirection
@@ -88,7 +88,7 @@ typedef struct		s_nbr_lexer
 	int				to_routerr;
 	int				to_dup_input;
 	int				to_dup_output;
-	int				to_max;
+	int				to_redir;
 }					t_nbr_lexer;
 
 typedef struct		s_cmd
@@ -97,18 +97,25 @@ typedef struct		s_cmd
 	char			*argv[1024];
 }					t_cmd;
 
-typedef struct		s_commande
+typedef struct		s_cmd_redir
 {
-	int				cmd_is;
-	int				fd_start;
-	int				fd_end;
-	t_cmd			cmd;
+	int				type_of_redir;
+	int				fd;
+	int				digit;
+	int				tiret;
+	int				pipe;
 	char			*file_name;
-}					t_commande;
+}					t_cmd_redir;
+
+typedef struct		s_cmd_pipe
+{
+	t_cmd			cmd;
+	t_cmd_redir		**redir;
+}					t_cmd_pipe;
 
 typedef struct		s_sep
 {
-	t_commande		**cmd;
+	t_cmd_pipe		**cmd;
 }					t_sep;
 
 typedef struct		s_exec
@@ -116,22 +123,33 @@ typedef struct		s_exec
 	t_sep			**sep;
 }					t_exec;
 
-typedef struct		s_gr_le
+typedef struct		s_space
 {
 	int				x;
-	int				cut_gr;
-	int				cut_le;
+	int				cut_space;
+	int				start;
+}					t_space;
+
+typedef struct		s_redir
+{
+	int				x;
+	int				cut_rint;
+	int				cut_rout;
 	int				start;
 	int				type;
-}					t_gr_le;
+}					t_redir;
 
-typedef struct		s_dg_dl
+typedef struct		s_appredir
 {
 	int				x;
-	int				cut_dgreat;
-	int				cut_dless;
+	int				cut_approut;
+	int				cut_heredoc;
+	int				cut_routerr;
+	int				cut_dup_input;
+	int				cut_dup_output;
 	int				start;
-}					t_dg_dl;
+	int				type;
+}					t_appredir;
 
 typedef struct		s_pipe
 {
@@ -210,7 +228,7 @@ int					count_nbr_lexer(t_nbr_lexer *nbr, t_token *token);
 int					creat_tab_cmd(t_nbr_lexer *nbr, t_exec *c,
 		t_token *begin_token);
 int					skip_quote_and_backslash(char *cmd, int len, int *count);
-int					is_type(char *cmd);
+int					is_type(char *cmd, int nbr_token);
 char				*ft_print_type(int x);
 t_token				*token_new(void const *content, size_t content_size,
 		int nbr_token);
@@ -220,10 +238,11 @@ t_token				*creat_token_and_or(char *cmd, int len, int first_call);
 t_token				*creat_token_pipe(char *cmd, int len, int first_call,
 		int type);
 t_token				*creat_token_appredir(char *cmd, int len,
-		int first_call);
+		int first_call, int type);
 t_token				*creat_token_redir(char *cmd, int len,
 		int first_call, int type);
-t_token				*creat_token_space(char *cmd, int len, int first_call);
+t_token				*creat_token_space(char *cmd, int len, int first_call,
+		int type);
 
 int					add_history(t_history *history, char *cmd, int len);
 void				clear_win(char *cmd, t_len_cmd *len, t_pos *pos);

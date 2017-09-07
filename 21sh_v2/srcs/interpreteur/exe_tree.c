@@ -6,12 +6,13 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/01 12:58:33 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/06 14:09:36 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/07 13:23:22 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
+/*
 static char		*exe_pipe(char *sorti, t_cmd *cmd, t_struc_envp *struc_envp)
 {
 	int		pipefd[2];
@@ -92,6 +93,7 @@ static char		*exe_pipe(char *sorti, t_cmd *cmd, t_struc_envp *struc_envp)
 	}
 	return (sorti_2);
 }
+*/
 
 int				exe_tree(t_exec *c, t_nbr_lexer *nbr, t_struc_envp *struc_envp)
 {
@@ -151,11 +153,11 @@ int				exe_tree(t_exec *c, t_nbr_lexer *nbr, t_struc_envp *struc_envp)
 				close(pipefd[0]);
 				wait(NULL);
 				z = 0;
-				while (c->sep[x]->cmd[z]->cmd_is != _IS_PIPE)
-				{
-					sorti = exe_pipe(sorti, &c->sep[x]->cmd[0]->cmd, struc_envp);
-					z++;
-				}
+			//	while (c->sep[x]->cmd[z]->cmd_is != _IS_PIPE)
+			//	{
+			//		sorti = exe_pipe(sorti, &c->sep[x]->cmd[0]->cmd, struc_envp);
+			//		z++;
+			//	}
 			}
 			else
 			{

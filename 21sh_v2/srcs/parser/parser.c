@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/23 13:29:19 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/06 17:02:14 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/07 19:28:14 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int		ft_while_parser_tri(t_lexer *s, t_token **begin_token,
 	s->first_call_space = 1;
 	while ((s->space = creat_token_space(s->redir->str,
 					ft_strlen(s->redir->str),
-					s->first_call_space)))
+					s->first_call_space, s->redir->type)))
 	{
 		ft_printf("				space = \033[32m[%s], [%s]\n\033[0m",
 				ft_print_type(s->space->type), s->space->str);
@@ -58,7 +58,8 @@ static int		ft_while_parser_bis(t_lexer *s, t_token **begin_token,
 {
 	s->first_call_appredir = 1;
 	while ((s->appredir = creat_token_appredir(s->pipe->str,
-					ft_strlen(s->pipe->str), s->first_call_appredir)))
+					ft_strlen(s->pipe->str), s->first_call_appredir,
+					s->pipe->type)))
 	{
 		ft_printf("		appredir = \033[34m[%s], [%s]\n\033[0m",
 				ft_print_type(s->appredir->type), s->appredir->str);
@@ -93,7 +94,7 @@ static int		ft_while_parser(t_lexer *s, t_token **begin_token,
 	return (0);
 }
 
-int				print_tree(t_exec *c, t_nbr_lexer *nbr)
+/*int				print_tree(t_exec *c, t_nbr_lexer *nbr)
 {
 	int		x;
 	int		y;
@@ -126,6 +127,7 @@ int				print_tree(t_exec *c, t_nbr_lexer *nbr)
 	}
 	return (0);
 }
+*/
 
 int				supp_space(t_token **begin_token, t_token **token,
 		t_token **token_space)
@@ -178,52 +180,47 @@ int				check_type_of_token(t_token *begin_token)
 {
 	int			x;
 	int			len;
+	int			type;
 	int			is_rout;
 	t_token		*token;
 
 	x = 0;
+	(void)len;
+	(void)is_rout;
+	(void)type;
 	is_rout = 0;
 	token = begin_token;
 	while (token != NULL)
 	{
-		if (token->next != NULL)
+/*		if (token->next != NULL)
 		{
+			type = token->next->type;
 			len = (ft_strlen(token->str) - 1);
-			if (ft_strstr(token->next->str, ">") != NULL &&
+			if ((type == _ROUT || type == _RINT || type == _DUP_OUTPUT ||
+						type == _DUP_INPUT || type == _APPROUT) &&
 					(x = (check_nbr(token->str, len))) < len)
 			{
 				x++;
 				token->next->fd = ft_atoi(token->str + x);
 				token->str[x] = '\0';
 			}
-			if (ft_strstr(token->str, ">") != NULL)
+			type = token->type;
+			if ((type == _ROUT || type == _RINT || type == _DUP_OUTPUT ||
+						type == _DUP_INPUT || type == _APPROUT) &&
+					token->next->type == _WORD)
 			{
-				is_rout = 1;
-				token->type = _ROUT;
-			}
-			if (token->type == _WORD && is_rout == 1)
-			{
-				token->type = _FILE;
-				is_rout = 0;
-			}
-			if (ft_strstr(token->str, "|") != NULL)
-			{
-				token->type = _PIPE;
-			}
-			if (ft_strstr(token->str, ";") != NULL)
-			{
-				token->type = _SEP;
+				
 			}
 		}
 		if (token->type != _SPACE)
 		{
-			if (token->type == _ROUT)
-				ft_printf("sep = \033[31m[%s], [%d], [%s]\n\033[0m",
-						ft_print_type(token->type), token->fd, token->str);
-			else
-				ft_printf("sep = \033[31m[%s],	[%s]\n\033[0m",
+*/			//if (token->type == _ROUT)
+				ft_printf("end = \033[31m[%s], [%s]\n\033[0m",
 						ft_print_type(token->type), token->str);
-		}
+		//	else
+		//		ft_printf("end = \033[31m[%s], [%s]\n\033[0m",
+		//				ft_print_type(token->type), token->str);
+//		}
 		token = token->next;
 	}
 	return (0);
@@ -257,9 +254,9 @@ int				parser(char *cmd, t_len_cmd *len, t_struc_envp *struc_envp)
 	}
 	check_type_of_token(begin_token);
 	//supp_space(&begin_token, &token, &token_space);
-	//ft_memset(&nbr, 0, sizeof(nbr));
-	//count_nbr_lexer(&nbr, begin_token);
-	//creat_tab_cmd(&nbr, &c, begin_token);
+	ft_memset(&nbr, 0, sizeof(nbr));
+	count_nbr_lexer(&nbr, begin_token);
+	creat_tab_cmd(&nbr, &c, begin_token);
 	//print_tree(&c, &nbr);
 	//	exe_tree(&c, &nbr, struc_envp);
 	return (0);

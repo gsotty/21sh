@@ -6,58 +6,56 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 12:04:17 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/30 13:03:09 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/07 15:10:02 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-t_token			*creat_token_space_bis(int *x, char *cmd, int *cut_space,
-		int start)
+t_token			*creat_token_space_bis(t_space *s, char *cmd, int type)
 {
-	int		end;
+	int			end;
 
 	end = 0;
-	if (cmd[*x] == ' ' && *cut_space == 0)
+	if (cmd[s->x] == ' ' && s->cut_space == 0)
 	{
-		end = *x;
-		*cut_space = 1;
-		return (token_new(cmd + start, end - start, 0));
+		end = s->x;
+		s->cut_space = 1;
+		return (token_new(cmd + s->start, end - s->start, type));
 	}
-	if (cmd[*x] == ' ' && *cut_space == 1)
+	if (cmd[s->x] == ' ' && s->cut_space == 1)
 	{
-		while (cmd[*x] == ' ' && cmd[*x] != '\0')
-			(*x)++;
-		end = *x;
-		*cut_space = 0;
-		return (token_new(cmd + start, end - start, 0));
+		while (cmd[s->x] == ' ' && cmd[s->x] != '\0')
+			s->x++;
+		end = s->x;
+		s->cut_space = 0;
+		return (token_new(cmd + s->start, end - s->start, type));
 	}
 	return (NULL);
 }
 
-t_token			*creat_token_space(char *cmd, int len, int first_call)
+t_token			*creat_token_space(char *cmd, int len, int first_call,
+		int type)
 {
-	static int	x;
-	static int	cut_space;
-	int			start;
-	t_token		*ret;
+	static t_space		s;
+	t_token				*ret;
 
 	if (first_call == 1)
-		x = 0;
-	start = x;
-	while (x < len)
+		s.x = 0;
+	s.start = s.x;
+	while (s.x < len)
 	{
-		if (skip_quote_and_backslash(cmd, len, &x) == 0)
+		if (skip_quote_and_backslash(cmd, len, &s.x) == 0)
 		{
-			if ((ret = creat_token_space_bis(&x, cmd, &cut_space, start)))
+			if ((ret = creat_token_space_bis(&s, cmd, type)))
 				return (ret);
 		}
-		x++;
+		s.x++;
 	}
-	if (x == len)
+	if (s.x == len)
 	{
-		x++;
-		return (token_new(cmd + start, (x - 1) - start, 0));
+		s.x++;
+		return (token_new(cmd + s.start, (s.x - 1) - s.start, type));
 	}
 	else
 		return (NULL);

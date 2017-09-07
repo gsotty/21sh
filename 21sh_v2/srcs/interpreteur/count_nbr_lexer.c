@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/01 12:53:03 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/06 14:08:58 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/07 19:10:04 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ int		count_nbr_lexer(t_nbr_lexer *nbr, t_token *token)
 			nbr->to_dup_output++;
 		token = token->next;
 	}
-	nbr->to_max = (nbr->to_pipe + 1);
+	nbr->to_redir = (nbr->to_approut + nbr->to_heredoc + nbr->to_rout +
+			nbr->to_rint + nbr->to_routerr + nbr->to_dup_input +
+			nbr->to_dup_output);
 	return (0);
 }

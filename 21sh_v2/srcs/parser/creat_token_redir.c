@@ -6,42 +6,42 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/06 14:41:48 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/06 14:42:06 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/07 15:24:14 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-t_token		*creat_token_redir_bis(t_gr_le *s, char *cmd)
+t_token		*creat_token_redir_bis(t_redir *s, char *cmd)
 {
-	if (cmd[s->x] == '>' && s->cut_gr == 0 && s->type != _APPROUT)
+	if (cmd[s->x] == '>' && s->cut_rout == 0 && s->type == _WORD)
 	{
-		s->cut_gr = 1;
-		return (token_new(cmd + s->start, s->x - s->start, 0));
+		s->cut_rout = 1;
+		return (token_new(cmd + s->start, s->x - s->start, s->type));
 	}
-	if (cmd[s->x] == '>' && s->cut_gr == 1 && s->type != _APPROUT)
+	else if (cmd[s->x] == '>' && s->cut_rout == 1 && s->type == _WORD)
 	{
 		s->x++;
-		s->cut_gr = 0;
-		return (token_new(cmd + s->start, s->x - s->start, 0));
+		s->cut_rout = 0;
+		return (token_new(cmd + s->start, s->x - s->start, _ROUT));
 	}
-	if (cmd[s->x] == '<' && s->cut_le == 0 && s->type != _HEREDOC)
+	if (cmd[s->x] == '<' && s->cut_rint == 0 && s->type == _WORD)
 	{
-		s->cut_le = 1;
-		return (token_new(cmd + s->start, s->x - s->start, 0));
+		s->cut_rint = 1;
+		return (token_new(cmd + s->start, s->x - s->start, s->type));
 	}
-	if (cmd[s->x] == '<' && s->cut_le == 1 && s->type != _HEREDOC)
+	else if (cmd[s->x] == '<' && s->cut_rint == 1 && s->type == _WORD)
 	{
 		s->x++;
-		s->cut_le = 0;
-		return (token_new(cmd + s->start, s->x - s->start, 0));
+		s->cut_rint = 0;
+		return (token_new(cmd + s->start, s->x - s->start, _RINT));
 	}
 	return (NULL);
 }
 
 t_token		*creat_token_redir(char *cmd, int len, int first_call, int type)
 {
-	static t_gr_le	s;
+	static t_redir	s;
 	t_token			*ret;
 
 	s.type = type;
@@ -60,7 +60,7 @@ t_token		*creat_token_redir(char *cmd, int len, int first_call, int type)
 	if (s.x == len)
 	{
 		s.x++;
-		return (token_new(cmd + s.start, (s.x - 1) - s.start, 0));
+		return (token_new(cmd + s.start, (s.x - 1) - s.start, s.type));
 	}
 	else
 		return (NULL);
