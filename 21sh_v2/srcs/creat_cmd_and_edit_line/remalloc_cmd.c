@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/11 15:38:47 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/24 14:12:31 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/08 11:54:16 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*remalloc_cmd(t_len_cmd *len, char *cmd)
 		if ((tmp = ft_memalloc(sizeof(char) *
 						(len->len_cmd_malloc + 3))) == NULL)
 			return (NULL);
-		ft_memcpy(tmp, cmd, len->len_cmd_malloc + 3);
+		ft_memcpy(tmp, cmd, len->len_cmd_malloc);
 		len->len_cmd_malloc += LEN_REMALLOC;
 		free(cmd);
 		if ((cmd = ft_memalloc(sizeof(char) *

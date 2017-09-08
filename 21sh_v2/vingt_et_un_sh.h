@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/07 19:13:51 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/08 13:46:05 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,15 @@
 **	2eme block:
 **		_PIPE = pipe: {|}
 **	3eme block:
-**		_ROUTERR = redirection output est erreur: {&>} || {>&}
-**		_DUP_INPUT = dupication input: {[N]<&digit[-]}
-**		_DUP_OUTPUT = dupication output: {[N]>&digit[-]}
-**		_APPROUT = append redirection output: {[N]>>}
-**		_HEREDOC = Here documents: {<<[-]}
+**		_ROUTERR = redirection output est erreur: {&>} || {>&} fd = 2 est
+**					digit = 1
+**		_DUP_INPUT = dupication input: {[N]<&digit[-]} N de base a 0
+**		_DUP_OUTPUT = dupication output: {[N]>&digit[-]} N de base a 1
+**		_APPROUT = append redirection output: {[N]>>} N de base a 1
+**		_HEREDOC = Here documents: {[N]<<[-]} N de base a 0
 **	4eme block:
-**		_RINT = redirection input: {[N]<}
-**		_ROUT = redirection output: {[N]>[|]}
+**		_RINT = redirection input: {[N]<} N de base a 0
+**		_ROUT = redirection output: {[N]>[|]} N de base a 1
 **	5eme block:
 **		_FD = les fd pour les redirection: avant une redirection [*0-9]
 **		_FILE = fichier pour les redirection: aprait une redirection
@@ -52,8 +53,9 @@
 # define _PROMPT_LEN 3
 # define _PROMPT_LEN_WRITE 12
 
-# define LEN_REMALLOC 1024
+# define LEN_REMALLOC 255
 # define PATH_HISTORY ".21sh_history"
+# define MAX_ARGV 1024
 
 # define _IS_PIPE 1
 # define _IS_ROUT 2
@@ -74,6 +76,8 @@
 # define _FILE 11
 # define _WORD 12
 # define _SPACE 13
+# define _TIRET 14
+# define _RPIPE 15
 
 sig_atomic_t		g_sig;
 
@@ -94,7 +98,7 @@ typedef struct		s_nbr_lexer
 typedef struct		s_cmd
 {
 	char			*cmd;
-	char			*argv[1024];
+	char			*argv[MAX_ARGV];
 }					t_cmd;
 
 typedef struct		s_cmd_redir

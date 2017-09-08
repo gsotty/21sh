@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/17 08:32:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/24 15:47:35 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/08 11:38:50 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,9 @@ static int		len_file_history(void)
 static int		creat_history_loop(int fd, char **new_history, int x)
 {
 	char		*ligne;
+	int			ret;
 
-	if (get_next_line(fd, &ligne) == -1)
+	if ((ret = get_next_line(fd, &ligne)) == -1)
 		return (1);
 	new_history[x] = ft_strdup(ligne);
 	free(ligne);

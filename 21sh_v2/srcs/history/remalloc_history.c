@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/17 08:58:11 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/24 15:48:24 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/08 11:49:43 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	remalloc_history_2(int x, char **tmp, t_history *history)
 {
-	if ((tmp = ft_memalloc(sizeof(char *) * history->len)) == NULL)
+	if ((tmp = ft_memalloc(sizeof(char *) * (history->len + 2))) == NULL)
 		return (1);
 	while (x < history->len)
 	{
@@ -22,11 +22,12 @@ static int	remalloc_history_2(int x, char **tmp, t_history *history)
 		free(history->history[x]);
 		x++;
 	}
+	tmp[x] = NULL;
 	free(history->history);
 	history->len_malloc += LEN_REMALLOC;
 	x = 0;
 	if ((history->history = ft_memalloc(sizeof(char *) *
-					history->len_malloc)) == NULL)
+					(history->len_malloc + 2))) == NULL)
 		return (1);
 	while (x < history->len)
 	{
@@ -34,6 +35,7 @@ static int	remalloc_history_2(int x, char **tmp, t_history *history)
 		free(tmp[x]);
 		x++;
 	}
+	history->history[x] = NULL;
 	free(tmp);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 11:44:39 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/06 13:58:55 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/08 13:06:32 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@ static char		*ft_print_type_2(int x)
 		return ("_PIPE");
 	else if (x == _SEP)
 		return ("_SEP");
+	else if (x == _TIRET)
+		return ("_TIRET");
+	else if (x == _RPIPE)
+		return ("_RPIPE");
 	return (0);
 }
 
