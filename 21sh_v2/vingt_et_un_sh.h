@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/08 13:46:05 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/09 11:43:45 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,42 @@
 # define _TIRET 14
 # define _RPIPE 15
 
+/*
+** Global pour les signal
+*/
+
 sig_atomic_t		g_sig;
+
+/*
+** Structur pour l'exec
+*/
+
+typedef struct		s_cmd
+{
+	
+}					t_cmd;
+
+typedef struct		s_redir
+{
+	
+}					t_redir;
+
+typedef struct		s_pipe
+{
+	
+}					t_pipe;
+
+typedef struct		s_sep
+{
+	t_pipe			**pipe;
+}					t_sep;
+
+typedef struct		s_exec
+{
+	t_sep			**sep;
+}					t_exec;
+
+
 
 typedef struct		s_nbr_lexer
 {
@@ -95,11 +130,11 @@ typedef struct		s_nbr_lexer
 	int				to_redir;
 }					t_nbr_lexer;
 
-typedef struct		s_cmd
-{
-	char			*cmd;
-	char			*argv[MAX_ARGV];
-}					t_cmd;
+//typedef struct		s_cmd
+//{
+//	char			*cmd;
+//	char			*argv[MAX_ARGV];
+//}					t_cmd;
 
 typedef struct		s_cmd_redir
 {
@@ -117,15 +152,15 @@ typedef struct		s_cmd_pipe
 	t_cmd_redir		**redir;
 }					t_cmd_pipe;
 
-typedef struct		s_sep
-{
-	t_cmd_pipe		**cmd;
-}					t_sep;
+//typedef struct		s_sep
+//{
+//	t_cmd_pipe		**cmd;
+//}					t_sep;
 
-typedef struct		s_exec
-{
-	t_sep			**sep;
-}					t_exec;
+//typedef struct		s_exec
+//{
+//	t_sep			**sep;
+//}					t_exec;
 
 typedef struct		s_space
 {
@@ -134,14 +169,14 @@ typedef struct		s_space
 	int				start;
 }					t_space;
 
-typedef struct		s_redir
-{
-	int				x;
-	int				cut_rint;
-	int				cut_rout;
-	int				start;
-	int				type;
-}					t_redir;
+//typedef struct		s_redir
+//{
+//	int				x;
+//	int				cut_rint;
+//	int				cut_rout;
+//	int				start;
+//	int				type;
+//}					t_redir;
 
 typedef struct		s_appredir
 {
@@ -155,13 +190,13 @@ typedef struct		s_appredir
 	int				type;
 }					t_appredir;
 
-typedef struct		s_pipe
-{
-	int				x;
-	int				cut_pipe;
-	int				start;
-	int				type;
-}					t_pipe;
+//typedef struct		s_pipe
+//{
+//	int				x;
+//	int				cut_pipe;
+//	int				start;
+//	int				type;
+//}					t_pipe;
 
 typedef struct		s_and_or
 {
