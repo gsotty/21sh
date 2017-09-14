@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/09/14 15:53:39 by gsotty           ###   ########.fr        #
+#    Updated: 2017/09/14 15:57:56 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,9 +14,9 @@ NAME = 21sh
 
 CC = gcc
 
-FLAG = -ltermcap -g -Wall -Wextra -Werror ## -fsanitize=address
+FLAG = -ltermcap -g -Wall -Wextra -Werror # -fsanitize=address
 
-FLAG_SRC = -c -g -Wall -Wextra -Werror ## -fsanitize=address
+FLAG_SRC = -c -g -Wall -Wextra -Werror # -fsanitize=address
 
 LIBFT = ./libft
 
