@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/11 14:47:57 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/14 15:53:34 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/16 13:31:00 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,10 @@ static void		put_buffer_to_cmd(char buffer, t_lchar *cmd, t_pos *pos, int len)
 	if (cmd[pos->pos].c == '\0')
 	{
 		cmd[pos->pos].c = buffer;
+		if (cmd[pos->pos].c == 10)
+			cmd[pos->pos].type = _NEW_LINE;
+		else
+			cmd[pos->pos].type = _WORD;
 	}
 	else
 	{
@@ -28,13 +32,13 @@ static void		put_buffer_to_cmd(char buffer, t_lchar *cmd, t_pos *pos, int len)
 		tmp_buf = buffer;
 		while (x < (len + 2))
 		{
-		
 			tmp_cmd.c = cmd[x].c;
 			tmp_cmd.type = cmd[x].type;
 			cmd[x].c = tmp_buf;
-	//		if (tmp_buf == 10)
-	//			cmd[x].type = tmp_buf;
-			cmd[x].type = 0;
+			if (cmd[x].c == 10)
+				cmd[x].type = _NEW_LINE;
+			else
+				cmd[x].type = _WORD;
 			tmp_buf = cmd[x + 1].c;
 			cmd[x + 1].c = tmp_cmd.c;
 			cmd[x + 1].type = tmp_cmd.type;
@@ -127,14 +131,13 @@ void			ft_write_cmd(char *buffer, t_lchar *cmd, t_pos *pos,
 	x = 0;
 	while (x < 3)
 	{
-		if (ft_isprint(buffer[x]) == 1 || (buffer[0] == 10 && buffer[1] == 0
-					&& buffer[2] == 0 &&
-					(pos->is_quote == 1 || pos->is_dquote == 1)))
+		if (ft_isprint(buffer[x]) == 1 || (buffer[x] == 10 &&
+				(pos->is_quote == 1 || pos->is_dquote == 1)))
 		{
 			put_buffer_to_cmd(buffer[x], cmd, pos, len->len);
 			pos->pos++;
 			len->len++;
-			new_safe_place(len->len);
+			new_safe_place(len->len, nbr_new_line(cmd));
 			write_new_cmd(cmd, pos, len->len);
 		}
 		x++;

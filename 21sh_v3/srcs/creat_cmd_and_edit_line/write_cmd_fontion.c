@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/20 14:41:40 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/14 15:20:27 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/16 13:28:04 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static int		verif_creat_ligne(struct winsize win, int nbr_ligne_f,
 	return (0);
 }
 
-void			new_safe_place(int len)
+void			new_safe_place(int len, int nbr_new_line)
 {
 	struct winsize	win;
 	int				x;
@@ -65,7 +65,7 @@ void			new_safe_place(int len)
 
 	x = 0;
 	ioctl(0, TIOCGWINSZ, &win);
-	nbr_ligne_f = len_of_nbr_ligne_2(win, len);
+	nbr_ligne_f = (len_of_nbr_ligne_2(win, len) + nbr_new_line);
 	if (verif_creat_ligne(win, nbr_ligne_f, len) == 0)
 	{
 		if (nbr_ligne_f > 0)

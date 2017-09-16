@@ -1,39 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memcpy_lchar.c                                  :+:      :+:    :+:   */
+/*   nbr_new_line.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/13 09:08:44 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/15 16:45:08 by gsotty           ###   ########.fr       */
+/*   Created: 2017/09/16 13:28:32 by gsotty            #+#    #+#             */
+/*   Updated: 2017/09/16 13:30:13 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-t_lchar		*ft_memcpy_lchar(t_lchar *dest, const t_lchar *src, size_t n)
+int		nbr_new_line(t_lchar *cmd)
 {
-	size_t				x;
-	size_t				y;
-	const t_lchar		*tabsrc;
-	t_lchar				*tabdest;
+	int		x;
+	int		count;
 
 	x = 0;
-	y = 0;
-	tabsrc = src;
-	tabdest = dest;
-	while (x < n)
+	count = 0;
+	while (cmd[x].c != '\0')
 	{
-		if (tabsrc[x].c != '\0')
-		{
-			tabdest[y].c = tabsrc[x].c;
-			tabdest[y].type = tabsrc[x].type;
-			y++;
-		}
+		if (cmd[x].type == _NEW_LINE)
+			count++;
 		x++;
 	}
-	tabdest[y].c = '\0';
-	tabdest[y].type = 0;
-	return (tabdest);
+	return (count);
 }

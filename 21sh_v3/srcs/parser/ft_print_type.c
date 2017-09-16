@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/30 11:44:39 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/13 13:40:23 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/16 11:52:08 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,9 @@ static char		*ft_print_type_2(int x)
 		return ("\033[1;32m_CMD\033[0m");
 	else if (x == _ARGV)
 		return ("\033[32m_ARGV\033[0m");
-	return ("NULL");
+	else if (x == _NEW_LINE)
+		return ("_NEW_LINE");
+	return (ft_itoa(x));
 }
 
 char			*ft_print_type(int x)

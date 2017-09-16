@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/11 13:45:15 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/24 14:16:49 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/15 12:55:26 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ static int		modif_prepare_term(struct termios term)
 	if (tcsetattr(0, TCSADRAIN, &term) == -1)
 		return (1);
 	tputs(tgetstr("im", NULL), 0, f_putchar);
+	tputs(tgetstr("bw", NULL), 0, f_putchar);
 	return (0);
 }
 

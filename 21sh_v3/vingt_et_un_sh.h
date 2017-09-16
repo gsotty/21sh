@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/21 11:57:32 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/14 13:57:47 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/16 13:30:45 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -296,7 +296,8 @@ void				ft_key_end(t_lchar *cmd, t_pos *pos, t_len_cmd *len);
 void				ft_key_home(t_lchar *cmd, t_pos *pos, t_len_cmd *len);
 t_token				*creat_token_sep(t_lchar *cmd, int len, int first_call);
 int					skip_quote_and_backslash(t_lchar *cmd, int len, int *count);
-
+void				new_safe_place(int len, int nbr_new_line);
+int					nbr_new_line(t_lchar *cmd);
 
 
 int					exe_tree(t_exec *c, t_nbr_lexer *nbr,
@@ -348,6 +349,5 @@ void				ft_signal(void);
 void				ft_signal_child(void);
 char				***strsplit_to_tab(int len_cmd, char **cmd_tab,
 		const char *c);
-void				new_safe_place(int len);
 
 #endif

@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/09/14 15:57:56 by gsotty           ###   ########.fr        #
+#    Updated: 2017/09/16 13:31:40 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,7 +68,8 @@ SRC = main.c \
 	  ft_memcpy_lchar.c \
 	  ft_strdup_lchar.c \
 	  ft_strlen_lchar.c \
-	  remalloc_cmd_lchar.c
+	  remalloc_cmd_lchar.c \
+	  nbr_new_line.c
 
 #
 #	  exe_tree.c \

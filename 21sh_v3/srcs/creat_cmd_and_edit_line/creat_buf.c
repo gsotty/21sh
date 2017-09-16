@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/18 09:07:55 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/14 15:53:29 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/16 13:52:14 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ static t_lchar		*buf_loop(char *buffer, t_history history, t_lchar *cmd,
 		return (NULL);
 	while (1)
 	{
-	//	ft_printf("[%d], [%d], [%d]\n", buffer[0], buffer[1], buffer[2]);
 		if (ft_while_end_of_line(buffer, len, &pos, &history) == NULL)
 		{
 			free_tab_lchar(history.history, history.len);

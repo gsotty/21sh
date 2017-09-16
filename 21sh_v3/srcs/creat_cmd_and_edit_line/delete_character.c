@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/20 15:10:59 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/13 10:55:03 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/16 13:40:48 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ void			ft_delete_character(t_lchar *cmd, t_len_cmd *len,
 		len->len--;
 		pos->pos--;
 		cmd[len->len].c = '\0';
-		pos->nbr_line = len_of_nbr_ligne(win, pos->pos);
-		new_safe_place(len->len);
+		pos->nbr_line = (len_of_nbr_ligne(win, pos->pos) + nbr_new_line(cmd));
+		new_safe_place(len->len, nbr_new_line(cmd));
 		write_new_cmd(cmd, pos, len->len);
 		free(tmp);
 	}
