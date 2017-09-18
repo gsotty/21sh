@@ -1,0 +1,70 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
+#    Updated: 2017/09/18 16:56:13 by gsotty           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+NAME = 21sh
+
+CC = gcc
+
+FLAG = -ltermcap -g -Wall -Wextra -Werror # -fsanitize=address
+
+FLAG_SRC = -c -g -Wall -Wextra -Werror # -fsanitize=address
+
+LIBFT = ./libft
+
+LIBPRINTF = ./ft_printf
+
+INCLUDE = ./vingt_et_un_sh.h
+
+SRC = main.c \
+	  creat_envp.c \
+	  len_tab.c \
+	  free_tab.c \
+	  init_termcaps.c \
+	  reset_termcaps.c \
+	  f_putchar.c \
+	  creat_history.c \
+	  ft_strlen_lchar.c \
+	  ft_strdup_lchar.c \
+	  remalloc_history.c \
+	  export_history.c \
+	  creat_cpy_history.c \
+	  creat_buf.c
+
+OBJ = $(SRC:.c=.o)
+
+VPATH = srcs:srcs/creat_cmd_and_edit_line:srcs/envp:srcs/history:\
+	srcs/interpreteur:srcs/parser:srcs/tools
+
+%.o : %.c
+	$(CC) $(FLAG_SRC)  $< -o $@
+
+all: $(NAME)
+
+$(NAME): $(OBJ)
+	make -s -C $(LIBFT)
+	make -s -C $(LIBPRINTF)
+	$(CC) $(FLAG) $^ ./libft/libft.a ./ft_printf/libftprintf.a -o $(NAME)
+
+clean:
+	make -s -C $(LIBFT) clean
+	make -s -C $(LIBPRINTF) clean
+	rm -Rf $(OBJ)
+
+fclean: clean
+	make -s -C $(LIBFT) fclean
+	make -s -C $(LIBPRINTF) fclean
+	rm -Rf $(NAME)
+
+clean_history:
+	rm .21sh_history
+
+re: fclean all
