@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 13:54:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/18 17:25:07 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/19 17:18:02 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@
 ** Define tools
 */
 
+# define NO_MODIF_PROMPT 0
 # define LEN_REMALLOC 255
 # define LEN_REMAL_LI 2
 # define PATH_HISTORY ".21sh_history"
@@ -159,9 +160,17 @@ typedef struct		s_history
 ** Structur pour la positon du curseur
 */
 
+typedef struct		s_quote
+{
+	int				is_quote;
+	int				is_dquote;
+}					t_quote;
+
 typedef struct		s_pos
 {
 	int				pos;
+	int				len;
+	int				len_malloc;
 	int				nbr_line;
 	int				history;
 	int				is_quote;
@@ -195,5 +204,35 @@ int					remalloc_history(t_history *history);
 int					export_history(t_history *history);
 t_history			*creat_cpy_history(t_history *history);
 int					creat_buf(char *buffer, t_history *history);
+void				free_tab_lchar(t_lchar **tableau);
+t_lchar				*remalloc_cmd_lchar(t_pos *len, t_lchar *cmd);
+t_lchar				*ft_memcpy_lchar(t_lchar *dest, const t_lchar *src,
+		size_t n);
+void				ft_write_cmd(char *buffer, t_lchar *cmd, t_pos *pos,
+		int modif_prompt);
+void				new_safe_place(int len, int nbr_new_line);
+int					nbr_new_line(t_lchar *cmd);
+void				write_new_cmd(t_lchar *cmd, t_pos *pos, int modif_prompt);
+void				clear_win(t_lchar *cmd, t_pos *pos, int modif_prompt);
+int					ctrl_d(t_pos *pos, t_history *history, int modif_prompt);
+int					len_of_nbr_ligne(struct winsize win, int pos);
+void				ft_delete_character(t_lchar *cmd, t_pos *pos,
+		int modif_prompt);
+void				ft_delete_character_2(t_lchar *cmd, t_pos *pos,
+		int modif_prompt);
+void				del_multi_line(char *buffer, t_lchar *cmd, t_pos *pos,
+		int modif_prompt);
+int					history_down(t_pos *pos, t_history *history,
+		struct winsize win, int modif_prompt);
+int					history_up(t_pos *pos, t_history *history,
+		struct winsize win, int modif_prompt);
+void				ft_key_end(t_lchar *cmd, t_pos *pos, int modif_prompt);
+void				ft_key_home(t_lchar *cmd, t_pos *pos, int modif_prompt);
+int					ft_cursor_move(char *buffer, t_pos *pos,
+		struct winsize win);
+void				ft_cursor_left(t_pos *pos, struct winsize win);
+void				ft_cursor_right(t_pos *pos, struct winsize win);
+int					key_of_keyboard(char *buffer, t_pos *pos,
+		t_history *history, int modif_prompt);
 
 #endif

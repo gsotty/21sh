@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 14:05:37 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/18 16:57:08 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/19 16:59:18 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,17 @@ int			main(int argc, char **argv, char **envp)
 	(void)argv;
 	if (init_main(envp, &history) == 1)
 		return (1);
-//	while (1)
-//	{
+	while (1)
+	{
 		if (init_termcaps() == 1)
 			return (1);
-		creat_buf(buffer, &history);
+		if (creat_buf(buffer, &history))
+			break ;
 		if (reset_termcaps() == 1)
 			return (1);
-//	}
+	}
+	if (reset_termcaps() == 1)
+		return (1);
 	if (export_history(&history) == 1)
 		return (1);
 	free_tab(g_envp);

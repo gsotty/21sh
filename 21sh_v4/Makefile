@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/09/18 16:56:13 by gsotty           ###   ########.fr        #
+#    Updated: 2017/09/19 14:16:28 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,27 @@ SRC = main.c \
 	  remalloc_history.c \
 	  export_history.c \
 	  creat_cpy_history.c \
-	  creat_buf.c
+	  creat_buf.c \
+	  free_tab_lchar.c \
+	  remalloc_cmd_lchar.c \
+	  ft_memcpy_lchar.c \
+	  write_cmd.c \
+	  write_cmd_fonction.c \
+	  nbr_new_line.c \
+	  clear_win.c \
+	  len_of_nbr_ligne.c \
+	  delete_character.c \
+	  delete_character_2.c \
+	  del_multi_line.c \
+	  history_down.c \
+	  history_up.c \
+	  key_end.c \
+	  key_home.c \
+	  cursor_move.c \
+	  cursor_left.c \
+	  cursor_right.c \
+	  key_of_keyboard.c \
+	  ctrl_d.c
 
 OBJ = $(SRC:.c=.o)
 
