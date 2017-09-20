@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/18 10:48:24 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/19 15:27:29 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/20 11:44:30 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int		history_up(t_pos *pos, t_history *history, struct winsize win,
 {
 	int		len_history;
 
-	if ((pos->history) < history->len)
+	if ((pos->history + 1) < history->len)
 	{
 		pos->history += 1;
 		len_history = ft_strlen_lchar(history->history[pos->history]);

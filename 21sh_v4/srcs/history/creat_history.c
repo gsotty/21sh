@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/17 08:32:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/18 15:58:27 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/20 13:51:38 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static int			len_file_history(void)
 		x++;
 	}
 	close(fd);
-	return (x);
+	return (x + 1);
 }
 
 static t_lchar		*char_to_lchar(const char *str)
@@ -63,6 +63,18 @@ static int			creat_history_loop(int fd, t_lchar **new_history, int x)
 	return (0);
 }
 
+static t_lchar		**init_creat_history(t_history *history)
+{
+	t_lchar		**new_history;
+
+	if ((history->len = len_file_history()) == -1)
+		return (NULL);
+	if (!(new_history = ft_memalloc(sizeof(t_lchar *) * (history->len + 2))))
+		return (NULL);
+	history->len_malloc = history->len;
+	return (new_history);
+}
+
 t_lchar				**creat_history(t_history *history)
 {
 	t_lchar		**new_history;
@@ -70,18 +82,20 @@ t_lchar				**creat_history(t_history *history)
 	int			x;
 
 	x = 0;
-	if ((history->len = len_file_history()) == -1)
+	if ((new_history = init_creat_history(history)) == NULL)
 		return (NULL);
-	if ((new_history = ft_memalloc(sizeof(t_lchar *) *
-					(history->len + 2))) == NULL)
-		return (NULL);
-	history->len_malloc = history->len;
 	if ((fd = open(PATH_HISTORY, O_RDWR | O_CREAT | O_APPEND, S_IRUSR |
 					S_IWUSR)) == -1)
 		return (NULL);
 	while (x < history->len)
 	{
-		creat_history_loop(fd, new_history, x);
+		if (x == 0)
+		{
+			if ((new_history[x] = ft_memalloc(sizeof(t_lchar))) == NULL)
+				return (NULL);
+		}
+		else
+			creat_history_loop(fd, new_history, x);
 		x++;
 	}
 	new_history[x] = NULL;

@@ -6,23 +6,11 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 14:05:37 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/19 16:59:18 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/20 15:26:04 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../vingt_et_un_sh.h"
-
-void	print_tab(char **tableau)
-{
-	int		x;
-
-	x = 0;
-	while (tableau[x] != NULL)
-	{
-		ft_printf("[%s]\n", tableau[x]);
-		x++;
-	}
-}
 
 static int		init_main(char **envp, t_history *history)
 {
@@ -33,7 +21,7 @@ static int		init_main(char **envp, t_history *history)
 	return (0);
 }
 
-int			main(int argc, char **argv, char **envp)
+int				main(int argc, char **argv, char **envp)
 {
 	t_history		history;
 	char			buffer[4];
@@ -46,14 +34,13 @@ int			main(int argc, char **argv, char **envp)
 	{
 		if (init_termcaps() == 1)
 			return (1);
-		if (creat_buf(buffer, &history))
+		ft_signal();
+		if (creat_buf(0, LEN_REMAL_LI, buffer, &history) == 1)
 			break ;
 		if (reset_termcaps() == 1)
 			return (1);
 	}
 	if (reset_termcaps() == 1)
-		return (1);
-	if (export_history(&history) == 1)
 		return (1);
 	free_tab(g_envp);
 	return (0);

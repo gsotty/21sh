@@ -1,26 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ctrl_d.c                                           :+:      :+:    :+:   */
+/*   free_struct_line.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/08/18 10:55:04 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/20 12:08:15 by gsotty           ###   ########.fr       */
+/*   Created: 2017/09/20 15:27:49 by gsotty            #+#    #+#             */
+/*   Updated: 2017/09/20 15:43:35 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-int		ctrl_d(t_pos *pos, t_history *history, int modif_prompt)
+int		free_struct_line(t_line *line, int nbr_line)
 {
-	if (pos->len == 0)
+	int		x;
+
+	x = 0;
+	while (x < nbr_line)
 	{
-		write(0, "exit\n", 5);
-		return (1);
+		free(line[x].pos);
+		free_tab_lchar(line[x].history->history);
+		free(line[x].history);
+		x++;
 	}
-	else
-		ft_delete_character_2(history->history[pos->history], pos,
-				modif_prompt);
-	return (0);
+	free(line);
+	return (1);
 }

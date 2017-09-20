@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/09/19 14:16:28 by gsotty           ###   ########.fr        #
+#    Updated: 2017/09/20 15:40:43 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,7 +57,11 @@ SRC = main.c \
 	  cursor_left.c \
 	  cursor_right.c \
 	  key_of_keyboard.c \
-	  ctrl_d.c
+	  ctrl_d.c \
+	  signal.c \
+	  free_struct_line.c \
+	  remalloc_line.c \
+	  creat_cmd.c
 
 OBJ = $(SRC:.c=.o)
 

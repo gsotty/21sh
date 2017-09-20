@@ -1,26 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ctrl_d.c                                           :+:      :+:    :+:   */
+/*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/08/18 10:55:04 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/20 12:08:15 by gsotty           ###   ########.fr       */
+/*   Created: 2017/07/21 15:15:00 by gsotty            #+#    #+#             */
+/*   Updated: 2017/09/20 11:48:00 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-int		ctrl_d(t_pos *pos, t_history *history, int modif_prompt)
+static void		signal_act(int x, siginfo_t *siginfo, void *context)
 {
-	if (pos->len == 0)
-	{
-		write(0, "exit\n", 5);
-		return (1);
-	}
-	else
-		ft_delete_character_2(history->history[pos->history], pos,
-				modif_prompt);
-	return (0);
+	(void)siginfo;
+	(void)context;
+	g_sig = x;
+}
+
+void			ft_signal(void)
+{
+	struct sigaction	act;
+
+	g_sig = 0;
+	ft_memset(&act, '\0', sizeof(act));
+	act.sa_sigaction = &signal_act;
+	act.sa_flags = SA_SIGINFO;
+	sigaction(SIGINT, &act, NULL);
 }
