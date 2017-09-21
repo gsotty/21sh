@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/17 09:09:36 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/18 15:48:47 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/21 15:43:31 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int			add_history(t_history *history, t_lchar *cmd, int len)
 {
 	if (len > 0)
 	{
-		if (history->len - 1 > 0)
+		if (history->len > 0)
 		{
 			history->history[history->len] = ft_strdup_lchar(cmd);
 			history->len++;

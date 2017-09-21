@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/17 08:32:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/20 13:51:38 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/21 16:35:36 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static int			len_file_history(void)
 		x++;
 	}
 	close(fd);
-	return (x + 1);
+	return (x);
 }
 
 static t_lchar		*char_to_lchar(const char *str)
@@ -84,18 +84,12 @@ t_lchar				**creat_history(t_history *history)
 	x = 0;
 	if ((new_history = init_creat_history(history)) == NULL)
 		return (NULL);
-	if ((fd = open(PATH_HISTORY, O_RDWR | O_CREAT | O_APPEND, S_IRUSR |
+	if ((fd = open(PATH_HISTORY, O_RDONLY | O_CREAT | O_APPEND, S_IRUSR |
 					S_IWUSR)) == -1)
 		return (NULL);
 	while (x < history->len)
 	{
-		if (x == 0)
-		{
-			if ((new_history[x] = ft_memalloc(sizeof(t_lchar))) == NULL)
-				return (NULL);
-		}
-		else
-			creat_history_loop(fd, new_history, x);
+		creat_history_loop(fd, new_history, x);
 		x++;
 	}
 	new_history[x] = NULL;

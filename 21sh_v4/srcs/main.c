@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 14:05:37 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/21 12:17:25 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/21 16:25:35 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,21 @@ static int		init_main(char **envp, t_history *history)
 	return (0);
 }
 
+static int		exit_main(t_history *history)
+{
+	if (export_history(history) == 1)
+		return (1);
+	if (reset_termcaps() == 1)
+		return (1);
+	free_tab(g_envp);
+	return (0);
+}
+
 int				main(int argc, char **argv, char **envp)
 {
-	t_history		history;
 	char			buffer[4];
+	t_lchar			*cmd;
+	t_history		history;
 
 	(void)argc;
 	(void)argv;
@@ -35,14 +46,15 @@ int				main(int argc, char **argv, char **envp)
 		if (init_termcaps() == 1)
 			return (1);
 		ft_signal();
-		if (creat_buf(0, LEN_REMAL_LI, buffer, &history) == 1)
+		if ((cmd = creat_buf(0, LEN_REMAL_LI, buffer, &history)) == NULL)
+			break ;
+		if (add_history(&history, cmd, ft_strlen_lchar(cmd)) == 1)
 			break ;
 		if (reset_termcaps() == 1)
 			return (1);
+		if (cmd != NULL && cmd[0].c != '\0')
+			if (parser(cmd, ft_strlen_lchar(cmd)) == 1)
+				return (1);
 	}
-	free_tab_lchar(history.history);
-	if (reset_termcaps() == 1)
-		return (1);
-	free_tab(g_envp);
-	return (0);
+	return (exit_main(&history));
 }

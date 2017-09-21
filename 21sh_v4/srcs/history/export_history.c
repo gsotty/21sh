@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/17 09:21:54 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/18 15:50:49 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/21 15:46:56 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,6 @@ int		export_history(t_history *history)
 		x++;
 	}
 	free(history->history);
+	close(fd);
 	return (0);
 }

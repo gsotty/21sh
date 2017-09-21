@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 13:54:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/21 14:09:07 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/21 17:11:26 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,7 +207,7 @@ t_lchar				*ft_strdup_lchar(const t_lchar *s);
 int					remalloc_history(t_history *history);
 int					export_history(t_history *history);
 t_history			*creat_cpy_history(t_history *history);
-int					creat_buf(int x, int nbr_line, char *buffer,
+t_lchar				*creat_buf(int x, int nbr_line, char *buffer,
 		t_history *history);
 void				free_tab_lchar(t_lchar **tableau);
 t_lchar				*remalloc_cmd_lchar(t_pos *len, t_lchar *cmd);
@@ -243,11 +243,14 @@ void				ft_cursor_right(t_pos *pos, struct winsize win,
 int					key_of_keyboard(char *buffer, t_pos *pos,
 		t_history *history, int modif_prompt);
 void				ft_signal(void);
-int					free_struct_line(t_line *line, int nbr_line);
+t_lchar				*free_struct_line(t_line *line, int nbr_line);
 t_line				*remalloc_line(t_line *line, t_history *history, int len,
 		int new_len);
-void				end_of_creat_buf(t_line *line, int x, int nbr_line);
+t_lchar				*end_of_creat_buf(t_line *line, int x, int nbr_line);
 int					verif_line(t_quote *quote, t_lchar *cmd);
 void				loop_creat_buf(int x, t_line *line, t_quote *quote);
+int					add_history(t_history *history, t_lchar *cmd, int len);
+int					parser(t_lchar *cmd, int len);
+char				*ft_print_type(int x);
 
 #endif

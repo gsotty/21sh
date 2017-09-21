@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 16:00:41 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/21 14:13:15 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/21 16:09:45 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ static t_line	*init_creat_buf(t_history *history, t_quote *quote)
 			return (NULL);
 		if ((line[x].history = creat_cpy_history(history)) == NULL)
 			return (NULL);
+		line[x].pos->history = line[x].history->len;
 		x = x + 1;
 	}
 	ft_memset(quote, 0, sizeof(t_quote));
@@ -78,13 +79,14 @@ static int		ctrl_c(t_line *line, int x)
 	return (0);
 }
 
-int				creat_buf(int x, int nbr_line, char *buffer, t_history *history)
+t_lchar			*creat_buf(int x, int nbr_line, char *buffer,
+		t_history *history)
 {
 	t_quote		quote;
 	t_line		*line;
 
 	if ((line = init_creat_buf(history, &quote)) == NULL)
-		return (1);
+		return (NULL);
 	while (1)
 	{
 		loop_creat_buf(x, line, &quote);
@@ -95,7 +97,7 @@ int				creat_buf(int x, int nbr_line, char *buffer, t_history *history)
 			if (verif_line(&quote, _LINE) == 1)
 			{
 				if (new_line_buf(history, &nbr_line, ++x, &line) == 1)
-					return (1);
+					return (NULL);
 			}
 			else
 				break ;
@@ -103,6 +105,5 @@ int				creat_buf(int x, int nbr_line, char *buffer, t_history *history)
 		else if (ctrl_c(line, x) == 1)
 			break ;
 	}
-	end_of_creat_buf(line, x, nbr_line);
-	return (0);
+	return (end_of_creat_buf(line, x, nbr_line));
 }
