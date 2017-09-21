@@ -6,13 +6,13 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/21 14:46:04 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/19 12:30:53 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/21 10:17:14 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-int			len_of_nbr_ligne(struct winsize win, int pos)
+int			len_of_nbr_ligne(struct winsize win, int pos, int modif_prompt)
 {
 	int		nbr_ligne;
 	int		tmp_pos;
@@ -23,7 +23,7 @@ int			len_of_nbr_ligne(struct winsize win, int pos)
 	{
 		if (nbr_ligne == -1)
 		{
-			tmp_pos -= (win.ws_col - _PROMPT_LEN);
+			tmp_pos -= (win.ws_col - _DEFINE_LEN_P);
 			nbr_ligne++;
 		}
 		else

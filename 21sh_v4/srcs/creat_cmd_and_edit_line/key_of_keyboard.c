@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/08/18 11:24:50 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/20 17:56:10 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/21 09:51:13 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static int			key_of_keyboard_2(char *buffer, t_pos *pos,
 		ft_key_home(history->history[pos->history], pos, modif_prompt);
 	else if (buffer[0] == 127 && buffer[1] == 0 && buffer[2] == 0)
 		ft_delete_character(history->history[pos->history], pos, modif_prompt);
-	else if (ft_cursor_move(buffer, pos, win) == 0)
+	else if (ft_cursor_move(buffer, pos, win, modif_prompt) == 0)
 		ft_write_cmd(buffer, history->history[pos->history], pos,
 				modif_prompt);
 	return (0);

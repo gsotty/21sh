@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 13:54:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/20 16:13:13 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/21 14:09:07 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@
 # define _PROMPT_ML "> "
 # define _PROMPT_LEN_ML 2
 # define _PROMPT_LEN_WRITE_ML 2
+# define _DEFINE_LEN_P (modif_prompt == 0 ? _PROMPT_LEN : _PROMPT_LEN_ML)
 
 /*
 ** Define du lexer
@@ -71,6 +72,7 @@
 ** Define tools
 */
 
+# define _LINE line[x].history->history[line[x].pos->history]
 # define NO_MODIF_PROMPT 0
 # define LEN_REMALLOC 255
 # define LEN_REMAL_LI 2
@@ -213,12 +215,13 @@ t_lchar				*ft_memcpy_lchar(t_lchar *dest, const t_lchar *src,
 		size_t n);
 void				ft_write_cmd(char *buffer, t_lchar *cmd, t_pos *pos,
 		int modif_prompt);
-void				new_safe_place(int len, int nbr_new_line);
+void				new_safe_place(int len, int nbr_new_line, int modif_prompt);
 int					nbr_new_line(t_lchar *cmd);
 void				write_new_cmd(t_lchar *cmd, t_pos *pos, int modif_prompt);
 void				clear_win(t_lchar *cmd, t_pos *pos, int modif_prompt);
 int					ctrl_d(t_pos *pos, t_history *history, int modif_prompt);
-int					len_of_nbr_ligne(struct winsize win, int pos);
+int					len_of_nbr_ligne(struct winsize win, int pos,
+		int modif_prompt);
 void				ft_delete_character(t_lchar *cmd, t_pos *pos,
 		int modif_prompt);
 void				ft_delete_character_2(t_lchar *cmd, t_pos *pos,
@@ -232,9 +235,11 @@ int					history_up(t_pos *pos, t_history *history,
 void				ft_key_end(t_lchar *cmd, t_pos *pos, int modif_prompt);
 void				ft_key_home(t_lchar *cmd, t_pos *pos, int modif_prompt);
 int					ft_cursor_move(char *buffer, t_pos *pos,
-		struct winsize win);
-void				ft_cursor_left(t_pos *pos, struct winsize win);
-void				ft_cursor_right(t_pos *pos, struct winsize win);
+		struct winsize win, int modif_prompt);
+void				ft_cursor_left(t_pos *pos, struct winsize win,
+		int modif_prompt);
+void				ft_cursor_right(t_pos *pos, struct winsize win,
+		int modif_prompt);
 int					key_of_keyboard(char *buffer, t_pos *pos,
 		t_history *history, int modif_prompt);
 void				ft_signal(void);
@@ -242,5 +247,7 @@ int					free_struct_line(t_line *line, int nbr_line);
 t_line				*remalloc_line(t_line *line, t_history *history, int len,
 		int new_len);
 void				end_of_creat_buf(t_line *line, int x, int nbr_line);
+int					verif_line(t_quote *quote, t_lchar *cmd);
+void				loop_creat_buf(int x, t_line *line, t_quote *quote);
 
 #endif

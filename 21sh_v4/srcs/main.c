@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 14:05:37 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/20 15:26:04 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/21 12:17:25 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int				main(int argc, char **argv, char **envp)
 		if (reset_termcaps() == 1)
 			return (1);
 	}
+	free_tab_lchar(history.history);
 	if (reset_termcaps() == 1)
 		return (1);
 	free_tab(g_envp);

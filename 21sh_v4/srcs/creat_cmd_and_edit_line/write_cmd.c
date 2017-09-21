@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/11 14:47:57 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/20 17:51:59 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/21 12:01:49 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,12 +86,14 @@ void			ft_write_cmd(char *buffer, t_lchar *cmd, t_pos *pos,
 	x = 0;
 	while (x < 3)
 	{
-		if (ft_isprint(buffer[x]) == 1 || buffer[x] == 10)
+		if (buffer[x] == 10)
+			pos->pos = pos->len;
+		if (ft_isprint(buffer[x]) == 1 || (buffer[x] == 10))
 		{
 			put_buffer_to_cmd(buffer[x], cmd, pos);
 			pos->pos++;
 			pos->len++;
-			new_safe_place(pos->len, nbr_new_line(cmd));
+			new_safe_place(pos->len, nbr_new_line(cmd), modif_prompt);
 			write_new_cmd(cmd, pos, modif_prompt);
 		}
 		x++;

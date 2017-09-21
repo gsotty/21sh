@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/11 16:42:08 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/19 14:51:53 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/21 10:18:13 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,6 @@ void	clear_win(t_lchar *cmd, t_pos *pos, int modif_prompt)
 	else
 		write(0, _PROMPT_ML, _PROMPT_LEN_WRITE_ML);
 	tputs(tgetstr("sc", NULL), 0, f_putchar);
-	new_safe_place(pos->len, nbr_new_line(cmd));
+	new_safe_place(pos->len, nbr_new_line(cmd), modif_prompt);
 	write_new_cmd(cmd, pos, modif_prompt);
 }
