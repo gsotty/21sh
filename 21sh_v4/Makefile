@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/09/21 17:11:30 by gsotty           ###   ########.fr        #
+#    Updated: 2017/09/25 17:09:02 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,7 +66,10 @@ SRC = main.c \
 	  loop_creat_buf.c \
 	  add_history.c \
 	  parser.c \
-	  ft_print_type.c
+	  ft_print_type.c \
+	  creat_t_len_exec.c \
+	  malloc_t_exec.c \
+	  creat_tree.c
 
 OBJ = $(SRC:.c=.o)
 

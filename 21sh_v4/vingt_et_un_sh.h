@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 13:54:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/21 17:11:26 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/25 17:08:59 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ typedef struct		s_redir
 
 typedef struct		s_pipe
 {
-	t_cmd			*cmd;
+	t_cmd			cmd;
 	t_redir			**redir;
 }					t_pipe;
 
@@ -146,6 +146,17 @@ typedef struct		s_exec
 {
 	t_sep			**sep;
 }					t_exec;
+
+/*
+** Structur pour le nombre de a allouer pour l'exec
+*/
+
+typedef struct		s_len_exec
+{
+	int				sep;
+	int				pipe;
+	int				redir;
+}					t_len_exec;
 
 /*
 ** Structur pour l'history
@@ -252,5 +263,8 @@ void				loop_creat_buf(int x, t_line *line, t_quote *quote);
 int					add_history(t_history *history, t_lchar *cmd, int len);
 int					parser(t_lchar *cmd, int len);
 char				*ft_print_type(int x);
+int					creat_t_len_exec(t_lchar *cmd, t_len_exec *len_exec);
+int					malloc_t_exec(t_exec *c, t_len_exec *len_exec);
+int					creat_tree(t_exec *c, t_lchar *cmd, t_len_exec *len_exec);
 
 #endif
