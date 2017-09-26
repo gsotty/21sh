@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/25 15:00:55 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/25 16:20:04 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/26 18:13:23 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ int				malloc_t_exec(t_exec *c, t_len_exec *len_exec)
 	int		x;
 
 	x = 0;
+	ft_printf("[%d]\n", len_exec->sep);
 	if ((c->sep = ft_memalloc(sizeof(*c->sep) * (len_exec->sep + 1))) == NULL)
 		return (1);
 	while (x < len_exec->sep)

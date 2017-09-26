@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/23 13:29:19 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/25 17:09:06 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/26 18:35:25 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,9 +302,7 @@ int				parser(t_lchar *cmd, int len)
 	first_call = 0;
 	ft_memset(&c, 0, sizeof(t_exec));
 	ft_memset(&len_exec, 0, sizeof(t_len_exec));
-	creat_t_len_exec(cmd, &len_exec);
-	if (malloc_t_exec(&c, &len_exec) == 1)
-		return (1);
+//	creat_t_len_exec(cmd, &len_exec);
 	ft_printf("cmd 1 = \n");
 	while (cmd[a].c != '\0')
 	{
@@ -320,6 +318,9 @@ int				parser(t_lchar *cmd, int len)
 		ft_printf("[%c], [%s]\n", cmd[a].c, ft_print_type(cmd[a].type));
 		a++;
 	}
+	creat_t_len_exec(cmd, &len_exec);
+	if (malloc_t_exec(&c, &len_exec) == 1)
+		return (1);
 	creat_tree(&c, cmd, &len_exec);
 	return (0);
 }
