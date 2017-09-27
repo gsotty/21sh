@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/23 13:29:19 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/26 18:35:25 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/27 15:34:05 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -290,7 +290,7 @@ static int		define_lchar(t_lchar *cmd)
 	return (0);
 }
 
-int				parser(t_lchar *cmd, int len)
+int				parser(t_lchar *cmd, int len, t_history *history)
 {
 	t_exec			c;
 	t_len_exec		len_exec;
@@ -319,8 +319,8 @@ int				parser(t_lchar *cmd, int len)
 		a++;
 	}
 	creat_t_len_exec(cmd, &len_exec);
-	if (malloc_t_exec(&c, &len_exec) == 1)
+	if (malloc_t_exec(cmd, &c) == 1)
 		return (1);
-	creat_tree(&c, cmd, &len_exec);
+	creat_tree(&c, cmd, history);
 	return (0);
 }

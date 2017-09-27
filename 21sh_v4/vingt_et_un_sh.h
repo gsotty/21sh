@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 13:54:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/26 18:35:18 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/27 17:51:12 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,10 +261,12 @@ t_lchar				*end_of_creat_buf(t_line *line, int x, int nbr_line);
 int					verif_line(t_quote *quote, t_lchar *cmd);
 void				loop_creat_buf(int x, t_line *line, t_quote *quote);
 int					add_history(t_history *history, t_lchar *cmd, int len);
-int					parser(t_lchar *cmd, int len);
+int					parser(t_lchar *cmd, int len, t_history *history);
 char				*ft_print_type(int x);
 int					creat_t_len_exec(t_lchar *cmd, t_len_exec *len_exec);
-int					malloc_t_exec(t_exec *c, t_len_exec *len_exec);
-int					creat_tree(t_exec *c, t_lchar *cmd, t_len_exec *len_exec);
+int					malloc_t_exec(t_lchar *cmd, t_exec *c);
+int					creat_tree(t_exec *c, t_lchar *cmd, t_history *history);
+int					ft_atoi_lchar(t_lchar *str);
+int					creat_heredoc(t_redir *redir, t_history *history);
 
 #endif

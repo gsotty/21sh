@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/09/26 18:35:22 by gsotty           ###   ########.fr        #
+#    Updated: 2017/09/27 17:51:17 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -69,7 +69,9 @@ SRC = main.c \
 	  ft_print_type.c \
 	  creat_t_len_exec.c \
 	  malloc_t_exec.c \
-	  creat_tree.c
+	  creat_tree.c \
+	  ft_atoi_lchar.c \
+	  creat_heredoc.c
 
 OBJ = $(SRC:.c=.o)
 
