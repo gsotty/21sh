@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/25 16:25:03 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/27 17:51:20 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/28 17:46:04 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,12 @@ int			creat_tree(t_exec *c, t_lchar *cmd, t_history *history)
 					file_name, cmd + tmp_pos, pos - tmp_pos);
 			if (c->sep[sep]->pipe[pipe]->redir[redir]->type == _HEREDOC)
 				creat_heredoc(c->sep[sep]->pipe[pipe]->redir[redir], history);
+			/*
+				if ((c->sep[sep]->pipe[pipe]->redir[redir]->heredoc =
+					convert_lchar_to_char(creat_buf(0, LEN_REMAL_LI, buffer,
+							history))) == NULL)
+					return (1);
+			*/
 		}
 		else if (cmd[pos].type == _DIGIT)
 		{

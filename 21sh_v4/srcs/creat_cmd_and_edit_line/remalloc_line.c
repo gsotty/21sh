@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/20 15:36:08 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/20 15:37:55 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/28 15:37:25 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ t_line	*remalloc_line(t_line *line, t_history *history, int len, int new_len)
 			return (NULL);
 		if ((new_line[x].history = creat_cpy_history(history)) == NULL)
 			return (NULL);
+		new_line[x].pos->history = new_line[x].history->len;
 		x++;
 	}
 	free(line);

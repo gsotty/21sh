@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 13:54:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/27 17:51:12 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/28 17:45:54 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,6 +267,12 @@ int					creat_t_len_exec(t_lchar *cmd, t_len_exec *len_exec);
 int					malloc_t_exec(t_lchar *cmd, t_exec *c);
 int					creat_tree(t_exec *c, t_lchar *cmd, t_history *history);
 int					ft_atoi_lchar(t_lchar *str);
-int					creat_heredoc(t_redir *redir, t_history *history);
+char				*creat_heredoc(int x, int nbr_line, char *buffer,
+		t_history *history);
+void				new_safe_place_heredoc(int len, int nbr_new_line);
+int					nbr_new_line_heredoc(char *cmd);
+void				ft_write_heredoc(char *buffer, char *cmd, t_pos *pos);
+void				write_new_heredoc(char *cmd, t_pos *pos);
+char				*convert_lchar_to_char(t_lchar *lchar);
 
 #endif
