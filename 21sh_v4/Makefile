@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/09/28 17:45:59 by gsotty           ###   ########.fr        #
+#    Updated: 2017/09/29 17:59:49 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -72,9 +72,16 @@ SRC = main.c \
 	  creat_tree.c \
 	  ft_atoi_lchar.c \
 	  write_heredoc_fonction.c \
-	  nbr_new_line_heredoc.c \
 	  creat_heredoc.c \
-	  convert_lchar_to_char.c
+	  convert_lchar_to_char.c \
+	  key_of_keyboard_heredoc.c \
+	  write_heredoc.c \
+	  ft_strcmp_lchar.c \
+	  creat_cmd_heredoc.c \
+	  ft_strsplit_space.c \
+	  find_var_envp.c \
+	  exec_cmd.c \
+	  exec_tree.c
 
 OBJ = $(SRC:.c=.o)
 

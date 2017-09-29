@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/25 15:00:55 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/27 14:54:11 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/29 15:31:56 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ static int		len_redir(t_lchar *cmd, int sep, int pipe)
 	pipe_verif = 0;
 	while (cmd[x].c != '\0')
 	{
-		ft_printf("[%c], [%d], [%d],", cmd[x].c, sep_verif, sep);
-		ft_printf(" [%d], [%d]\n", pipe_verif, pipe);
 		if ((cmd[x].type == _RINT || cmd[x].type == _ROUT)
 				&& sep_verif == sep && pipe_verif == pipe)
 		{
@@ -88,7 +86,6 @@ static int		len_pipe(t_lchar *cmd, int sep)
 	sep_verif = 0;
 	while (cmd[x].c != '\0')
 	{
-		ft_printf("[%c], [%d], [%d]\n", cmd[x].c, sep_verif, sep);
 		if (cmd[x].type == _PIPE && sep_verif == sep)
 			pipe++;
 		else if (cmd[x].type == _SEP)
@@ -110,7 +107,6 @@ static int		malloc_t_exec_pipe(t_lchar *cmd, t_exec *c, int pipe, int x)
 	while (y < pipe)
 	{
 		redir = len_redir(cmd, x, y);
-		ft_printf("redir = [%d]\n", redir);
 		if ((c->sep[x]->pipe[y] = ft_memalloc(sizeof(*c->sep[x]->pipe[y])))
 				== NULL)
 			return (1);
@@ -145,13 +141,11 @@ int				malloc_t_exec(t_lchar *cmd, t_exec *c)
 
 	x = 0;
 	sep = len_sep(cmd);
-	ft_printf("sep = [%d]\n", sep);
 	if ((c->sep = ft_memalloc(sizeof(*c->sep) * (sep + 1))) == NULL)
 		return (1);
 	while (x < sep)
 	{
 		pipe = len_pipe(cmd, x);
-		ft_printf("pipe = [%d]\n", pipe);
 		if ((c->sep[x] = ft_memalloc(sizeof(*c->sep[x]))) == NULL)
 			return (1);
 		if (malloc_t_exec_pipe(cmd, c, pipe, x) == 1)

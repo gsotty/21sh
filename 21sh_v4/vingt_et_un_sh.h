@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 13:54:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/28 17:45:54 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/29 17:01:14 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,6 +203,16 @@ typedef struct		s_line
 }					t_line;
 
 /*
+** Structur pour le strsplit
+*/
+
+typedef struct		s_split
+{
+	int				j;
+	int				x;
+}					t_split;
+
+/*
 ** Prototipe des fonction
 */
 
@@ -267,12 +277,20 @@ int					creat_t_len_exec(t_lchar *cmd, t_len_exec *len_exec);
 int					malloc_t_exec(t_lchar *cmd, t_exec *c);
 int					creat_tree(t_exec *c, t_lchar *cmd, t_history *history);
 int					ft_atoi_lchar(t_lchar *str);
-char				*creat_heredoc(int x, int nbr_line, char *buffer,
+t_lchar				*creat_heredoc(char *eof, int nbr_line, char *buffer,
 		t_history *history);
 void				new_safe_place_heredoc(int len, int nbr_new_line);
-int					nbr_new_line_heredoc(char *cmd);
-void				ft_write_heredoc(char *buffer, char *cmd, t_pos *pos);
-void				write_new_heredoc(char *cmd, t_pos *pos);
+void				ft_write_heredoc(char *buffer, t_lchar *cmd, t_pos *pos);
+void				write_new_heredoc(t_lchar *cmd, t_pos *pos);
 char				*convert_lchar_to_char(t_lchar *lchar);
+int					key_of_keyboard_heredoc(char *buffer, t_pos *pos,
+		t_history *history);
+int					ft_strcmp_lchar(const t_lchar *s1, const char *s2);
+t_lchar				*end_of_creat_buf_heredoc(t_line *line, int x,
+		int nbr_line);
+char				**ft_strsplit_space(char const *buf, char *c);
+char				*find_var_envp(char *name);
+void				exec_cmd(t_cmd cmd);
+int					exec_tree(t_exec *c);
 
 #endif

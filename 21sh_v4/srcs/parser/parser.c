@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/23 13:29:19 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/28 17:18:08 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/29 17:59:45 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -290,37 +290,36 @@ static int		define_lchar(t_lchar *cmd)
 	return (0);
 }
 
+void			ft_memset_lchar(t_lchar *cmd, int clean, int len)
+{
+	int		x;
+
+	x = 0;
+	while (x < len)
+	{
+		cmd[x].type = clean;
+		x++;
+	}
+}
+
 int				parser(t_lchar *cmd, int len, t_history *history)
 {
 	t_exec			c;
 	t_len_exec		len_exec;
 	int				first_call;
-	int				a;
 
 	(void)len;
-	a = 0;
 	first_call = 0;
+	ft_memset_lchar(cmd, 0, len);
 	ft_memset(&c, 0, sizeof(t_exec));
 	ft_memset(&len_exec, 0, sizeof(t_len_exec));
-//	creat_t_len_exec(cmd, &len_exec);
-	ft_printf("cmd 1 = \n");
-	while (cmd[a].c != '\0')
-	{
-		cmd[a].type = 0;
-		ft_printf("[%c], [%s]\n", cmd[a].c, ft_print_type(cmd[a].type));
-		a++;
-	}
 	define_lchar(cmd);
-	a = 0;
-	ft_printf("cmd 2 = \n");
-	while (cmd[a].c != '\0')
-	{
-		ft_printf("[%c], [%s]\n", cmd[a].c, ft_print_type(cmd[a].type));
-		a++;
-	}
 	creat_t_len_exec(cmd, &len_exec);
 	if (malloc_t_exec(cmd, &c) == 1)
 		return (1);
 	creat_tree(&c, cmd, history);
+	if (reset_termcaps() == 1)
+		return (1);
+	exec_tree(&c);
 	return (0);
 }

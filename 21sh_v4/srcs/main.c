@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 14:05:37 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/28 15:10:51 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/29 17:55:02 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,6 @@ int				main(int argc, char **argv, char **envp)
 			break ;
 		if (add_history(&history, cmd, ft_strlen_lchar(cmd)) == 1)
 			break ;
-		if (reset_termcaps() == 1)
-			return (1);
 		if (cmd != NULL && cmd[0].c != '\0')
 			if (parser(cmd, ft_strlen_lchar(cmd), &history) == 1)
 				return (1);

@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/25 16:25:03 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/28 17:46:04 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/29 15:46:24 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,8 @@ static int	ft_lcharlen_to_type(t_lchar *cmd, int type)
 	int		x;
 
 	x = 0;
-	ft_printf("		111\n");
-	ft_printf("1 = [%c], [%s]\n", cmd[x].c, ft_print_type(cmd[x].type));
 	while (cmd[x].c != '\0' && cmd[x].type == type)
-	{
-		ft_printf("[%c], [%s]\n", cmd[x].c, ft_print_type(cmd[x].type));
 		x++;
-	}
-	ft_printf("2 = [%c], [%s]\n", cmd[x].c, ft_print_type(cmd[x].type));
 	return (x);
 }
 
@@ -87,6 +81,8 @@ static void	print_tree(t_exec *c)
 						c->sep[x]->pipe[y]->redir[w]->fd);
 				ft_printf("				[%d]\n",
 						c->sep[x]->pipe[y]->redir[w]->digit);
+				ft_printf("				[%s]\n",
+						c->sep[x]->pipe[y]->redir[w]->heredoc);
 				w++;
 			}
 			y++;
@@ -103,6 +99,7 @@ int			creat_tree(t_exec *c, t_lchar *cmd, t_history *history)
 	int		argv;
 	int		pos;
 	int		tmp_pos;
+	char	buffer[4];
 
 	pos = 0;
 	sep = 0;
@@ -148,13 +145,13 @@ int			creat_tree(t_exec *c, t_lchar *cmd, t_history *history)
 			ft_memcpy_char_lchar(c->sep[sep]->pipe[pipe]->redir[redir]->
 					file_name, cmd + tmp_pos, pos - tmp_pos);
 			if (c->sep[sep]->pipe[pipe]->redir[redir]->type == _HEREDOC)
-				creat_heredoc(c->sep[sep]->pipe[pipe]->redir[redir], history);
-			/*
+			{
 				if ((c->sep[sep]->pipe[pipe]->redir[redir]->heredoc =
-					convert_lchar_to_char(creat_buf(0, LEN_REMAL_LI, buffer,
+					convert_lchar_to_char(creat_heredoc(c->sep[sep]->pipe[pipe]
+							->redir[redir]->file_name, LEN_REMAL_LI, buffer,
 							history))) == NULL)
 					return (1);
-			*/
+			}
 		}
 		else if (cmd[pos].type == _DIGIT)
 		{
@@ -162,8 +159,6 @@ int			creat_tree(t_exec *c, t_lchar *cmd, t_history *history)
 			pos += ft_lcharlen_to_type(cmd + pos, _DIGIT);
 			c->sep[sep]->pipe[pipe]->redir[redir + 1]->digit =
 				ft_atoi_lchar(cmd + tmp_pos);
-			ft_printf("			[%d]\n",
-					c->sep[sep]->pipe[pipe]->redir[redir + 1]->digit);
 		}
 		else if (cmd[pos].type == _FD)
 		{
@@ -171,8 +166,6 @@ int			creat_tree(t_exec *c, t_lchar *cmd, t_history *history)
 			pos += ft_lcharlen_to_type(cmd + pos, _FD);
 			c->sep[sep]->pipe[pipe]->redir[redir + 1]->fd =
 				ft_atoi_lchar(cmd + tmp_pos);
-			ft_printf("			[%d]\n",
-					c->sep[sep]->pipe[pipe]->redir[redir + 1]->fd);
 		}
 		else if (cmd[pos].type == _SEP)
 		{

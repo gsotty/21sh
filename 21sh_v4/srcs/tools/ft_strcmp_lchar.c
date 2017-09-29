@@ -1,33 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   convert_lchar_to_char.c                            :+:      :+:    :+:   */
+/*   ft_strcmp_lchar.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/28 15:11:40 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/29 13:27:59 by gsotty           ###   ########.fr       */
+/*   Created: 2017/09/29 12:44:45 by gsotty            #+#    #+#             */
+/*   Updated: 2017/09/29 13:14:03 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-char	*convert_lchar_to_char(t_lchar *lchar)
+int	ft_strcmp_lchar(const t_lchar *s1, const char *s2)
 {
-	int		len;
 	int		x;
-	char	*str;
 
 	x = 0;
-	len = ft_strlen_lchar(lchar);
-	if ((str = ft_memalloc(sizeof(char) * (len + 1))) == NULL)
-		return (NULL);
-	while (lchar[x].c != '\0')
+	while (s1[x].c == s2[x] && s1[x].c != '\0')
 	{
-		str[x] = lchar[x].c;
 		x++;
 	}
-	str[x] = '\0';
-//	free(lchar);
-	return (str);
+	return (s1[x].c - s2[x]);
 }

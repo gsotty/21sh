@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/20 15:38:49 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/29 15:47:38 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/29 16:31:58 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,10 @@ static t_lchar		*creat_cmd(int x, t_line *line, int nbr_line)
 	return (cmd);
 }
 
-t_lchar				*end_of_creat_buf(t_line *line, int x, int nbr_line)
+t_lchar				*end_of_creat_buf_heredoc(t_line *line, int x, int nbr_line)
 {
 	t_lchar		*cmd;
 
-	if (line[x].pos->len > 0)
-		ft_key_end(line[x].history->history[line[x].pos->history],
-				line[x].pos, x);
 	cmd = creat_cmd(0, line, x);
 	free_struct_line(line, nbr_line);
 	return (cmd);

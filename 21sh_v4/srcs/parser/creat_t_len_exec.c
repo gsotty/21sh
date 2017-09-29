@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/25 15:08:48 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/27 12:32:58 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/29 15:31:13 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,5 @@ int		creat_t_len_exec(t_lchar *cmd, t_len_exec *len_exec)
 			len_exec->redir++;
 		x++;
 	}
-	ft_printf("sep = [%d], pipe = [%d], redir = [%d]\n", len_exec->sep,
-			len_exec->pipe, len_exec->redir);
 	return (0);
 }

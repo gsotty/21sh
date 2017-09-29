@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/28 12:55:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/28 14:56:17 by gsotty           ###   ########.fr       */
+/*   Created: 2017/09/29 12:23:04 by gsotty            #+#    #+#             */
+/*   Updated: 2017/09/29 12:23:09 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-static void		no_end_of_ligne(char buffer, char *cmd, t_pos *pos)
+static void		no_end_of_ligne(char buffer, t_lchar *cmd, t_pos *pos)
 {
 	int				x;
 	char			tmp_cmd;
@@ -22,25 +22,25 @@ static void		no_end_of_ligne(char buffer, char *cmd, t_pos *pos)
 	tmp_buf = buffer;
 	while (x < (pos->len + 2))
 	{
-		tmp_cmd = cmd[x];
-		cmd[x] = tmp_buf;
-		tmp_buf = cmd[x + 1];
-		cmd[x + 1] = tmp_cmd;
+		tmp_cmd = cmd[x].c;
+		cmd[x].c = tmp_buf;
+		tmp_buf = cmd[x + 1].c;
+		cmd[x + 1].c = tmp_cmd;
 		x += 2;
 	}
 }
 
-static void		put_buffer_to_heredoc(char buffer, char *cmd, t_pos *pos)
+static void		put_buffer_to_heredoc(char buffer, t_lchar *cmd, t_pos *pos)
 {
-	if (cmd[pos->pos] == '\0')
+	if (cmd[pos->pos].c == '\0')
 	{
-		cmd[pos->pos] = buffer;
+		cmd[pos->pos].c = buffer;
 	}
 	else
 		no_end_of_ligne(buffer, cmd, pos);
 }
 
-void			write_new_heredoc(char *cmd, t_pos *pos)
+void			write_new_heredoc(t_lchar *cmd, t_pos *pos)
 {
 	struct winsize	win;
 	int				x;
@@ -60,7 +60,7 @@ void			write_new_heredoc(char *cmd, t_pos *pos)
 	}
 }
 
-void			ft_write_heredoc(char *buffer, char *cmd, t_pos *pos)
+void			ft_write_heredoc(char *buffer, t_lchar *cmd, t_pos *pos)
 {
 	int		x;
 
@@ -74,7 +74,7 @@ void			ft_write_heredoc(char *buffer, char *cmd, t_pos *pos)
 			put_buffer_to_heredoc(buffer[x], cmd, pos);
 			pos->pos++;
 			pos->len++;
-			new_safe_place_heredoc(pos->len, nbr_new_line_heredoc(cmd));
+			new_safe_place_heredoc(pos->len, nbr_new_line(cmd));
 			write_new_heredoc(cmd, pos);
 		}
 		x++;
