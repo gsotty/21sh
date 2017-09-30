@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 13:54:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/29 17:01:14 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/09/30 17:33:02 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,5 +292,8 @@ char				**ft_strsplit_space(char const *buf, char *c);
 char				*find_var_envp(char *name);
 void				exec_cmd(t_cmd cmd);
 int					exec_tree(t_exec *c);
+char				*remalloc_cmd(t_len_cmd *len, char *cmd);
+void				close_all(int *pipefd_int, int *pipefd_out);
+void				close_tow_fd(int fd1, int fd2);
 
 #endif
