@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/30 16:15:46 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/30 17:32:52 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/10/01 16:44:59 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,33 +16,35 @@ void	exec_ls(char **envp)
 {
 	char	*tab_1[3];
 
-	tab_1[0] = "base64";
-	tab_1[1] = "/dev/random";
+	tab_1[0] = "ls";
+	tab_1[1] = "-l";
 	tab_1[2] = NULL;
-	execve("/usr/bin/base64", tab_1, envp);
+	execve("/bin/ls", tab_1, envp);
 }
 
 void	exec_cat(char **envp)
 {
-	char	*tab_1[4];
+	char	*tab_1[3];
 
-	tab_1[0] = "head";
-	tab_1[1] = "-c";
-	tab_1[2] = "10";
-	tab_1[3] = NULL;
-	execve("/usr/bin/head", tab_1, envp);
+	tab_1[0] = "cat";
+	tab_1[1] = "-e";
+	tab_1[2] = NULL;
+	execve("/bin/cat", tab_1, envp);
 }
 
 int		main(int argc, char **argv, char **envp)
 {
 	int		pipefd[2];
+	int		pipefd_2[2];
 	int		status;
 	pid_t	rep;
 	pid_t	father_ls;
 	pid_t	father_cat;
-	pid_t	tab_pid[2];
+	pid_t	father_cat_2;
+	pid_t	father_cat_3;
+	pid_t	tab_pid[4];
 
-	if (pipe(pipefd) == -1)
+	if (pipe(pipefd) == -1 || pipe(pipefd_2) == -1)
 	{
 		write(2, "error\n", 6);
 		return (1);
@@ -50,6 +52,8 @@ int		main(int argc, char **argv, char **envp)
 	father_ls = fork();
 	if (father_ls == 0)
 	{
+		close(pipefd_2[0]);
+		close(pipefd_2[1]);
 		close(pipefd[0]);
 		dup2(pipefd[1], 1);
 		exec_ls(envp);
@@ -68,7 +72,9 @@ int		main(int argc, char **argv, char **envp)
 	if (father_cat == 0)
 	{
 		close(pipefd[1]);
+		close(pipefd_2[0]);
 		dup2(pipefd[0], 0);
+		dup2(pipefd_2[1], 1);
 		exec_cat(envp);
 		exit(0);
 	}
@@ -81,14 +87,68 @@ int		main(int argc, char **argv, char **envp)
 		write(2, "error\n", 6);
 		return (1);
 	}
+	close(pipefd[0]);
+	close(pipefd[1]);
+	if (pipe(pipefd) == -1)
+	{
+		write(2, "error\n", 6);
+		return (1);
+	}
+	father_cat_2 = fork();
+	if (father_cat_2 == 0)
+	{
+		close(pipefd[0]);
+		close(pipefd_2[1]);
+		dup2(pipefd_2[0], 0);
+		dup2(pipefd[1], 1);
+		exec_cat(envp);
+		exit(0);
+	}
+	else if (father_cat_2 > 0)
+	{
+		printf("creat_cat_2 = [%d]\n", father_cat_2);
+	}
+	else
+	{
+		write(2, "error\n", 6);
+		return (1);
+	}
+	father_cat_3 = fork();
+	if (father_cat_3 == 0)
+	{
+		close(pipefd_2[0]);
+		close(pipefd_2[1]);
+		close(pipefd[1]);
+		dup2(pipefd[0], 0);
+		exec_cat(envp);
+		exit(0);
+	}
+	else if (father_cat_3 > 0)
+	{
+		printf("creat_cat_3 = [%d]\n", father_cat_2);
+	}
+	else
+	{
+		write(2, "error\n", 6);
+		return (1);
+	}
+
+	close(pipefd[0]);
+	close(pipefd[1]);
+	close(pipefd_2[0]);
+	close(pipefd_2[1]);
 	tab_pid[0] = father_ls;
 	tab_pid[1] = father_cat;
+	tab_pid[2] = father_cat_2;
+	tab_pid[3] = father_cat_3;
 	while ((rep = wait(&status)) > -1)
 	{
-		if (tab_pid[1] == rep)
+	/*	if (tab_pid[1] == rep)
 			kill(father_ls, SIGQUIT);
+		if (tab_pid[2] == rep)
+			kill(father_cat, SIGQUIT);
 		write(1, "\n", 1);
-		if (WIFSIGNALED(status) == 1)
+	*/	if (WIFSIGNALED(status) == 1)
 			write(1, "\n", 1);
 		printf("kill = [%d]\n", rep);
 	}

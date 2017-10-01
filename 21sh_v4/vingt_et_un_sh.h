@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 13:54:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/30 17:33:02 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/10/01 19:03:00 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@
 */
 
 # define _LINE line[x].history->history[line[x].pos->history]
+# define T_ROTAIT (rotaite_fd == 1 ? pipefd_one : pipefd_tow)
+# define T_ROTAIT_INV (rotaite_fd == 1 ? pipefd_tow : pipefd_one)
 # define NO_MODIF_PROMPT 0
 # define LEN_REMALLOC 255
 # define LEN_REMAL_LI 2
@@ -211,6 +213,13 @@ typedef struct		s_split
 	int				j;
 	int				x;
 }					t_split;
+
+typedef struct		s_tab_pid_t
+{
+	pid_t			*pid_t;
+	int				len;
+	int				len_malloc;
+}					t_tab_pid_t;
 
 /*
 ** Prototipe des fonction
