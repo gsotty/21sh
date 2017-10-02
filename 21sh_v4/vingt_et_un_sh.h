@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 13:54:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/10/01 19:03:00 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/10/02 17:57:56 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,28 @@
 # define _PROMPT_LEN_ML 2
 # define _PROMPT_LEN_WRITE_ML 2
 # define _DEFINE_LEN_P (modif_prompt == 0 ? _PROMPT_LEN : _PROMPT_LEN_ML)
+
+/*
+**	1er block:
+**		_SEP = separateur: {;}
+**	2eme block:
+**		_PIPE = pipe: {|}
+**	3eme block:
+**		_ROUTERR = redirection output est erreur: {&>} || {>&} fd = 2 est
+**						digit = 1
+**		_DUP_INPUT = dupication input: {[N]<&digit[-]} N de base a 0
+**		_DUP_OUTPUT = dupication output: {[N]>&digit[-]} N de base a 1
+**		_APPROUT = append redirection output: {[N]>>} N de base a 1
+**		_HEREDOC = Here documents: {[N]<<[-]} N de base a 0
+**	4eme block:
+**		_RINT = redirection input: {[N]<} N de base a 0
+**		_ROUT = redirection output: {[N]>[|]} N de base a 1
+**	5eme block:
+**		_FD = les fd pour les redirection: avant une redirection [*0-9]
+**		_FILE = fichier pour les redirection: aprait une redirection
+**		_WORD = cmd est argv: c'est les mot restant
+**		_SPACE = espace: [ ]
+*/
 
 /*
 ** Define du lexer
@@ -131,6 +153,7 @@ typedef struct		s_redir
 	int				fd;
 	int				digit;
 	char			*heredoc;
+	int				len_heredoc;
 }					t_redir;
 
 typedef struct		s_pipe
@@ -214,11 +237,20 @@ typedef struct		s_split
 	int				x;
 }					t_split;
 
+/*
+** Structur pour les forck et les redir
+*/
+
 typedef struct		s_tab_pid_t
 {
 	pid_t			*pid_t;
 	int				len;
 	int				len_malloc;
+	int				fd_int;
+	int				fd_out;
+	int				fd_to_int;
+	int				fd_to_out;
+	int				heredoc;
 }					t_tab_pid_t;
 
 /*

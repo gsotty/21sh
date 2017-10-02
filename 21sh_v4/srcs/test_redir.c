@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/01 16:56:12 by gsotty            #+#    #+#             */
-/*   Updated: 2017/10/01 19:02:48 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/10/02 11:04:40 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,13 @@ int			main(int argc, char **argv, char **envp)
 	if (father == 0)
 	{
 		write(2, "222\n", 4);
-		close(pipefd[1]);
-		dup2(pipefd[0], 1);
+		dup2(fd, 1);
 		execute_ls(envp);
-		close(pipefd[0]);
 		exit(0);
 	}
 	else if (father > 0)
 	{
 		write(2, "333\n", 4);
-		close(pipefd[0]);
-		dup2(fd, pipefd[1]);
 		close(pipefd[1]);
 	//	close(fd);
 	}

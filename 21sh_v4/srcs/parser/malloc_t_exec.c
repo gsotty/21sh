@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/25 15:00:55 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/29 15:31:56 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/10/02 14:24:31 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,10 @@ static int		malloc_t_exec_redir(t_exec *c, int redir,
 		if ((c->sep[x]->pipe[y]->redir[z] =
 					ft_memalloc(sizeof(*c->sep[x]->pipe[y]->redir[z]))) == NULL)
 			return (1);
+		c->sep[x]->pipe[y]->redir[z]->fd = -1;
+		c->sep[x]->pipe[y]->redir[z]->digit = -1;
+		c->sep[x]->pipe[y]->redir[z]->len_heredoc = -1;
+		c->sep[x]->pipe[y]->redir[z]->type = -1;
 		z++;
 	}
 	return (0);

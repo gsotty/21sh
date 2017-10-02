@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/25 16:25:03 by gsotty            #+#    #+#             */
-/*   Updated: 2017/10/01 16:45:30 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/10/02 17:44:07 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,10 @@ static void	print_tree(t_exec *c)
 						c->sep[x]->pipe[y]->redir[w]->digit);
 				ft_printf("				[%s]\n",
 						c->sep[x]->pipe[y]->redir[w]->heredoc);
+				ft_printf("				[%d]\n",
+						c->sep[x]->pipe[y]->redir[w]->len_heredoc);
+				ft_printf("				[%d]\n",
+						c->sep[x]->pipe[y]->redir[w]->option);
 				w++;
 			}
 			y++;
@@ -151,13 +155,15 @@ int			creat_tree(t_exec *c, t_lchar *cmd, t_history *history)
 							->redir[redir]->file_name, LEN_REMAL_LI, buffer,
 							history))) == NULL)
 					return (1);
+				c->sep[sep]->pipe[pipe]->redir[redir]->len_heredoc =
+					ft_strlen(c->sep[sep]->pipe[pipe]->redir[redir]->file_name);
 			}
 		}
 		else if (cmd[pos].type == _DIGIT)
 		{
 			tmp_pos = pos;
 			pos += ft_lcharlen_to_type(cmd + pos, _DIGIT);
-			c->sep[sep]->pipe[pipe]->redir[redir + 1]->digit =
+			c->sep[sep]->pipe[pipe]->redir[redir]->digit =
 				ft_atoi_lchar(cmd + tmp_pos);
 		}
 		else if (cmd[pos].type == _FD)
@@ -195,6 +201,11 @@ int			creat_tree(t_exec *c, t_lchar *cmd, t_history *history)
 			redir++;
 			c->sep[sep]->pipe[pipe]->redir[redir]->type = cmd[pos].type;
 			pos = pos + 2;
+		}
+		else if (cmd[pos].type == _TIRET)
+		{
+			c->sep[sep]->pipe[pipe]->redir[redir]->option = 1;
+			pos++;
 		}
 		else
 		{

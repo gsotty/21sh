@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/29 16:47:53 by gsotty            #+#    #+#             */
-/*   Updated: 2017/10/01 19:02:53 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/10/02 17:57:53 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,23 +19,37 @@
 **		write(0, "\n", 1);
 */
 
-static int	fork_base(t_cmd cmd, t_tab_pid_t *tab_pid)
+static int	fork_base(int *pipefd_int, int *pipefd_out,
+		t_cmd cmd, t_tab_pid_t *tab_pid)
 {
 	pid_t	father;
 	father = fork();
 
 	if (father == 0)
 	{
+		close_all(pipefd_int, pipefd_out);
+		ft_printf("fd = [%d], [%d], [%d], [%d]\n", tab_pid->fd_int,
+				tab_pid->fd_out, tab_pid->fd_to_int, tab_pid->fd_to_out);
+		if (tab_pid->fd_to_int == -1 && tab_pid->fd_int != -1)
+			dup2(tab_pid->fd_int, 0);
+		else if (tab_pid->fd_to_int != -1 && tab_pid->fd_int != -1)
+			dup2(tab_pid->fd_int, tab_pid->fd_to_int);
+		if (tab_pid->fd_to_out == -1 && tab_pid->fd_out != -1)
+			dup2(tab_pid->fd_out, 1);
+		else if (tab_pid->fd_to_out != -1 && tab_pid->fd_out != -1)
+			dup2(tab_pid->fd_out, tab_pid->fd_to_out);
 		exec_cmd(cmd);
 		exit(0);
 	}
 	else if (father > 0)
 	{
+		close_tow_fd(tab_pid->fd_int, tab_pid->fd_out);
 		tab_pid->pid_t[tab_pid->len] = father;
 		tab_pid->len++;
 	}
 	else
 	{
+		close_all(pipefd_int, pipefd_out);
 		write(2, "error fork\n", 11);
 		return (1);
 	}
@@ -53,12 +67,24 @@ static int	fork_int(int *pipefd_int, int *pipefd_out, t_cmd cmd,
 		close_tow_fd(pipefd_out[0], pipefd_out[1]);
 		close(pipefd_int[1]);
 		dup2(pipefd_int[0], 0);
+		if (tab_pid->fd_to_int == -1 && tab_pid->fd_int != -1)
+		{
+			close(pipefd_int[0]);
+			dup2(tab_pid->fd_int, 0);
+		}
+		else if (tab_pid->fd_to_int != -1 && tab_pid->fd_int != -1)
+			dup2(tab_pid->fd_int, tab_pid->fd_to_int);
+		if (tab_pid->fd_to_out == -1 && tab_pid->fd_out != -1)
+			dup2(tab_pid->fd_out, 1);
+		else if (tab_pid->fd_to_out != -1 && tab_pid->fd_out != -1)
+			dup2(tab_pid->fd_out, tab_pid->fd_to_out);
 		exec_cmd(cmd);
 		close(pipefd_int[0]);
 		exit(0);
 	}
 	else if (father > 0)
 	{
+		close_tow_fd(tab_pid->fd_int, tab_pid->fd_out);
 		tab_pid->pid_t[tab_pid->len] = father;
 		tab_pid->len++;
 	}
@@ -82,12 +108,24 @@ static int	fork_out(int *pipefd_int, int *pipefd_out, t_cmd cmd,
 		close_tow_fd(pipefd_int[0], pipefd_int[1]);
 		close(pipefd_out[0]);
 		dup2(pipefd_out[1], 1);
+		if (tab_pid->fd_to_int == -1 && tab_pid->fd_int != -1)
+			dup2(tab_pid->fd_int, 0);
+		else if (tab_pid->fd_to_int != -1 && tab_pid->fd_int != -1)
+			dup2(tab_pid->fd_int, tab_pid->fd_to_int);
+		if (tab_pid->fd_to_out == -1 && tab_pid->fd_out != -1)
+		{
+			close(pipefd_out[1]);
+			dup2(tab_pid->fd_out, 1);
+		}
+		else if (tab_pid->fd_to_out != -1 && tab_pid->fd_out != -1)
+			dup2(tab_pid->fd_out, tab_pid->fd_to_out);
 		exec_cmd(cmd);
 		close(pipefd_out[1]);
 		exit(0);
 	}
 	else if (father > 0)
 	{
+		close_tow_fd(tab_pid->fd_int, tab_pid->fd_out);
 		tab_pid->pid_t[tab_pid->len] = father;
 		tab_pid->len++;
 	}
@@ -108,17 +146,30 @@ static int	fork_int_and_out(int *pipefd_int, int *pipefd_out, t_cmd cmd,
 
 	if (father == 0)
 	{
-		close(pipefd_out[0]);
-		close(pipefd_int[1]);
+		close_tow_fd(pipefd_int[1], pipefd_out[0]);
 		dup2(pipefd_int[0], 0);
 		dup2(pipefd_out[1], 1);
+		if (tab_pid->fd_to_int == -1 && tab_pid->fd_int != -1)
+		{
+			close(pipefd_int[0]);
+			dup2(tab_pid->fd_int, 0);
+		}
+		else if (tab_pid->fd_to_int != -1 && tab_pid->fd_int != -1)
+			dup2(tab_pid->fd_int, tab_pid->fd_to_int);
+		if (tab_pid->fd_to_out == -1 && tab_pid->fd_out != -1)
+		{
+			close(pipefd_out[1]);
+			dup2(tab_pid->fd_out, 1);
+		}
+		else if (tab_pid->fd_to_out != -1 && tab_pid->fd_out != -1)
+			dup2(tab_pid->fd_out, tab_pid->fd_to_out);
 		exec_cmd(cmd);
-		close(pipefd_out[1]);
-		close(pipefd_int[0]);
+		close_tow_fd(pipefd_int[0], pipefd_out[1]);
 		exit(0);
 	}
 	else if (father > 0)
 	{
+		close_tow_fd(tab_pid->fd_int, tab_pid->fd_out);
 		tab_pid->pid_t[tab_pid->len] = father;
 		tab_pid->len++;
 	}
@@ -141,6 +192,11 @@ static int	malloc_tab_pid_t(t_tab_pid_t *tab_pid)
 	if ((tab_pid->pid_t = ft_memalloc(sizeof(pid_t) * LEN_REMALLOC)) == NULL)
 		return (1);
 	tab_pid->len_malloc = LEN_REMALLOC;
+	tab_pid->fd_int = -1;
+	tab_pid->fd_out = -1;
+	tab_pid->heredoc = -1;
+	tab_pid->fd_to_int = -1;
+	tab_pid->fd_to_out = -1;
 	return (0);
 }
 
@@ -176,13 +232,11 @@ static int	remalloc_pid_t(t_tab_pid_t *tab_pid)
 
 int			exec_tree(t_exec *c)
 {
-	int				fd;
 	int				sep;
 	int				_pipe;
 	int				redir;
 	int				verif_int;
 	int				rotaite_fd;
-	int				is_redir;
 	int				pipefd_one[2];
 	int				pipefd_tow[2];
 	t_tab_pid_t		tab_pid;
@@ -202,39 +256,61 @@ int			exec_tree(t_exec *c)
 		while (c->sep[sep]->pipe[_pipe] != NULL)
 		{
 			redir = 0;
-			is_redir = 0;
+			tab_pid.fd_int = -1;
+			tab_pid.fd_out = -1;
+			tab_pid.heredoc = -1;
+			tab_pid.fd_to_int = -1;
+			tab_pid.fd_to_out = -1;
 			if (remalloc_pid_t(&tab_pid) == 1)
 				return (1);
 			while (c->sep[sep]->pipe[_pipe]->redir[redir] != NULL)
 			{
 				if (c->sep[sep]->pipe[_pipe]->redir[redir]->type == _RINT)
 				{
-					is_redir = 1;
-					verif_int = 0;
-					fd = open(c->sep[sep]->pipe[_pipe]->redir[redir]->file_name,
-							O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP
-							| S_IROTH);
+					tab_pid.fd_int = open(c->sep[sep]->pipe[_pipe]->redir[
+							redir]->file_name, O_RDWR | O_CREAT,
+							S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+					if (c->sep[sep]->pipe[_pipe]->redir[redir]->fd != -1)
+						tab_pid.fd_to_int =
+							c->sep[sep]->pipe[_pipe]->redir[redir]->fd;
 				}
-				if (c->sep[sep]->pipe[_pipe]->redir[redir]->type == _ROUT)
+				else if (c->sep[sep]->pipe[_pipe]->redir[redir]->type == _ROUT)
 				{
-					is_redir = 2;
-					verif_int = 1;
-					fd = open(c->sep[sep]->pipe[_pipe]->redir[redir]->file_name,
-							O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP
-							| S_IROTH);
+					tab_pid.fd_out = open(c->sep[sep]->pipe[_pipe]->redir[
+							redir]->file_name, O_RDWR | O_CREAT | O_TRUNC,
+							S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+					if (c->sep[sep]->pipe[_pipe]->redir[redir]->fd != -1)
+						tab_pid.fd_to_out =
+							c->sep[sep]->pipe[_pipe]->redir[redir]->fd;
+				}
+				else if (c->sep[sep]->pipe[_pipe]->redir[redir]->type ==
+						_APPROUT)
+				{
+					tab_pid.fd_out = open(c->sep[sep]->pipe[_pipe]->redir[
+							redir]->file_name, O_RDWR | O_CREAT | O_APPEND,
+							S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+					if (c->sep[sep]->pipe[_pipe]->redir[redir]->fd != -1)
+						tab_pid.fd_to_out =
+							c->sep[sep]->pipe[_pipe]->redir[redir]->fd;
+				}
+				else if (c->sep[sep]->pipe[_pipe]->redir[redir]->type ==
+						_HEREDOC)
+				{
+					tab_pid.heredoc = 1;
+					write(T_ROTAIT[1], c->sep[sep]->pipe[_pipe]->redir[
+							redir]->heredoc, c->sep[sep]->pipe[_pipe]->redir[
+							redir]->len_heredoc);
 				}
 				redir++;
 			}
-			if (c->sep[sep]->pipe[_pipe + 1] != NULL && verif_int == 1 &&
-					is_redir == 2)
+			if (c->sep[sep]->pipe[_pipe + 1] != NULL && verif_int == 1)
 			{
 				verif_int = 0;
 				if (fork_out(T_ROTAIT_INV, T_ROTAIT,
 							c->sep[sep]->pipe[_pipe]->cmd, &tab_pid) == 1)
 					return (1);
 			}
-			else if (c->sep[sep]->pipe[_pipe + 1] == NULL && verif_int == 0 &&
-					is_redir == 1)
+			else if (c->sep[sep]->pipe[_pipe + 1] == NULL && verif_int == 0)
 			{
 				verif_int = 1;
 				if (fork_int(T_ROTAIT, T_ROTAIT_INV,
@@ -261,7 +337,8 @@ int			exec_tree(t_exec *c)
 			else if (c->sep[sep]->pipe[_pipe + 1] == NULL)
 			{
 				close_all(pipefd_one, pipefd_tow);
-				fork_base(c->sep[sep]->pipe[_pipe]->cmd, &tab_pid);
+				fork_base(T_ROTAIT, T_ROTAIT_INV,
+						c->sep[sep]->pipe[_pipe]->cmd, &tab_pid);
 			}
 			else
 			{
@@ -269,13 +346,13 @@ int			exec_tree(t_exec *c)
 			}
 			_pipe++;
 		}
+		close_all(pipefd_one, pipefd_tow);
+		pid_t	rep;
+		while ((rep = waitpid(-1, NULL, 0)) > -1)
+		{
+			ft_printf("wait = [%d]\n", rep);
+		}
 		sep++;
-	}
-	pid_t	rep;
-
-	close_all(pipefd_one, pipefd_tow);
-	while ((rep = waitpid(-1, NULL, 0)) > -1)
-	{
 	}
 	write(1, "\n", 1);
 	return (0);

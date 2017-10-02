@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/23 13:29:19 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/29 17:59:45 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/10/02 17:39:55 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,10 +200,10 @@ static int		define_lchar(t_lchar *cmd)
 			if (cmd_is_enpli == 1)
 				is_cmd = 1;
 		}
-		else if (cmd[x].c == '-' && (cmd[x + 1].c == ' ' ||
-					cmd[x + 1].c == '\t' || cmd[x + 1].c == '\n'))
+		else if (cmd[x + 1].c == '-' && (cmd[x].type == _DUP_ROUT ||
+					cmd[x].type == _DUP_RINT))
 		{
-			cmd[x].type = _TIRET;
+			cmd[x + 1].type = _TIRET;
 		}
 		else if ((cmd[x].type == _DUP_ROUT || cmd[x].type == _DUP_RINT)
 				&& ft_isdigit(cmd[x + 1].c) == 1)
@@ -315,6 +315,12 @@ int				parser(t_lchar *cmd, int len, t_history *history)
 	ft_memset(&len_exec, 0, sizeof(t_len_exec));
 	define_lchar(cmd);
 	creat_t_len_exec(cmd, &len_exec);
+	int		a = 0;
+	while (cmd[a].c != '\0')
+	{
+		ft_printf("cmd = [%c], [%s]\n", cmd[a].c, ft_print_type(cmd[a].type));
+		a++;
+	}
 	if (malloc_t_exec(cmd, &c) == 1)
 		return (1);
 	creat_tree(&c, cmd, history);
