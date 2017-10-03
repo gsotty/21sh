@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/30 16:15:46 by gsotty            #+#    #+#             */
-/*   Updated: 2017/10/01 16:44:59 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/10/03 11:43:35 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 
 void	exec_ls(char **envp)
 {
-	char	*tab_1[3];
+	char	*tab_1[5];
 
 	tab_1[0] = "ls";
 	tab_1[1] = "-l";
-	tab_1[2] = NULL;
+	tab_1[2] = ".";
+	tab_1[3] = "qwer";
+	tab_1[4] = NULL;
 	execve("/bin/ls", tab_1, envp);
 }
 
@@ -55,6 +57,7 @@ int		main(int argc, char **argv, char **envp)
 		close(pipefd_2[0]);
 		close(pipefd_2[1]);
 		close(pipefd[0]);
+		dup2(pipefd[1], 2);
 		dup2(pipefd[1], 1);
 		exec_ls(envp);
 		exit(0);

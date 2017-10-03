@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/01 16:56:12 by gsotty            #+#    #+#             */
-/*   Updated: 2017/10/02 11:04:40 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/10/03 12:03:24 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,12 @@
 
 static int	execute_ls(char **envp)
 {
-	char	*tab1[3];
+	char	*tab1[5];
 
 	tab1[0] = "ls";
 	tab1[1] = "-l";
+	tab1[1] = ".";
+	tab1[1] = "qwer";
 	tab1[2] = NULL;
 	execve("/bin/ls", tab1, envp);
 	return (1);
@@ -35,12 +37,14 @@ int			main(int argc, char **argv, char **envp)
 		return (1);
 	}
 	write(2, "111\n", 4);
-	fd = open("test", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP |
+	fd = open("test", O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP |
 		S_IROTH);
 	father = fork();
 	if (father == 0)
 	{
 		write(2, "222\n", 4);
+		close(pipefd[1]);
+		close(pipefd[0]);
 		dup2(fd, 1);
 		execute_ls(envp);
 		exit(0);
@@ -49,6 +53,7 @@ int			main(int argc, char **argv, char **envp)
 	{
 		write(2, "333\n", 4);
 		close(pipefd[1]);
+		close(pipefd[0]);
 	//	close(fd);
 	}
 	else

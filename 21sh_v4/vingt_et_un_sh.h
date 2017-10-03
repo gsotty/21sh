@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 13:54:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/10/02 17:57:56 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/10/03 15:40:17 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,12 @@
 
 /*
 ** Define prompt
+# define _PROMPT "\033[36m$>\033[0m "
 */
 
-# define _PROMPT "\033[36m$>\033[0m "
-# define _PROMPT_LEN 3
-# define _PROMPT_LEN_WRITE 12
+# define _PROMPT "bonjour c'est mon shell ^^"
+# define _PROMPT_LEN (int)ft_strlen(_PROMPT)
+# define _PROMPT_LEN_WRITE (int)ft_strlen(_PROMPT)
 # define _PROMPT_ML "> "
 # define _PROMPT_LEN_ML 2
 # define _PROMPT_LEN_WRITE_ML 2
@@ -89,6 +90,7 @@
 # define _CMD 18
 # define _FILE_NAME 19
 # define _NEW_LINE 20
+# define _NBR 21
 
 /*
 ** Define tools
@@ -134,6 +136,19 @@ typedef struct		s_len_cmd
 	int				len;
 	int				len_malloc;
 }					t_len_cmd;
+
+/*
+** Structur pour l'exec
+*/
+
+typedef struct		s_define_lchar
+{
+	int		is_cmd;
+	int		is_redir;
+	int		is_tiret;
+	int		is_digit;
+	int		cmd_is_enpli;
+}					t_define_lchar;
 
 /*
 ** Structur pour l'exec
@@ -336,5 +351,6 @@ int					exec_tree(t_exec *c);
 char				*remalloc_cmd(t_len_cmd *len, char *cmd);
 void				close_all(int *pipefd_int, int *pipefd_out);
 void				close_tow_fd(int fd1, int fd2);
+//int					define_lchar(t_lchar *cmd);
 
 #endif

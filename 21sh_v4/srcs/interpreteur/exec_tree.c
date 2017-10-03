@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/29 16:47:53 by gsotty            #+#    #+#             */
-/*   Updated: 2017/10/02 17:57:53 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/10/03 15:30:26 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ static int	fork_base(int *pipefd_int, int *pipefd_out,
 		t_cmd cmd, t_tab_pid_t *tab_pid)
 {
 	pid_t	father;
-	father = fork();
 
+	father = fork();
 	if (father == 0)
 	{
 		close_all(pipefd_int, pipefd_out);
@@ -348,9 +348,10 @@ int			exec_tree(t_exec *c)
 		}
 		close_all(pipefd_one, pipefd_tow);
 		pid_t	rep;
-		while ((rep = waitpid(-1, NULL, 0)) > -1)
+		int		status;
+		while ((rep = waitpid(-1, &status, 0)) > -1)
 		{
-			ft_printf("wait = [%d]\n", rep);
+			ft_printf("wait = [%d], rep = [%d]\n", rep, WEXITSTATUS(status));
 		}
 		sep++;
 	}

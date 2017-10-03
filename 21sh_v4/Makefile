@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/10/02 17:57:59 by gsotty           ###   ########.fr        #
+#    Updated: 2017/10/03 15:15:15 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -83,7 +83,7 @@ SRC = main.c \
 	  exec_cmd.c \
 	  exec_tree.c \
 	  remalloc_cmd.c \
-	  close_pipefd.c
+	  close_pipefd.c 
 
 OBJ = $(SRC:.c=.o)
 
