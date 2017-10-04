@@ -1,32 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   convert_lchar_to_char.c                            :+:      :+:    :+:   */
+/*   approut_heredoc.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/28 15:11:40 by gsotty            #+#    #+#             */
-/*   Updated: 2017/10/04 17:50:58 by gsotty           ###   ########.fr       */
+/*   Created: 2017/10/04 14:02:49 by gsotty            #+#    #+#             */
+/*   Updated: 2017/10/04 14:04:15 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-char	*convert_lchar_to_char(t_lchar *lchar)
+void		approut_heredoc(int type, t_define_lchar *struct_var, t_lchar *cmd)
 {
-	int		len;
-	int		x;
-	char	*str;
-
-	x = 0;
-	len = ft_strlen_lchar(lchar);
-	if ((str = ft_memalloc(sizeof(char) * (len + 1))) == NULL)
-		return (NULL);
-	while (lchar[x].c != '\0')
-	{
-		str[x] = lchar[x].c;
-		x++;
-	}
-	str[x] = '\0';
-	return (str);
+	cmd[struct_var->x].type = type;
+	cmd[struct_var->x + 1].type = type;
+	struct_var->is_redir = 1;
+	struct_var->is_digit = 0;
+	rep_nbr(struct_var->x, cmd);
 }

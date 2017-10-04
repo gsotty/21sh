@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/29 12:15:27 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/29 12:41:52 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/10/04 14:11:19 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,6 @@ int					key_of_keyboard_heredoc(char *buffer, t_pos *pos,
 
 	ft_memset(&win, 0, sizeof(win));
 	ioctl(0, TIOCGWINSZ, &win);
-//	if (buffer[0] == 4 && buffer[1] == 0 && buffer[2] == 0)
-//	{
-//		if (ctrl_d(pos, history, 1) == 1)
-//			return (1);
-//	}
 	key_of_keyboard_2(buffer, pos, history, 1);
 	return (0);
 }

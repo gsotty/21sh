@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 16:00:41 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/29 16:30:44 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/10/04 17:49:55 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,8 @@ t_lchar			*creat_heredoc(char *eof, int nbr_line, char *buffer,
 			return (free_struct_line(line, nbr_line));
 		if (buffer[0] == 10 && buffer[1] == 0 && buffer[2] == 0)
 		{
-			if (ft_strcmp(convert_lchar_to_char(line[x].history->history
-							[line[x].pos->history]), ft_strjoin(eof, "\n")) == 0)
+			if (ft_strcmp(convert_lchar_to_char(line[x].history->history[line[
+							x].pos->history]), ft_strjoin(eof, "\n")) == 0)
 				break ;
 			if (new_line_buf(history, &nbr_line, ++x, &line) == 1)
 				return (NULL);

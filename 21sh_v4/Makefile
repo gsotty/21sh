@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/10/03 15:15:15 by gsotty           ###   ########.fr        #
+#    Updated: 2017/10/04 19:02:23 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -83,7 +83,20 @@ SRC = main.c \
 	  exec_cmd.c \
 	  exec_tree.c \
 	  remalloc_cmd.c \
-	  close_pipefd.c 
+	  close_pipefd.c \
+	  define_lchar.c \
+	  take_token.c \
+	  rep_nbr.c \
+	  define_lchar.c \
+	  approut_heredoc.c \
+	  define_word.c \
+	  malloc_t_exec_redir.c \
+	  ft_memcpy_char_lchar.c \
+	  ft_lcharlen_to_type.c \
+	  creat_tree_2.c \
+	  print_tree.c \
+	  add_cmd.c \
+	  add_argv.c
 
 OBJ = $(SRC:.c=.o)
 

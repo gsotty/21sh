@@ -6,77 +6,39 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/25 15:00:55 by gsotty            #+#    #+#             */
-/*   Updated: 2017/10/02 14:24:31 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/10/04 14:28:18 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-static int		len_redir(t_lchar *cmd, int sep, int pipe)
+static int		len_redir(int x, t_lchar *cmd, int sep, int pipe)
 {
-	int		x;
 	int		redir;
 	int		sep_verif;
 	int		pipe_verif;
 
-	x = 0;
 	redir = 0;
 	sep_verif = 0;
 	pipe_verif = 0;
-	while (cmd[x].c != '\0')
+	while (cmd[++x].c != '\0')
 	{
-		if ((cmd[x].type == _RINT || cmd[x].type == _ROUT)
-				&& sep_verif == sep && pipe_verif == pipe)
+		if ((cmd[x].type == _RINT || cmd[x].type == _ROUT) &&
+				(sep_verif == sep && pipe_verif == pipe))
+			redir++;
+		else if ((cmd[x].type == 6 || cmd[x].type == 7 || cmd[x].type == 10
+					|| cmd[x].type == 11 || cmd[x].type == 12) &&
+				(sep_verif == sep && pipe_verif == pipe))
 		{
 			redir++;
 			x++;
-		}
-		else if ((cmd[x].type ==  _APPROUT || cmd[x].type == _HEREDOC ||
-					cmd[x].type == _DUP_RINT || cmd[x].type == _DUP_ROUT ||
-					cmd[x].type == _ROUTERR) && sep_verif == sep && pipe_verif
-				== pipe)
-		{
-			redir++;
-			x = x + 2;
 		}
 		else if (cmd[x].type == _SEP)
-		{
 			sep_verif++;
-			x++;
-		}
 		else if (cmd[x].type == _PIPE)
-		{
 			pipe_verif++;
-			x++;
-		}
-		else
-			x++;
 	}
 	return (redir);
-}
-
-static int		malloc_t_exec_redir(t_exec *c, int redir,
-		int x, int y)
-{
-	int		z;
-
-	z = 0;
-	if ((c->sep[x]->pipe[y]->redir =
-				ft_memalloc(sizeof(*c->sep[x]->pipe[y]->redir) *
-					(redir + 1))) == NULL)
-		return (1);
-	while (z < redir)
-	{
-		if ((c->sep[x]->pipe[y]->redir[z] =
-					ft_memalloc(sizeof(*c->sep[x]->pipe[y]->redir[z]))) == NULL)
-			return (1);
-		c->sep[x]->pipe[y]->redir[z]->fd = -1;
-		c->sep[x]->pipe[y]->redir[z]->digit = -1;
-		c->sep[x]->pipe[y]->redir[z]->len_heredoc = -1;
-		c->sep[x]->pipe[y]->redir[z]->type = -1;
-		z++;
-	}
-	return (0);
 }
 
 static int		len_pipe(t_lchar *cmd, int sep)
@@ -110,7 +72,7 @@ static int		malloc_t_exec_pipe(t_lchar *cmd, t_exec *c, int pipe, int x)
 		return (1);
 	while (y < pipe)
 	{
-		redir = len_redir(cmd, x, y);
+		redir = len_redir(-1, cmd, x, y);
 		if ((c->sep[x]->pipe[y] = ft_memalloc(sizeof(*c->sep[x]->pipe[y])))
 				== NULL)
 			return (1);

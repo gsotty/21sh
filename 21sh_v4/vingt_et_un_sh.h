@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/18 13:54:20 by gsotty            #+#    #+#             */
-/*   Updated: 2017/10/03 15:40:17 by gsotty           ###   ########.fr       */
+/*   Created: 2017/10/04 17:56:09 by gsotty            #+#    #+#             */
+/*   Updated: 2017/10/04 19:02:25 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 ** Include
 */
 
-# include "./libft/libft.h"
-# include "./ft_printf/ft_printf.h"
 # include <unistd.h>
 # include <signal.h>
 # include <fcntl.h>
@@ -31,18 +29,20 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 
+# include "./libft/libft.h"
+# include "./ft_printf/ft_printf.h"
+
 /*
 ** Define prompt
-# define _PROMPT "\033[36m$>\033[0m "
 */
 
-# define _PROMPT "bonjour c'est mon shell ^^"
-# define _PROMPT_LEN (int)ft_strlen(_PROMPT)
-# define _PROMPT_LEN_WRITE (int)ft_strlen(_PROMPT)
+# define _PROMPT "\033[36m$>\033[0m "
+# define _PROMPT_LEN 3
+# define _PROMPT_LEN_WRITE 12
 # define _PROMPT_ML "> "
 # define _PROMPT_LEN_ML 2
 # define _PROMPT_LEN_WRITE_ML 2
-# define _DEFINE_LEN_P (modif_prompt == 0 ? _PROMPT_LEN : _PROMPT_LEN_ML)
+# define _DEFINE_LEN_P ((modif_prompt == 0) ? (_PROMPT_LEN) : (_PROMPT_LEN_ML))
 
 /*
 **	1er block:
@@ -97,8 +97,8 @@
 */
 
 # define _LINE line[x].history->history[line[x].pos->history]
-# define T_ROTAIT (rotaite_fd == 1 ? pipefd_one : pipefd_tow)
-# define T_ROTAIT_INV (rotaite_fd == 1 ? pipefd_tow : pipefd_one)
+# define T_ROTAIT ((rotaite_fd) == 1 ? (pipefd_one) : (pipefd_tow))
+# define T_ROTAIT_INV ((rotaite_fd == 1) ? (pipefd_tow) : (pipefd_one))
 # define NO_MODIF_PROMPT 0
 # define LEN_REMALLOC 255
 # define LEN_REMAL_LI 2
@@ -138,17 +138,32 @@ typedef struct		s_len_cmd
 }					t_len_cmd;
 
 /*
-** Structur pour l'exec
+** Structur pour le parser
 */
 
 typedef struct		s_define_lchar
 {
-	int		is_cmd;
-	int		is_redir;
-	int		is_tiret;
-	int		is_digit;
-	int		cmd_is_enpli;
+	int				x;
+	int				is_cmd;
+	int				is_redir;
+	int				is_tiret;
+	int				is_digit;
+	int				cmd_is_enpli;
 }					t_define_lchar;
+
+/*
+** Structur pour remplire l'exec
+*/
+
+typedef struct		s_creat_tree
+{
+	int				pos;
+	int				sep;
+	int				pipe;
+	int				redir;
+	int				argv;
+	int				rep;
+}					t_creat_tree;
 
 /*
 ** Structur pour l'exec
@@ -258,7 +273,6 @@ typedef struct		s_split
 
 typedef struct		s_tab_pid_t
 {
-	pid_t			*pid_t;
 	int				len;
 	int				len_malloc;
 	int				fd_int;
@@ -266,6 +280,7 @@ typedef struct		s_tab_pid_t
 	int				fd_to_int;
 	int				fd_to_out;
 	int				heredoc;
+	pid_t			*pid;
 }					t_tab_pid_t;
 
 /*
@@ -331,7 +346,8 @@ int					parser(t_lchar *cmd, int len, t_history *history);
 char				*ft_print_type(int x);
 int					creat_t_len_exec(t_lchar *cmd, t_len_exec *len_exec);
 int					malloc_t_exec(t_lchar *cmd, t_exec *c);
-int					creat_tree(t_exec *c, t_lchar *cmd, t_history *history);
+int					creat_tree(t_creat_tree *a, t_exec *c, t_lchar *cmd,
+		t_history *history);
 int					ft_atoi_lchar(t_lchar *str);
 t_lchar				*creat_heredoc(char *eof, int nbr_line, char *buffer,
 		t_history *history);
@@ -351,6 +367,20 @@ int					exec_tree(t_exec *c);
 char				*remalloc_cmd(t_len_cmd *len, char *cmd);
 void				close_all(int *pipefd_int, int *pipefd_out);
 void				close_tow_fd(int fd1, int fd2);
-//int					define_lchar(t_lchar *cmd);
+int					define_lchar(t_lchar *cmd);
+void				take_token(t_define_lchar *var, t_lchar *cmd);
+int					rep_nbr(int x, t_lchar *cmd);
+void				define_word(t_define_lchar *struct_var, t_lchar *cmd);
+void				approut_heredoc(int type, t_define_lchar *struct_var,
+		t_lchar *cmd);
+int					malloc_t_exec_redir(t_exec *c, int redir, int x, int y);
+char				*ft_memcpy_char_lchar(char *dest, const t_lchar *src,
+		size_t n);
+int					ft_lcharlen_to_type(t_lchar *cmd, int type);
+int					creat_tree_2(t_creat_tree *a, t_exec *c, t_lchar *cmd,
+		t_history *history);
+void				print_tree(t_exec *c);
+int					add_cmd(t_creat_tree *a, t_cmd *cmd, t_lchar *str);
+int					add_argv(t_creat_tree *a, t_cmd *cmd, t_lchar *str);
 
 #endif

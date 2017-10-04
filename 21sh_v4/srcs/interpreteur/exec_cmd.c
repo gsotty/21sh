@@ -6,20 +6,18 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/29 16:53:35 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/29 16:56:17 by gsotty           ###   ########.fr       */
+/*   Updated: 2017/10/04 17:54:23 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-static int		ft_exe_path(int len_cmd, int x, t_cmd *cmd)
+static int		ft_exe_path(char **path, int len_cmd, int x, t_cmd *cmd)
 {
 	int			len_path;
 	int			nbr_path;
 	char		*new_cmd;
-	char		**path;
 
-	path = ft_strsplit_space(find_var_envp("PATH"), ":");
 	nbr_path = len_tab(path);
 	while (x < nbr_path)
 	{
@@ -52,7 +50,8 @@ void			exec_cmd(t_cmd cmd)
 		execve(cmd.exec, cmd.argv, g_envp);
 	else
 	{
-		if (ft_exe_path(len_cmd, 0, &cmd) == 1)
+		if (ft_exe_path(ft_strsplit_space(find_var_envp("PATH"), ":"),
+					len_cmd, 0, &cmd) == 1)
 		{
 			write(2, "21sh: command not found: ", 25);
 			write(2, cmd.exec, len_cmd);

@@ -1,32 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   convert_lchar_to_char.c                            :+:      :+:    :+:   */
+/*   ft_memcpy_char_lchar.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/28 15:11:40 by gsotty            #+#    #+#             */
-/*   Updated: 2017/10/04 17:50:58 by gsotty           ###   ########.fr       */
+/*   Created: 2017/10/04 16:55:31 by gsotty            #+#    #+#             */
+/*   Updated: 2017/10/04 17:04:41 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-char	*convert_lchar_to_char(t_lchar *lchar)
+char				*ft_memcpy_char_lchar(char *dest, const t_lchar *src,
+		size_t n)
 {
-	int		len;
-	int		x;
-	char	*str;
+	size_t			x;
+	size_t			y;
+	const t_lchar	*tabsrc;
+	char			*tabdest;
 
 	x = 0;
-	len = ft_strlen_lchar(lchar);
-	if ((str = ft_memalloc(sizeof(char) * (len + 1))) == NULL)
-		return (NULL);
-	while (lchar[x].c != '\0')
+	y = 0;
+	tabsrc = src;
+	tabdest = dest;
+	while (x < n)
 	{
-		str[x] = lchar[x].c;
+		if (tabsrc[x].c != '\0' && tabsrc[x].type != 0)
+		{
+			tabdest[y] = tabsrc[x].c;
+			y++;
+		}
 		x++;
 	}
-	str[x] = '\0';
-	return (str);
+	tabdest[y] = '\0';
+	return (tabdest);
 }

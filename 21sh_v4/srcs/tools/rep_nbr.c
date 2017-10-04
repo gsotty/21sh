@@ -1,32 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   convert_lchar_to_char.c                            :+:      :+:    :+:   */
+/*   rep_nbr.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/28 15:11:40 by gsotty            #+#    #+#             */
-/*   Updated: 2017/10/04 17:50:58 by gsotty           ###   ########.fr       */
+/*   Created: 2017/10/04 12:21:28 by gsotty            #+#    #+#             */
+/*   Updated: 2017/10/04 12:23:36 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-char	*convert_lchar_to_char(t_lchar *lchar)
+int		rep_nbr(int x, t_lchar *cmd)
 {
-	int		len;
-	int		x;
-	char	*str;
+	int		y;
 
-	x = 0;
-	len = ft_strlen_lchar(lchar);
-	if ((str = ft_memalloc(sizeof(char) * (len + 1))) == NULL)
-		return (NULL);
-	while (lchar[x].c != '\0')
+	y = x - 1;
+	while (cmd[y].type == _NBR && y > 0)
 	{
-		str[x] = lchar[x].c;
-		x++;
+		cmd[y].type = _FD;
+		y--;
 	}
-	str[x] = '\0';
-	return (str);
+	return (1);
 }

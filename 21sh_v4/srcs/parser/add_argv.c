@@ -1,32 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   convert_lchar_to_char.c                            :+:      :+:    :+:   */
+/*   add_argv.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/28 15:11:40 by gsotty            #+#    #+#             */
-/*   Updated: 2017/10/04 17:50:58 by gsotty           ###   ########.fr       */
+/*   Created: 2017/10/04 17:43:30 by gsotty            #+#    #+#             */
+/*   Updated: 2017/10/04 17:47:03 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../vingt_et_un_sh.h"
 
-char	*convert_lchar_to_char(t_lchar *lchar)
+int		add_argv(t_creat_tree *a, t_cmd *cmd, t_lchar *str)
 {
-	int		len;
-	int		x;
-	char	*str;
+	int			tmp_pos;
 
-	x = 0;
-	len = ft_strlen_lchar(lchar);
-	if ((str = ft_memalloc(sizeof(char) * (len + 1))) == NULL)
-		return (NULL);
-	while (lchar[x].c != '\0')
-	{
-		str[x] = lchar[x].c;
-		x++;
-	}
-	str[x] = '\0';
-	return (str);
+	tmp_pos = a->pos;
+	a->pos += ft_lcharlen_to_type(str + a->pos, _ARGV);
+	if ((cmd->argv[a->argv] = ft_memalloc(sizeof(char) *
+					(a->pos + 1))) == NULL)
+		return (1);
+	ft_memcpy_char_lchar(cmd->argv[a->argv], str + tmp_pos, a->pos - tmp_pos);
+	a->argv++;
+	return (0);
 }
