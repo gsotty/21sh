@@ -6,7 +6,7 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/04/11 12:09:35 by gsotty           ###   ########.fr        #
+#    Updated: 2017/09/08 11:55:59 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = libftprintf.a
 
 CC = gcc
 
-FLAG = -Wall -Wextra -Werror
+FLAG = -Wall -Wextra -Werror -g ## -fsanitize=address
 
 SRC = check_flag.c check_lenght.c check_precision.c check_specifier.c \
 	  check_width.c ft_intmax_t_itoa_base.c write_u.c \
