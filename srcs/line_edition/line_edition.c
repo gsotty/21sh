@@ -11,7 +11,7 @@ int			ft_remalloc_buf(t_history *history)
 {
 	char		*new_buf;
 
-	if ((new_buf = ft_memalloc(sizeof(char) * (history->len_malloc[history->pos_buf] + 1))) == NULL)
+	if ((new_buf = ft_memalloc(sizeof(char) * (history->len_malloc[history->pos_buf]))) == NULL)
 		return (1);
 	ft_memcpy(new_buf, history->buf[history->pos_buf], history->len[history->pos_buf]);
 	if (history->len[history->pos_buf] != 0)
@@ -26,6 +26,7 @@ int			creat_buf(t_history *history, char *buffer)
 	char	tmp;
 	char	tmp_buf;
 
+	printf("pos_buf du creat_buf: [%d]\n", history->pos_buf);
 	if (history->len[history->pos_buf] >= history->len_malloc[history->pos_buf])
 	{
 		history->len_malloc[history->pos_buf] += LEN_REMALLOC;

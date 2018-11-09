@@ -9,7 +9,7 @@
 # include <unistd.h>
 
 # define PATH_HISTORY ".21sh_history"
-# define REMALLOC_HISTORY 1
+# define REMALLOC_HISTORY 10
 
 typedef struct		s_history
 {
