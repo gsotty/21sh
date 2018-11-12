@@ -28,6 +28,11 @@ int		buffer_to_stock(int fd, int len_stock, char **stock, int *bytes_read)
 		free(buffer);
 		return (0);
 	}
+	else if (*bytes_read == 0)
+	{
+		free(buffer);
+		return (1);
+	}
 	buffer[*bytes_read] = '\0';
 	if ((tmp = ft_memalloc(sizeof(char) * (len_stock + BUFF_SIZE + 1))) == NULL)
 		return (0);
@@ -38,6 +43,8 @@ int		buffer_to_stock(int fd, int len_stock, char **stock, int *bytes_read)
 	*stock = tmp;
 	return (1);
 }
+
+#include <stdio.h>
 
 void	cut_stock(char **stock, char *str)
 {
@@ -56,7 +63,6 @@ int		file_end(char **line, char **stock)
 		free(*stock);
 		return (1);
 	}
-	free(*stock);
 	return (0);
 }
 
@@ -86,6 +92,7 @@ int		get_next_line(const int fd, char **line)
 			return (file_end(line, &stock));
 	}
 	str = ft_strchr(stock, '\n');
+	printf("test: [%s], [%ld]\n", stock, str - stock);
 	*line = ft_strsub(stock, 0, str - stock);
 	cut_stock(&stock, str);
 	return (1);
