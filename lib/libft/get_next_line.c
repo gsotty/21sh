@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-int		buffer_to_stock(int fd, char **stock, int *bytes_read)
+int		buffer_to_stock(int fd, int len_stock, char **stock, int *bytes_read)
 {
 	char	*buffer;
 	char	*tmp;
@@ -29,19 +29,22 @@ int		buffer_to_stock(int fd, char **stock, int *bytes_read)
 		return (0);
 	}
 	buffer[*bytes_read] = '\0';
-	tmp = ft_strjoin(*stock, buffer);
+	if ((tmp = ft_memalloc(sizeof(char) * (len_stock + BUFF_SIZE + 1))) == NULL)
+		return (0);
+	ft_memcpy(tmp, *stock, len_stock);
 	free(*stock);
-	*stock = tmp;
+	ft_memcpy(tmp + len_stock, buffer, BUFF_SIZE);
 	free(buffer);
+	*stock = tmp;
 	return (1);
 }
 
 void	cut_stock(char **stock, char *str)
 {
-	char	*tmp;
+	char		*tmp;
 
 	tmp = ft_strdup(str + 1);
-	ft_strdel(stock);
+	free(*stock);
 	*stock = tmp;
 }
 
@@ -50,16 +53,16 @@ int		file_end(char **line, char **stock)
 	if (ft_strlen(*stock))
 	{
 		*line = ft_strdup(*stock);
-		ft_strdel(stock);
+		free(*stock);
 		return (1);
 	}
+	free(*stock);
 	return (0);
 }
 
 int		error_handling(char **stock)
 {
-	if (stock)
-		ft_strdel(stock);
+	free(*stock);
 	return (-1);
 }
 
@@ -68,14 +71,16 @@ int		get_next_line(const int fd, char **line)
 	static char		*stock = NULL;
 	char			*str;
 	int				bytes_read;
+	int				len_stock;
 
-	if (fd < 0 || !(line) || BUFF_SIZE < 0)
+	if (fd < 0 || BUFF_SIZE < 0)
 		return (-1);
 	if (!(stock))
 		stock = ft_strnew(0);
 	while (!(ft_strchr(stock, '\n')))
 	{
-		if (!(buffer_to_stock(fd, &stock, &bytes_read)))
+		len_stock = ft_strlen(stock);
+		if (!(buffer_to_stock(fd, len_stock, &stock, &bytes_read)))
 			return (error_handling(&stock));
 		if (bytes_read == 0)
 			return (file_end(line, &stock));

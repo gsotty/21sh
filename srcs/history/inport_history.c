@@ -1,5 +1,4 @@
 #include "../../include/history.h"
-#include <stdio.h>
 
 static int		ft_nbr_line()
 {
@@ -13,7 +12,6 @@ static int		ft_nbr_line()
 		return (-1);
 	while ((ret = get_next_line(fd, &line)) > 0)
 	{
-		printf("bonjour N%d, ret = [%d], line = [%s]\n", count, ret, line);
 		if (ret == -1)
 			return (-1);
 		free(line);
@@ -49,11 +47,13 @@ static int		take_line(int len, t_history *history)
 	count = 0;
 	while ((ret = get_next_line(fd, &line)) > 0)
 	{
+		if (ret == -1)
+			return (-1);
 		len_arg = ft_strlen(line);
 		history->len[count] = len_arg;
 		history->len_malloc[count] = len_arg;
 		history->pos[count] = 0;
-		if ((history->buf[count] = ft_memalloc(sizeof(char) * (len_arg + 1))) == NULL)
+		if ((history->buf[count] = ft_memalloc((sizeof(char) * len_arg) + 1)) == NULL)
 			return (1);
 		ft_memcpy(history->buf[count], line, len_arg);
 		free(line);
@@ -62,8 +62,6 @@ static int		take_line(int len, t_history *history)
 	close(fd);
 	return (0);
 }
-
-#include <stdio.h>
 
 int			inport_history(t_history *history)
 {
@@ -88,15 +86,5 @@ int			inport_history(t_history *history)
 		history->pos_buf = 0;
 	}
 	close(fd);
-
-	printf("\nimport history: %d, %d, %d\n", history->len_buf, history->malloc_buf, history->pos_buf);
-	int w = 0;
-	while (history->len_buf >= w)
-	{
-		printf("%d, %d, %d, %d, %s\n", w, history->len[w], history->len_malloc[w], history->pos[w], history->buf[w]);
-		w++;
-	}
-	printf("exit import\n\n");
-
 	return (0);
 }

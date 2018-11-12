@@ -15,27 +15,19 @@
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	int		x;
-	int		lens1;
-	int		lens2;
-	char	*tab;
+	char			*dest;
+	unsigned int	i;
 
-	x = -1;
+	i = 0;
 	if (s1 == NULL || s2 == NULL)
 		return (NULL);
-	lens1 = ft_strlen(s1);
-	lens2 = ft_strlen(s2);
-	if ((tab = (char *)malloc(sizeof(char) * (lens1 + lens2) + 1)) == NULL)
+	dest = (char*)malloc(sizeof(*dest) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (dest == NULL)
 		return (NULL);
-	while (s1[++x] != '\0')
-		tab[x] = s1[x];
-	lens1 = 0;
-	while (s2[lens1] != '\0')
-	{
-		tab[x] = s2[lens1];
-		lens1++;
-		x++;
-	}
-	tab[x] = '\0';
-	return (tab);
+	while (*s1 != '\0')
+		dest[i++] = *s1++;
+	while (*s2 != '\0')
+		dest[i++] = *s2++;
+	dest[i] = '\0';
+	return (dest);
 }

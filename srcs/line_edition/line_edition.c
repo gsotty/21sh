@@ -26,7 +26,6 @@ int			creat_buf(t_history *history, char *buffer)
 	char	tmp;
 	char	tmp_buf;
 
-	printf("pos_buf du creat_buf: [%d]\n", history->pos_buf);
 	if (history->len[history->pos_buf] >= history->len_malloc[history->pos_buf])
 	{
 		history->len_malloc[history->pos_buf] += LEN_REMALLOC;
