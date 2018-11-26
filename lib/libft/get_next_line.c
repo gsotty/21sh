@@ -44,8 +44,6 @@ int		buffer_to_stock(int fd, int len_stock, char **stock, int *bytes_read)
 	return (1);
 }
 
-#include <stdio.h>
-
 void	cut_stock(char **stock, char *str)
 {
 	char		*tmp;
@@ -92,7 +90,6 @@ int		get_next_line(const int fd, char **line)
 			return (file_end(line, &stock));
 	}
 	str = ft_strchr(stock, '\n');
-	printf("test: [%s], [%ld]\n", stock, str - stock);
 	*line = ft_strsub(stock, 0, str - stock);
 	cut_stock(&stock, str);
 	return (1);

@@ -44,7 +44,7 @@ int			creat_buf(t_history *history, char *buffer)
 	return (0);
 }
 
-static void		refresh_size_win(t_history *history, t_pos *pos, int mode) // 0 = pos++, 1 = pos--
+static void		refresh_size_win(int type, t_history *history, t_pos *pos, int mode) // 0 = pos++, 1 = pos--
 // 2 = end , 3 = start
 {
 	pos->co_max = tgetnum("co");
@@ -107,14 +107,14 @@ int			write_buf(t_history *history)
 	return (0);
 }
 
-static void		replace_cursor(t_history *history, t_pos *pos, int mode)
+static void		replace_cursor(int type, t_history *history, t_pos *pos, int mode)
 {
 	int		cu_co_pos;
 	int		cu_li_pos;
 
 	cu_co_pos = 0;
 	cu_li_pos = 0;
-	refresh_size_win(history, pos, mode);
+	refresh_size_win(type, history, pos, mode);
 	replace_cursor_start_line(pos);
 	while (cu_li_pos < (pos->li_pos))
 	{
@@ -133,17 +133,20 @@ static void		backspace_key(t_history *history)
 	int		x;
 	char	tmp;
 
-	x = history->pos[history->pos_buf];
-	tputs(tgetstr("le", NULL), 1, f_putchar);
-	tputs(tgetstr("dc", NULL), 1, f_putchar);
-	while (x <= history->len[history->pos_buf])
+	if ((history->pos[history->pos_buf]) > 0)
 	{
-		tmp = history->buf[history->pos_buf][x + 1];
-		history->buf[history->pos_buf][x] = tmp;
-		x++;
+		history->pos[history->pos_buf]--;
+		x = history->pos[history->pos_buf];
+		tputs(tgetstr("le", NULL), 1, f_putchar);
+		tputs(tgetstr("dc", NULL), 1, f_putchar);
+		while (x <= history->len[history->pos_buf])
+		{
+			tmp = history->buf[history->pos_buf][x + 1];
+			history->buf[history->pos_buf][x] = tmp;
+			x++;
+		}
+		history->len[history->pos_buf]--;
 	}
-	history->len[history->pos_buf]--;
-	history->pos[history->pos_buf]--;
 }
 
 static void		delete_key(t_history *history)
@@ -151,15 +154,18 @@ static void		delete_key(t_history *history)
 	int		x;
 	char	tmp;
 
-	x = history->pos[history->pos_buf];
-	tputs(tgetstr("dc", NULL), 1, f_putchar);
-	while (x <= history->len[history->pos_buf])
+	if (history->pos[history->pos_buf] < history->len[history->pos_buf])
 	{
-		tmp = history->buf[history->pos_buf][x + 1];
-		history->buf[history->pos_buf][x] = tmp;
-		x++;
+		x = history->pos[history->pos_buf];
+		tputs(tgetstr("dc", NULL), 1, f_putchar);
+		while (x <= history->len[history->pos_buf])
+		{
+			tmp = history->buf[history->pos_buf][x + 1];
+			history->buf[history->pos_buf][x] = tmp;
+			x++;
+		}
+		history->len[history->pos_buf]--;
 	}
-	history->len[history->pos_buf]--;
 }
 
 /*
@@ -170,7 +176,7 @@ static void		delete_key(t_history *history)
 **
 */
 
-int				line_edition(t_history *history)
+int				line_edition(int type, t_history *history)
 {
 	char			buffer[4];
 	struct winsize	win;
@@ -186,7 +192,7 @@ int				line_edition(t_history *history)
 	BC = tgetstr ("le", NULL);
 	UP = tgetstr ("up", NULL);
 //	printf("[%i],[%i],[%i]\n", tgetnum("co"), tgetnum("it"), tgetnum("li"));
-//		printf("[%d], [%d]\n", history->len_buf, history->pos_buf);
+//	printf("[%d], [%d]\n", history->len_buf, history->pos_buf);
 	write(0, PROMT, LEN_PROMT);
 	while (1)
 	{
@@ -196,48 +202,42 @@ int				line_edition(t_history *history)
 		if (buffer[0] == 4 && buffer[1] == 0 && buffer[2] == 0)
 			break ;
 		if (buffer[0] == 127 && buffer[1] == 0 && buffer[2] == 0)
-		{
-			if ((history->pos[history->pos_buf]) > 0)
-				backspace_key(history);
-		}
+			backspace_key(history);
 		else if (buffer[0] == 126 && buffer[1] == 0 && buffer[2] == 0)
-		{
-			if (history->pos[history->pos_buf] < history->len[history->pos_buf])
-				delete_key(history);
-		}
+			delete_key(history);
 		else if (buffer[0] == 27 && buffer[1] == 91)
 		{
 			if (buffer[2] == 65 && history->pos_buf > 0) // up
 			{
-				replace_cursor(history, &pos, 3);
+				replace_cursor(type, history, &pos, 3);
 				history->pos_buf--;
 				tputs(tgetstr("cr", NULL), 1, f_putchar);
 				tputs(tgetstr("cd", NULL), 1, f_putchar);
 				write(0, PROMT, LEN_PROMT);
 				write(0, history->buf[history->pos_buf], history->len[history->pos_buf]);
 				history->pos[history->pos_buf] = history->len[history->pos_buf];
-				replace_cursor(history, &pos, 2);
+				replace_cursor(type, history, &pos, 2);
 			}
 			else if (buffer[2] == 66 && history->pos_buf < history->len_buf) // down
 			{
-				replace_cursor(history, &pos, 3);
+				replace_cursor(type, history, &pos, 3);
 				history->pos_buf++;
 				tputs(tgetstr("cr", NULL), 1, f_putchar);
 				tputs(tgetstr("cd", NULL), 1, f_putchar);
 				write(0, PROMT, LEN_PROMT);
 				write(0, history->buf[history->pos_buf], history->len[history->pos_buf]);
 				history->pos[history->pos_buf] = history->len[history->pos_buf];
-				replace_cursor(history, &pos, 2);
+				replace_cursor(type, history, &pos, 2);
 			}
 			else if (buffer[2] == 67 && history->pos[history->pos_buf] < history->len[history->pos_buf]) // right
 			{
 				history->pos[history->pos_buf]++;
-				replace_cursor(history, &pos, 0);
+				replace_cursor(type, history, &pos, 0);
 			}
 			else if (buffer[2] == 68 && history->pos[history->pos_buf] > 0) // left
 			{
 				history->pos[history->pos_buf]--;
-				replace_cursor(history, &pos, 1);
+				replace_cursor(type, history, &pos, 1);
 			}
 		}
 		else if (buffer[0] == 10 && buffer[1] == 0 && buffer[2] == 0)
@@ -250,7 +250,7 @@ int				line_edition(t_history *history)
 			history->len[history->pos_buf]++;
 			write_buf(history);
 			history->pos[history->pos_buf]++;
-			replace_cursor(history, &pos, 2);
+			replace_cursor(type, history, &pos, 2);
 		}
 	}
 	if (reset_termcaps() == 1)

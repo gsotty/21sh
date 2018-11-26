@@ -6,8 +6,12 @@
 # include <sys/ioctl.h>
 
 # define LEN_REMALLOC 25
-# define PROMT "$> "
-# define LEN_PROMT 3
+# define PROMT (type == 0 ? PROMT_EDIT : PROMT_HER)
+# define LEN_PROMT (type == 0 ? LEN_PROMT_EDIT : LEN_PROMT_HER)
+# define PROMT_EDIT "$> "
+# define LEN_PROMT_EDIT 3
+# define PROMT_HER "> "
+# define LEN_PROMT_HER 2
 
 typedef struct		s_pos
 {
