@@ -27,16 +27,20 @@ int			creat_pipe(t_lchar *buf, int start_sep, int end_sep,
 	nbr_pipe = 0;
 	x = start_sep;
 	start_pipe = start_sep;
-	while (1)
+	while (x <= end_sep)
 	{
-		if (end_sep < x || buf->type[x] == _PIPE)
+		if (x < end_sep && buf->type[x] == _PIPE)
+		{
+			creat_cmd(buf, start_pipe, x - 1, &sep->pipe[nbr_pipe]);
+			creat_redirection(buf, start_pipe, x - 1, &sep->pipe[nbr_pipe]);
+			start_pipe = x + 1;
+			nbr_pipe++;
+		}
+		else if (x >= end_sep)
 		{
 			creat_cmd(buf, start_pipe, x, &sep->pipe[nbr_pipe]);
 			creat_redirection(buf, start_pipe, x, &sep->pipe[nbr_pipe]);
-			start_pipe = x;
-			nbr_pipe++;
-			if (end_sep < x)
-				break ;
+			break ;
 		}
 		x++;
 	}

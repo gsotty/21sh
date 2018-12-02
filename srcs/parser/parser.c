@@ -5,11 +5,20 @@
 void	ft_print_lchar(t_lchar *buf)
 {
 	int		x;
+	char	*nbr;
 
 	x = 0;
-	while (buf->len > x)
+	while (x < buf->len)
 	{
-		printf("buf = [%c], [%s]\n", buf->c[x], which_define(buf->type[x]));
+		write(0, "buf = [", 7);
+		nbr = ft_itoa(x);
+		write(0, nbr, ft_strlen(nbr));
+		free(nbr);
+		write(0, "], [", 4);
+		write(0, buf->c + x, 1);
+		write(0, "], [", 4);
+		write(0, which_define(buf->type[x]), ft_strlen(which_define(buf->type[x])));
+		write(0, "]\n", 2);
 		x++;
 	}
 }
@@ -20,37 +29,101 @@ void	print_base(t_parser_shell base)
 	int		y;
 	int		z;
 	int		a;
+	char	*nbr;
 
 	x = 0;
-	printf("len sep [%d]\n", base.len);
+	write(0, "len sep [", 9);
+	nbr = ft_itoa(base.len);
+	write(0, nbr, ft_strlen(nbr));
+	free(nbr);
+	write(0, "]\n", 2);
 	while (x < base.len)
 	{
+		write(0, "	sep [", 6);
+		nbr = ft_itoa(x);
+		write(0, nbr, ft_strlen(nbr));
+		free(nbr);
+		write(0, "]\n", 2);
+		write(0, "	len pipe [", 11);
+		nbr = ft_itoa(base.sep[x].len);
+		write(0, nbr, ft_strlen(nbr));
+		free(nbr);
+		write(0, "]\n", 2);
 		y = 0;
-		printf("sep[%d]\n", x);
-		printf("len pipe [%d]\n", base.sep[x].len);
 		while (y < base.sep[x].len) 
 		{
+			write(0, "		pipe [", 8);
+			nbr = ft_itoa(y);
+			write(0, nbr, ft_strlen(nbr));
+			free(nbr);
+			write(0, "]\n", 2);
+			write(0, "		len cmd [", 11);
+			nbr = ft_itoa(base.sep[x].pipe[y].argc);
+			write(0, nbr, ft_strlen(nbr));
+			free(nbr);
+			write(0, "]\n", 2);
 			z = 0;
 			a = 0;
-			printf("	pipe[%d]\n", y);
-			printf("	len argc [%d]\n", base.sep[x].pipe[y].argc);
 			while (z < base.sep[x].pipe[y].argc)
 			{
-				printf("		cmd[%d]\n", z);
-				printf("			{%s}\n", base.sep[x].pipe[y].argv[z]);
+				write(0, "			cmp [", 9);
+				nbr = ft_itoa(z);
+				write(0, nbr, ft_strlen(nbr));
+				free(nbr);
+				write(0, "]\n", 2);
+				write(0, "				argv [", 10);
+				write(0, base.sep[x].pipe[y].argv[z], ft_strlen(base.sep[x].pipe[y].argv[z]));
+				write(0, "]\n", 2);
 				z++;
 			}
-			printf("	len redir [%d]\n", base.sep[x].pipe[y].len);
+			write(0, "		len redir [", 13);
+			nbr = ft_itoa(base.sep[x].pipe[y].len);
+			write(0, nbr, ft_strlen(nbr));
+			free(nbr);
+			write(0, "]\n", 2);
 			while (a < base.sep[x].pipe[y].len)
 			{
-				printf("		redir[%d]\n", a);
-				printf("			{%s}\n", which_define(base.sep[x].pipe[y].redir[a].type));
-				printf("			{%d}\n", base.sep[x].pipe[y].redir[a].fd_int);
-				printf("			{%s}\n", base.sep[x].pipe[y].redir[a].file_int);
-				printf("			{%d}\n", base.sep[x].pipe[y].redir[a].fd_out);
-				printf("			{%s}\n", base.sep[x].pipe[y].redir[a].file_out);
-				printf("			{%d}\n", base.sep[x].pipe[y].redir[a].len_heredoc);
-				printf("			{%s}\n", base.sep[x].pipe[y].redir[a].heredoc);
+				write(0, "			redir [", 10);
+				nbr = ft_itoa(a);
+				write(0, nbr, ft_strlen(nbr));
+				free(nbr);
+				write(0, "]\n", 2);
+				write(0, "				type [", 10);
+				write(0, which_define(base.sep[x].pipe[y].redir[a].type), ft_strlen(which_define(base.sep[x].pipe[y].redir[a].type)));
+				write(0, "]\n", 2);
+				write(0, "				fd_int [", 12);
+				nbr = ft_itoa(base.sep[x].pipe[y].redir[a].fd_int);
+				write(0, nbr, ft_strlen(nbr));
+				free(nbr);
+				write(0, "]\n", 2);
+				write(0, "				file_int [", 14);
+				if (base.sep[x].pipe[y].redir[a].file_int == NULL)
+					write(0, "(NULL)", 6);
+				else
+					write(0, base.sep[x].pipe[y].redir[a].file_int, ft_strlen(base.sep[x].pipe[y].redir[a].file_int));
+				write(0, "]\n", 2);
+				write(0, "				fd_out [", 12);
+				nbr = ft_itoa(base.sep[x].pipe[y].redir[a].fd_out);
+				write(0, nbr, ft_strlen(nbr));
+				free(nbr);
+				write(0, "]\n", 2);
+				write(0, "				file_out [", 14);
+				if (base.sep[x].pipe[y].redir[a].file_out == NULL)
+					write(0, "(NULL)", 6);
+				else
+					write(0, base.sep[x].pipe[y].redir[a].file_out, ft_strlen(base.sep[x].pipe[y].redir[a].file_out));
+				write(0, "]\n", 2);
+				write(0, "				len_here [", 14);
+				nbr = ft_itoa(base.sep[x].pipe[y].redir[a].len_heredoc);
+				write(0, nbr, ft_strlen(nbr));
+				free(nbr);
+				write(0, "]\n", 2);
+				write(0, "				here [", 10);
+				if (base.sep[x].pipe[y].redir[a].heredoc == NULL)
+					write(0, "(NULL)", 6);
+				else
+					write(0, base.sep[x].pipe[y].redir[a].heredoc, ft_strlen(base.sep[x].pipe[y].redir[a].heredoc));
+				write(0, "]\n", 2);
 				a++;
 			}
 			y++;
@@ -213,7 +286,6 @@ int		fork_exec(t_separateurs sep, char **my_envp, int y, int *pipefd_one, int *p
 	father = fork();
 	if (father == 0)
 	{
-		printf("before exec: [%d], [%d]\n", fd_int, fd_out);
 		dup2(fd_int, 0);
 		dup2(fd_out, 1);
 		how_close(sep, pipefd_one, pipefd_two, y);
@@ -272,10 +344,8 @@ int		exec_base(t_parser_shell base, char **my_envp, t_history *history_first)
 		fd_out = 1;
 		y = 0;
 		int_or_out = 0;
-		printf("		different sep\n");
 		while (y < base.sep[x].len) 
 		{
-			printf("		different pipe\n");
 			if (base.sep[x].len > 1)
 			{
 				if (y == 0)
@@ -285,8 +355,6 @@ int		exec_base(t_parser_shell base, char **my_envp, t_history *history_first)
 						write(2, "error pipe\n", 11);
 						return (1);
 					}
-					printf("test pipe [%d], [%d], [%d], [%d]\n", pipefd_one[0],
-							pipefd_one[1], pipefd_tow[0], pipefd_tow[1]);
 					fd_out = (int_or_out == 0 ? pipefd_one[1] : pipefd_tow[1]);
 					z = 0;
 					while (z < base.sep[x].pipe[y].len)
@@ -354,8 +422,6 @@ int		exec_base(t_parser_shell base, char **my_envp, t_history *history_first)
 						write(2, "error pipe\n", 11);
 						return (1);
 					}
-					printf("test pipe [%d], [%d], [%d], [%d]\n", pipefd_one[0],
-							pipefd_one[1], pipefd_tow[0], pipefd_tow[1]);
 					fd_int = (int_or_out == 1 ? pipefd_one[0] : pipefd_tow[0]);
 					fd_out = (int_or_out == 0 ? pipefd_one[1] : pipefd_tow[1]);
 					z = 0;
@@ -429,7 +495,7 @@ int		exec_base(t_parser_shell base, char **my_envp, t_history *history_first)
 		}
 		while ((rep = waitpid(-1, &status, 0)) > -1)
 		{
-			//	printf("wait = [%d], rep = [%d]\n", rep, WEXITSTATUS(status));
+			printf("wait = [%d], rep = [%d]\n", rep, WEXITSTATUS(status));
 		}
 		x++;
 	}
@@ -526,16 +592,10 @@ int		parser(t_lchar *buf, char **my_envp, t_history *history_first)
 			buf->type[x] = _OTHER; 
 		x++;
 	}
-	printf("		first:\n");
-	ft_print_lchar(buf);
 	cut_quoting(buf);
-	printf("		seconde:\n");
-	ft_print_lchar(buf);
 	cut_commands(buf);
-	printf("		third:\n");
-	ft_print_lchar(buf);
 	creat_sep(buf, &base);
-	printf("		last:\n");
+	ft_print_lchar(buf);
 	print_base(base);
 	exec_base(base, my_envp, history_first);
 	return (0);

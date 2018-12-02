@@ -6,13 +6,11 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 14:51:01 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/18 15:09:51 by gsotty           ###   ########.fr       */
+/*   Updated: 2018/12/02 17:43:57 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/ft_termcaps.h"
-
-#include "stdio.h"
 
 static int		prepare_term_tgetent(char *name_term)
 {
@@ -44,8 +42,6 @@ static int		modif_prepare_term(struct termios term)
 	term.c_cc[VTIME] = 0;
 	if (tcsetattr(0, TCSADRAIN, &term) == -1)
 		return (1);
-//	printf("[%i]\n", tgetflag("am"));
-//	tputs(tgetstr("im", NULL), 0, f_putchar);
 	return (0);
 }
 

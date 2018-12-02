@@ -5,7 +5,7 @@ static	int		nbr_of_cmd(t_lchar *buf, int x, int end_pipe)
 	int		nbr_argc;
 
 	nbr_argc = 0;
-	while (x < end_pipe)
+	while (x <= end_pipe)
 	{
 		while (buf->type[x] == _WORD)
 		{
@@ -40,6 +40,7 @@ static int		copy_cmd(t_lchar *buf, int x, int end_pipe, t_pipelines *pipe)
 					return (1);
 				ft_memcpy(pipe->argv[nbr_argc], buf->c + start_argc,
 						x - start_argc);
+				pipe->argv[nbr_argc][x - start_argc] = '\0';
 				nbr_argc++;
 				break ;
 			}

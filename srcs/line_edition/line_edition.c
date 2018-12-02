@@ -191,14 +191,11 @@ int				line_edition(int type, t_history *history)
 	PC = temp ? *temp : 24;
 	BC = tgetstr ("le", NULL);
 	UP = tgetstr ("up", NULL);
-//	printf("[%i],[%i],[%i]\n", tgetnum("co"), tgetnum("it"), tgetnum("li"));
-//	printf("[%d], [%d]\n", history->len_buf, history->pos_buf);
 	write(0, PROMT, LEN_PROMT);
 	while (1)
 	{
 		ft_memset(&buffer, 0, sizeof(char) * 4);
 		read(0, buffer, 3);
-		//printf("[%d], [%d], [%d]\n", buffer[0], buffer[1], buffer[2]);
 		if (buffer[0] == 4 && buffer[1] == 0 && buffer[2] == 0)
 			break ;
 		if (buffer[0] == 127 && buffer[1] == 0 && buffer[2] == 0)

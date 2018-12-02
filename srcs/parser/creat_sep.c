@@ -27,15 +27,18 @@ int			creat_sep(t_lchar *buf, t_parser_shell *base)
 	x = 0;
 	nbr_sep = 0;
 	start_sep = 0;
-	while (1)
+	while (x <= buf->len)
 	{
-		if (buf->len < x || buf->type[x] == _SEP)
+		if (x < buf->len && buf->type[x] == _SEP)
 		{
-			creat_pipe(buf, start_sep, x, &base->sep[nbr_sep]);
-			start_sep = x;
+			creat_pipe(buf, start_sep, x - 1, &base->sep[nbr_sep]);
+			start_sep = x + 1;
 			nbr_sep++;
-			if (buf->len < x)
-				break ;
+		}
+		else if (x >= buf->len)
+		{
+			creat_pipe(buf, start_sep, x - 1, &base->sep[nbr_sep]);
+			break ;	
 		}
 		x++;
 	}
