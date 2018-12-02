@@ -14,17 +14,11 @@ static int	nbr_of_sep(t_lchar *buf, int x)
 	return (nbr_sep);
 }
 
-int			creat_sep(t_lchar *buf, t_parser_shell *base)
+static int	copy_sep(t_lchar *buf, int x, t_parser_shell *base)
 {
-	int		x;
 	int		start_sep;
 	int		nbr_sep;
 
-	base->len = nbr_of_sep(buf, 0);
-	if ((base->sep = ft_memalloc(sizeof(t_separateurs) *
-					(base->len + 1))) == NULL)
-		return (1);
-	x = 0;
 	nbr_sep = 0;
 	start_sep = 0;
 	while (x <= buf->len)
@@ -42,5 +36,16 @@ int			creat_sep(t_lchar *buf, t_parser_shell *base)
 		}
 		x++;
 	}
+	return (0);
+}
+
+int			creat_sep(t_lchar *buf, t_parser_shell *base)
+{
+	base->len = nbr_of_sep(buf, 0);
+	if ((base->sep = ft_memalloc(sizeof(t_separateurs) *
+					(base->len + 1))) == NULL)
+		return (1);
+	if (copy_sep(buf, 0, base) == 1)
+		return (1);
 	return (0);
 }

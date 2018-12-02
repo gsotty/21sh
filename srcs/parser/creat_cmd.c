@@ -47,7 +47,7 @@ static int		copy_cmd(t_lchar *buf, int x, int end_pipe, t_pipelines *pipe)
 		}
 		x++;
 	}
-	return (1);
+	return (0);
 }
 
 int				creat_cmd(t_lchar *buf, int start_pipe, int end_pipe,

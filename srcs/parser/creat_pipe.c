@@ -14,19 +14,13 @@ static int	nbr_of_pipe(t_lchar *buf, int x, int end_sep)
 	return (nbr_pipe);
 }
 
-int			creat_pipe(t_lchar *buf, int start_sep, int end_sep,
-		t_separateurs *sep)
+static int	copy_pipe(t_lchar *buf, int x, int end_sep, t_separateurs *sep)
 {
-	int		x;
 	int		nbr_pipe;
 	int		start_pipe;
 
-	sep->len = nbr_of_pipe(buf, start_sep, end_sep);
-	if ((sep->pipe = ft_memalloc(sizeof(t_pipelines) * (sep->len + 1))) == NULL)
-		return (1);
 	nbr_pipe = 0;
-	x = start_sep;
-	start_pipe = start_sep;
+	start_pipe = x;
 	while (x <= end_sep)
 	{
 		if (x < end_sep && buf->type[x] == _PIPE)
@@ -44,5 +38,16 @@ int			creat_pipe(t_lchar *buf, int start_sep, int end_sep,
 		}
 		x++;
 	}
+	return (0);
+}
+
+int			creat_pipe(t_lchar *buf, int start_sep, int end_sep,
+		t_separateurs *sep)
+{
+	sep->len = nbr_of_pipe(buf, start_sep, end_sep);
+	if ((sep->pipe = ft_memalloc(sizeof(t_pipelines) * (sep->len + 1))) == NULL)
+		return (1);
+	if (copy_pipe(buf, start_sep, end_sep, sep) == 1)
+		return (1);
 	return (0);
 }
