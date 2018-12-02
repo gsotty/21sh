@@ -1,6 +1,6 @@
 #include "../../include/history.h"
 
-static int		ft_nbr_line()
+static int		ft_nbr_line(void)
 {
 	int		fd;
 	int		ret;
@@ -21,13 +21,35 @@ static int		ft_nbr_line()
 	return (count);
 }
 
+static int		while_get_next_line(int fd, t_history *history)
+{
+	int		ret;
+	int		count;
+	int		len_arg;
+	char	*line;
+
+	count = 0;
+	while ((ret = get_next_line(fd, &line)) > 0)
+	{
+		if (ret == -1)
+			return (-1);
+		len_arg = ft_strlen(line);
+		history->len[count] = len_arg;
+		history->len_malloc[count] = len_arg;
+		history->pos[count] = 0;
+		if ((history->buf[count] = ft_memalloc((sizeof(char) *
+							len_arg) + 1)) == NULL)
+			return (1);
+		ft_memcpy(history->buf[count], line, len_arg);
+		free(line);
+		count++;
+	}
+	return (0);
+}
+
 static int		take_line(int len, t_history *history)
 {
 	int		fd;
-	int		count;
-	int		ret;
-	int		len_arg;
-	char	*line;
 
 	if ((fd = open(PATH_HISTORY, O_RDONLY)) == -1)
 		return (-1);
@@ -44,31 +66,17 @@ static int		take_line(int len, t_history *history)
 		return (1);
 	if ((history->buf = ft_memalloc(sizeof(char *) * (len + 1))) == NULL)
 		return (1);
-	count = 0;
-	while ((ret = get_next_line(fd, &line)) > 0)
-	{
-		if (ret == -1)
-			return (-1);
-		len_arg = ft_strlen(line);
-		history->len[count] = len_arg;
-		history->len_malloc[count] = len_arg;
-		history->pos[count] = 0;
-		if ((history->buf[count] = ft_memalloc((sizeof(char) * len_arg) + 1)) == NULL)
-			return (1);
-		ft_memcpy(history->buf[count], line, len_arg);
-		free(line);
-		count++;
-	}
+	while_get_next_line(fd, history);
 	close(fd);
 	return (0);
 }
 
-int			inport_history(t_history *history)
+int				inport_history(t_history *history)
 {
 	int		fd;
 	int		ret;
 
-	if ((fd = open(PATH_HISTORY, O_RDONLY)) != -1) // si il reussi c'est que le fichier existe
+	if ((fd = open(PATH_HISTORY, O_RDONLY)) != -1)
 	{
 		close(fd);
 		ret = 0;
@@ -77,9 +85,10 @@ int			inport_history(t_history *history)
 		if (ret == -1)
 			return (-1);
 	}
-	else // si nn le fichier n'existe pas
+	else
 	{
-		if ((fd = open(PATH_HISTORY, O_CREAT | O_RDONLY, S_IRUSR | S_IWUSR)) == -1)
+		if ((fd = open(PATH_HISTORY, O_CREAT | O_RDONLY,
+						S_IRUSR | S_IWUSR)) == -1)
 			return (1);
 		history->len_buf = 0;
 		history->malloc_buf = 0;

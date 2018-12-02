@@ -1,6 +1,6 @@
 NAME = 21sh
 
-CC = clang
+CC = gcc
 
 FLAG = -g -Wall -Wextra -Werror
 

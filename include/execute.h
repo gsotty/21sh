@@ -6,14 +6,4 @@
 # include <limits.h>
 # include <stdlib.h>
 
-/*
-** Structur pour le strsplit
-*/
-
-typedef struct		s_split
-{
-	int				j;
-	int				x;
-}					t_split;
-
 #endif

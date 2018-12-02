@@ -6,13 +6,13 @@
 #    By: gsotty <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 15:44:40 by gsotty            #+#    #+#              #
-#    Updated: 2017/09/08 11:56:12 by gsotty           ###   ########.fr        #
+#    Updated: 2018/12/02 13:15:35 by gsotty           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libft.a
 
-CC = clang
+CC = gcc 
 
 FLAG = -Wall -Wextra -Werror -g ## -fsanitize=address
 
@@ -27,7 +27,7 @@ SRC = ft_memset.c ft_bzero.c ft_memcpy.c ft_memccpy.c ft_memmove.c ft_memchr.c \
 	  ft_putnstr.c ft_putnbr.c ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c \
 	  ft_putnbr_fd.c ft_strnequ.c ft_strtrim.c ft_lstnew.c ft_lstdelone.c \
 	  ft_lstdel.c ft_lstmap.c ft_putchar2.c ft_putstr2.c ft_sqrt.c ft_pair.c \
-	  get_next_line.c
+	  get_next_line.c ft_tablen.c ft_ischar.c ft_strsplit_space.c
 
 OBJ = $(SRC:.c=.o)
 

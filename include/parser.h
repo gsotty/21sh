@@ -130,7 +130,6 @@
 # define _DEL 52
 
 /*
-**
 **	stack la commande avant execution:
 **		;
 **			|
@@ -176,9 +175,12 @@ typedef struct		s_parser_shell
 char	*which_define(int nbr);
 int		cut_quoting(t_lchar *buf);
 int		cut_commands(t_lchar *buf);
-int		creat_cmd(t_lchar *buf, int start_pipe, int end_pipe, t_pipelines *pipe);
-int		creat_redirection(t_lchar *buf, int start_pipe, int end_pipe, t_pipelines *pipe);
-int		creat_pipe(t_lchar *buf, int start_sep, int end_sep, t_separateurs *sep);
+int		creat_cmd(t_lchar *buf, int start_pipe,
+		int end_pipe, t_pipelines *pipe);
+int		creat_redirection(t_lchar *buf, int start_pipe,
+		int end_pipe, t_pipelines *pipe);
+int		creat_pipe(t_lchar *buf, int start_sep,
+		int end_sep, t_separateurs *sep);
 int		creat_sep(t_lchar *buf, t_parser_shell *base);
 
 #endif

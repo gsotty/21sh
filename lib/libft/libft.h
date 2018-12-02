@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/04 08:39:57 by gsotty            #+#    #+#             */
-/*   Updated: 2017/08/17 17:20:40 by gsotty           ###   ########.fr       */
+/*   Updated: 2018/12/02 13:17:11 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 # define BUFF_SIZE 100
 # include <string.h>
+# include <limits.h>
+# include <unistd.h>
 
 typedef struct			s_file
 {
@@ -29,6 +31,12 @@ typedef struct			s_list
 	size_t				content_size;
 	struct s_list		*next;
 }						t_list;
+
+typedef struct			s_split
+{
+	int					j;
+	int					x;
+}						t_split;
 
 int						get_next_line(const int fd, char **line);
 void					*ft_memset(void *s, int c, size_t n);
@@ -97,5 +105,8 @@ void					ft_putchar2(char c);
 void					ft_putstr2(char *str);
 int						ft_sqrt(int nb);
 int						ft_pair(unsigned int x);
+int						ft_tablen(const char **tableau);
+int						ft_ischar(const char str, const char *c);
+char					**ft_strsplit_space(char const *buf, char *c);
 
 #endif

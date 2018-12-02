@@ -2,77 +2,7 @@
 
 #include <stdio.h>
 
-int		len_tab_exec(char **tableau)
-{
-	int		x;
-
-	x = 0;
-	while (tableau[x] != NULL)
-		x++;
-	return (x);
-}
-
-static int		is_char(char str, char *c)
-{
-	int		x;
-
-	x = 0;
-	while (c[x] != '\0')
-	{
-		if (c[x] == str)
-			return (1);
-		x++;
-	}
-	return (0);
-}
-
-static void		ft_while(char **tab_2, char const *buf, char *c, t_split *len)
-{
-	int		y;
-	int		fin;
-	int		debut;
-
-	y = 0;
-	fin = 0;
-	debut = 0;
-	while (is_char(buf[y + len->j], c) == 1 && buf[y + len->j] != '\0')
-		y++;
-	debut = y;
-	while (is_char(buf[y + len->j], c) == 0 && buf[y + len->j] != '\0')
-		y++;
-	fin = y;
-	if (!(tab_2[len->x] = ft_memalloc(sizeof(**tab_2) * ((fin - debut) + 1))))
-		return ;
-	ft_memcpy(tab_2[len->x], buf + len->j + debut, fin - debut);
-	tab_2[len->x][fin - debut] = '\0';
-	len->j += fin;
-}
-
-char			**ft_strsplit_space(char const *buf, char *c)
-{
-	t_split		len;
-	char		**tab_2;
-
-	tab_2 = NULL;
-	ft_memset(&len, 0, sizeof(t_split));
-	if ((tab_2 = ft_memalloc(sizeof(*tab_2) * (MAX_CANON))) == NULL)
-		return (NULL);
-	while (buf[len.j] != '\0' && len.x < MAX_CANON)
-	{
-		ft_while(tab_2, buf, c, &len);
-		while (is_char(buf[len.j], c) == 1 && buf[len.j] != '\0')
-			len.j++;
-		len.x++;
-	}
-	if (len.x > MAX_CANON)
-	{
-		write(2, "21sh: command too long:", 23);
-		return (NULL);
-	}
-	return (tab_2);
-}
-
-char	*find_var_envp(char *name, char **my_envp)
+char			*find_var_envp(char *name, char **my_envp)
 {
 	int		x;
 	int		len;
@@ -101,7 +31,17 @@ char	*find_var_envp(char *name, char **my_envp)
 	return (my_envp[x] + len + 1);
 }
 
-static int		ft_exe_path(char **path, int len_cmd, int my_argc, char **my_argv, char **my_envp)
+static int		access_is_good(char **my_argv, char **my_envp, char *new_cmd)
+{
+	free(my_argv[0]);
+	my_argv[0] = ft_strdup(new_cmd);
+	free(new_cmd);
+	execve(my_argv[0], my_argv, my_envp);
+	return (0);
+}
+
+static int		ft_exe_path(char **path, int len_cmd, char **my_argv,
+		char **my_envp)
 {
 	int			x;
 	int			len_path;
@@ -109,8 +49,7 @@ static int		ft_exe_path(char **path, int len_cmd, int my_argc, char **my_argv, c
 	char		*new_cmd;
 
 	x = 0;
-	(void)my_argc;
-	nbr_path = len_tab_exec(path);
+	nbr_path = ft_tablen((const char **)path);
 	while (x < nbr_path)
 	{
 		len_path = ft_strlen(path[x]);
@@ -120,19 +59,12 @@ static int		ft_exe_path(char **path, int len_cmd, int my_argc, char **my_argv, c
 		ft_memcpy(new_cmd + len_path, "/", 1);
 		ft_memcpy(new_cmd + len_path + 1, my_argv[0], len_cmd);
 		if (access(new_cmd, F_OK | X_OK) == 0)
-		{
-			free(my_argv[0]);
-			my_argv[0] = ft_strdup(new_cmd);
-			free(new_cmd);
-			execve(my_argv[0], my_argv, my_envp);
-			return (0);
-		}
+			return (access_is_good(my_argv, my_envp, new_cmd));
 		free(new_cmd);
 		x++;
 	}
 	return (1);
 }
-
 
 void			exec_cmd(int my_argc, char **my_argv, char **my_envp)
 {
@@ -144,7 +76,8 @@ void			exec_cmd(int my_argc, char **my_argv, char **my_envp)
 		execve(my_argv[0], my_argv, my_envp);
 	else
 	{
-		if (ft_exe_path(ft_strsplit_space(find_var_envp("PATH", my_envp), ":"), len_cmd, my_argc, my_argv, my_envp) == 1)
+		if (ft_exe_path(ft_strsplit_space(find_var_envp("PATH", my_envp), ":"),
+					len_cmd, my_argv, my_envp) == 1)
 		{
 			write(2, "21sh: command not found: ", 25);
 			write(2, my_argv[0], len_cmd);

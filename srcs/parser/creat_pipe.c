@@ -1,12 +1,9 @@
 #include "../../include/parser.h"
 
-int		creat_pipe(t_lchar *buf, int start_sep, int end_sep, t_separateurs *sep)
+static int	nbr_of_pipe(t_lchar *buf, int x, int end_sep)
 {
-	int		x;
 	int		nbr_pipe;
-	int		start_pipe;
 
-	x = start_sep;
 	nbr_pipe = 1;
 	while (x < end_sep)
 	{
@@ -14,7 +11,17 @@ int		creat_pipe(t_lchar *buf, int start_sep, int end_sep, t_separateurs *sep)
 			nbr_pipe++;
 		x++;
 	}
-	sep->len = nbr_pipe;
+	return (nbr_pipe);
+}
+
+int			creat_pipe(t_lchar *buf, int start_sep, int end_sep,
+		t_separateurs *sep)
+{
+	int		x;
+	int		nbr_pipe;
+	int		start_pipe;
+
+	sep->len = nbr_of_pipe(buf, start_sep, end_sep);
 	if ((sep->pipe = ft_memalloc(sizeof(t_pipelines) * (sep->len + 1))) == NULL)
 		return (1);
 	nbr_pipe = 0;
@@ -35,4 +42,3 @@ int		creat_pipe(t_lchar *buf, int start_sep, int end_sep, t_separateurs *sep)
 	}
 	return (0);
 }
-

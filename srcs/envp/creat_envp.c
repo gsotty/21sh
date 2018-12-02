@@ -27,7 +27,8 @@ char	**creat_envp(char **true_envp)
 		while (true_envp[cont] != NULL)
 		{
 			len_arg = ft_strlen(true_envp[cont]);
-			if ((new_envp[cont] = ft_memalloc(sizeof(char) * (len_arg + 1))) == NULL)
+			if ((new_envp[cont] = ft_memalloc(sizeof(char) *
+							(len_arg + 1))) == NULL)
 				return (NULL);
 			ft_memcpy(new_envp[cont], true_envp[cont], len_arg);
 			new_envp[cont][len_arg] = '\0';
