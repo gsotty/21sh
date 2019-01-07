@@ -25,15 +25,15 @@ static int	copy_pipe(t_lchar *buf, int x, int end_sep, t_separateurs *sep)
 	{
 		if (x < end_sep && buf->type[x] == _PIPE)
 		{
-			creat_cmd(buf, start_pipe, x - 1, &sep->pipe[nbr_pipe]);
-			creat_redirection(buf, start_pipe, x - 1, &sep->pipe[nbr_pipe]);
+			creat_cmd(buf, start_pipe, x - 1, &sep->pipel[nbr_pipe]);
+			creat_redirection(buf, start_pipe, x - 1, &sep->pipel[nbr_pipe]);
 			start_pipe = x + 1;
 			nbr_pipe++;
 		}
 		else if (x >= end_sep)
 		{
-			creat_cmd(buf, start_pipe, x, &sep->pipe[nbr_pipe]);
-			creat_redirection(buf, start_pipe, x, &sep->pipe[nbr_pipe]);
+			creat_cmd(buf, start_pipe, x, &sep->pipel[nbr_pipe]);
+			creat_redirection(buf, start_pipe, x, &sep->pipel[nbr_pipe]);
 			break ;
 		}
 		x++;
@@ -45,7 +45,7 @@ int			creat_pipe(t_lchar *buf, int start_sep, int end_sep,
 		t_separateurs *sep)
 {
 	sep->len = nbr_of_pipe(buf, start_sep, end_sep);
-	if ((sep->pipe = ft_memalloc(sizeof(t_pipelines) * (sep->len + 1))) == NULL)
+	if ((sep->pipel = ft_memalloc(sizeof(t_pipelines) * (sep->len + 1))) == NULL)
 		return (1);
 	if (copy_pipe(buf, start_sep, end_sep, sep) == 1)
 		return (1);

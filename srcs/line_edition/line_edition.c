@@ -172,7 +172,7 @@ static void		delete_key(t_history *history)
 **
 ** Line edition:
 **
-** allor 
+** allor
 **
 */
 

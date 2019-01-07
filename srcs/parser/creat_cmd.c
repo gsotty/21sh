@@ -21,7 +21,7 @@ static	int		nbr_of_cmd(t_lchar *buf, int x, int end_pipe)
 	return (nbr_argc);
 }
 
-static int		copy_cmd(t_lchar *buf, int x, int end_pipe, t_pipelines *pipe)
+static int		copy_cmd(t_lchar *buf, int x, int end_pipe, t_pipelines *pipel)
 {
 	int		nbr_argc;
 	int		start_argc;
@@ -35,12 +35,12 @@ static int		copy_cmd(t_lchar *buf, int x, int end_pipe, t_pipelines *pipe)
 			x++;
 			if (end_pipe < x || buf->type[x] != _WORD)
 			{
-				if ((pipe->argv[nbr_argc] = ft_memalloc(sizeof(char) *
+				if ((pipel->argv[nbr_argc] = ft_memalloc(sizeof(char) *
 								((x - start_argc) + 1))) == NULL)
 					return (1);
-				ft_memcpy(pipe->argv[nbr_argc], buf->c + start_argc,
+				ft_memcpy(pipel->argv[nbr_argc], buf->c + start_argc,
 						x - start_argc);
-				pipe->argv[nbr_argc][x - start_argc] = '\0';
+				pipel->argv[nbr_argc][x - start_argc] = '\0';
 				nbr_argc++;
 				break ;
 			}
@@ -51,13 +51,13 @@ static int		copy_cmd(t_lchar *buf, int x, int end_pipe, t_pipelines *pipe)
 }
 
 int				creat_cmd(t_lchar *buf, int start_pipe, int end_pipe,
-		t_pipelines *pipe)
+		t_pipelines *pipel)
 {
-	pipe->argc = nbr_of_cmd(buf, start_pipe, end_pipe);
-	if ((pipe->argv = ft_memalloc(sizeof(char *) *
-					(pipe->argc + 1))) == NULL)
+	pipel->argc = nbr_of_cmd(buf, start_pipe, end_pipe);
+	if ((pipel->argv = ft_memalloc(sizeof(char *) *
+					(pipel->argc + 1))) == NULL)
 		return (1);
-	if (copy_cmd(buf, start_pipe, end_pipe, pipe) == 1)
+	if (copy_cmd(buf, start_pipe, end_pipe, pipel) == 1)
 		return (1);
 	return (0);
 }

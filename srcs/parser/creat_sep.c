@@ -32,7 +32,7 @@ static int	copy_sep(t_lchar *buf, int x, t_parser_shell *base)
 		else if (x >= buf->len)
 		{
 			creat_pipe(buf, start_sep, x - 1, &base->sep[nbr_sep]);
-			break ;	
+			break ;
 		}
 		x++;
 	}

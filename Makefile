@@ -1,6 +1,6 @@
 NAME = 21sh
 
-CC = gcc
+CC = clang
 
 FLAG = -g -Wall -Wextra -Werror
 
@@ -33,7 +33,9 @@ SRC =	main.c \
 		creat_pipe.c \
 		creat_redirection.c \
 		creat_sep.c \
-		exec_cmd.c
+		exec_base.c \
+		exec_cmd.c \
+		creat_heredoc.c
 
 OBJ = $(SRC:.c=.o)
 

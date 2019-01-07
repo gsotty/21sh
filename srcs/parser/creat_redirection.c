@@ -60,14 +60,14 @@ static int	nbr_of_redir(t_lchar *buf, int x, int end_pipe)
 }
 
 int			creat_redirection(t_lchar *buf, int start_pipe, int end_pipe,
-		t_pipelines *pipe)
+		t_pipelines *pipel)
 {
 	int		x;
 	int		nbr_redir;
 	int		start_redir;
 
-	pipe->len = nbr_of_redir(buf, start_pipe, end_pipe);
-	if ((pipe->redir = ft_memalloc(sizeof(t_redirections) * (pipe->len + 1))) == NULL)
+	pipel->len = nbr_of_redir(buf, start_pipe, end_pipe);
+	if ((pipel->redir = ft_memalloc(sizeof(t_redirections) * (pipel->len + 1))) == NULL)
 		return (1);
 	nbr_redir = -1;
 	x = start_pipe;
@@ -78,14 +78,14 @@ int			creat_redirection(t_lchar *buf, int start_pipe, int end_pipe,
 					|| buf->type[x] == _DUP_RINT || buf->type[x] == _ROUTERR))
 		{
 			if (nbr_redir != -1)
-				creat_file_name(buf, start_redir, x - 1, &pipe->redir[nbr_redir]);
+				creat_file_name(buf, start_redir, x - 1, &pipel->redir[nbr_redir]);
 			nbr_redir++;
 			start_redir = x + 1;
-			pipe->redir[nbr_redir].type = buf->type[x];
+			pipel->redir[nbr_redir].type = buf->type[x];
 		}
 		else if (x >= end_pipe && nbr_redir != -1)
 		{
-			creat_file_name(buf, start_redir, x, &pipe->redir[nbr_redir]);
+			creat_file_name(buf, start_redir, x, &pipel->redir[nbr_redir]);
 			break ;
 		}
 		x++;
