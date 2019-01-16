@@ -117,6 +117,8 @@ static void		replace_cursor(int type, t_history *history, t_pos *pos, int mode)
 	cu_li_pos = 0;
 	refresh_size_win(type, history, pos, mode);
 	replace_cursor_start_line(pos);
+//	tputs(tgoto(tgetstr("RI", NULL), 0, pos->li_pos), pos->li_pos, f_putchar);
+//	tputs(tgoto(tgetstr("DO", NULL), pos->co_pos, 0), pos->co_pos, f_putchar);
 	while (cu_li_pos < (pos->li_pos))
 	{
 		tputs(tgetstr("do", NULL), 1, f_putchar);
@@ -193,11 +195,33 @@ int				line_edition(int type, t_history *history)
 	PC = temp ? *temp : 24;
 	BC = tgetstr ("le", NULL);
 	UP = tgetstr ("up", NULL);
+//	char *test;
+//	test = tgetstr ("DO", NULL);
+//	printf("[%d], [%d], [%d], [%d], [%d], [%d], [%d], [%d], [%d]\n", test[0], test[1], test[2], test[3], test[4], test[5], test[6], test[7], test[8]);
+//	test = tgetstr ("rc", NULL);
+//	printf("[%d], [%d], [%d], [%d], [%d], [%d], [%d], [%d], [%d]\n", test[0], test[1], test[2], test[3], test[4], test[5], test[6], test[7], test[8]);
+//	tputs("\E[10C", 1, f_putchar);
+//	tputs(tgoto(tgetstr("cm", NULL), 0, 10), 10, f_putchar);
 	write(1, PROMT, LEN_PROMT);
+/*
+	test = tgetstr ("le", NULL);
+	printf("[%d], [%d], [%d], [%d], [%d], [%d], [%d], [%d], [%d]\n", test[0], test[1], test[2], test[3], test[4], test[5], test[6], test[7], test[8]);
+	test = tgetstr ("nd", NULL);
+	printf("[%d], [%d], [%d], [%d], [%d], [%d], [%d], [%d], [%d]\n", test[0], test[1], test[2], test[3], test[4], test[5], test[6], test[7], test[8]);
+	test = tgetstr ("up", NULL);
+	printf("[%d], [%d], [%d], [%d], [%d], [%d], [%d], [%d], [%d]\n", test[0], test[1], test[2], test[3], test[4], test[5], test[6], test[7], test[8]);
+	test = tgetstr ("do", NULL);
+	printf("[%d], [%d], [%d], [%d], [%d], [%d], [%d], [%d], [%d]\n", test[0], test[1], test[2], test[3], test[4], test[5], test[6], test[7], test[8]);
+*/
+	printf("[%d]\n", tgetflag("hz"));
+	tputs("\b", 1, f_putchar);
+	tputs("\b", 1, f_putchar);
+	tputs("\b", 1, f_putchar);
 	while (1)
 	{
 		ft_memset(&buffer, 0, sizeof(char) * 4);
 		read(0, buffer, 3);
+		printf("[%d], [%d], [%d], [%d]\n", buffer[0], buffer[1], buffer[2], buffer[3]);
 		if (g_sig == SIGINT)
 		{
 			g_sig = 0;

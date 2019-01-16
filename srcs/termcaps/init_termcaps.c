@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 14:51:01 by gsotty            #+#    #+#             */
-/*   Updated: 2018/12/02 17:43:57 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/01/16 18:27:55 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,15 @@ static int		prepare_term_tgetent(char *name_term)
 	return (0);
 }
 
-static int		modif_prepare_term(struct termios term)
+static int		modif_prepare_term(struct termios *term)
 {
-	if (tcgetattr(0, &term) == -1)
+	if (tcgetattr(0, term) == -1)
 		return (1);
-	term.c_lflag &= ~ICANON;
-	term.c_lflag &= ~ECHO;
-	term.c_cc[VMIN] = 1;
-	term.c_cc[VTIME] = 0;
-	if (tcsetattr(0, TCSADRAIN, &term) == -1)
+	term->c_lflag &= ~ICANON;
+	term->c_lflag &= ~ECHO;
+	term->c_cc[VMIN] = 1;
+	term->c_cc[VTIME] = 0;
+	if (tcsetattr(0, TCSADRAIN, term) == -1)
 		return (1);
 	return (0);
 }
@@ -53,17 +53,17 @@ int				init_termcaps(void)
 
 	is_malloc = 0;
 	ft_memset(&term, 0, sizeof(term));
-	if ((name_term = getenv("TERM")) == NULL)
-	{
+//	if ((name_term = getenv("TERM")) == NULL)
+//	{
 		if ((name_term = ft_memalloc(sizeof(char) * 5)) == NULL)
 			return (1);
 		ft_memcpy(name_term, "vt100", 5);
 		name_term[5] = '\0';
 		is_malloc = 1;
-	}
+//	}
 	if (prepare_term_tgetent(name_term) != 0)
 		return (1);
-	if (modif_prepare_term(term) != 0)
+	if (modif_prepare_term(&term) != 0)
 		return (1);
 	if (is_malloc == 1)
 		free(name_term);
