@@ -14,7 +14,8 @@
 
 static int		prepare_term_tgetent(char *name_term)
 {
-	int			succes;
+	(void)name_term;
+/*	int			succes;
 
 	succes = tgetent(NULL, name_term);
 	if (succes < 0)
@@ -29,7 +30,7 @@ static int		prepare_term_tgetent(char *name_term)
 		write(2, "\" is not defined.\n", 18);
 		return (1);
 	}
-	return (0);
+*/	return (0);
 }
 
 static int		modif_reset_term(struct termios term)

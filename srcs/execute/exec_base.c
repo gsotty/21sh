@@ -1,4 +1,7 @@
 #include "../../include/execute.h"
+#include "../../include/built_int.h"
+
+#include <stdio.h>
 
 int		closing_pipefd(t_var_redir *var_redir, int which_pipefd,
 		int which_entry)
@@ -116,20 +119,20 @@ int	close_redir_father(t_pipelines pipel, t_var_redir *var_redir, int z)
 	return (0);
 }
 
-int		fork_exec_child(t_separateurs sep, char **my_envp,
+int		fork_exec_child(t_separateurs sep, char ***my_envp,
 		t_var_redir *var_redir)
 {
-	dup2(var_redir->fd_int, 0);
-	dup2(var_redir->fd_out, 1);
 	if (sep.len > 1)
 		close_pipe_child(var_redir);
 	close_redir_child(sep.pipel[var_redir->y], var_redir);
+	dup2(var_redir->fd_int, 0);
+	dup2(var_redir->fd_out, 1);
 	exec_cmd(sep.pipel[var_redir->y].argc, sep.pipel[var_redir->y].argv,
-			my_envp);
+			*my_envp);
 	exit(0);
 }
 
-int		fork_exec(t_separateurs sep, char **my_envp, t_var_redir *var_redir)
+int		fork_exec(t_separateurs sep, char ***my_envp, t_var_redir *var_redir)
 {
 	pid_t		father;
 
@@ -237,22 +240,69 @@ int		add_pipe(t_var_redir *var_redir)
 	return (0);
 }
 
-int		while_sep(t_separateurs sep, char **my_envp, t_history *history_first,
+int		exec_built_int(t_var_redir *var_redir, t_separateurs sep,
+		char ***my_envp, t_history *history_first)
+{
+	int		fd_standard_int;
+	int		fd_standard_out;
+
+	(void)history_first;
+	if (ft_strcmp(sep.pipel[var_redir->y].argv[0], "env") == 0)
+	{
+		fd_standard_int = dup(0);
+		fd_standard_out = dup(1);
+		dup2(var_redir->fd_int, 0);
+		dup2(var_redir->fd_out, 1);
+		ft_env(sep.pipel[var_redir->y].argv, my_envp);
+		dup2(fd_standard_int, 0);
+		dup2(fd_standard_out, 1);
+		if (sep.len > 1)
+			close_pipe_father(var_redir);
+		if (close_redir_father(sep.pipel[var_redir->y], var_redir, 0) == 1)
+			return (1);
+		return (2);
+	}
+	else if (ft_strcmp(sep.pipel[var_redir->y].argv[0], "setenv") == 0)
+	{
+		fd_standard_int = dup(0);
+		fd_standard_out = dup(1);
+		dup2(var_redir->fd_int, 0);
+		dup2(var_redir->fd_out, 1);
+		ft_setenv(sep.pipel[var_redir->y].argv, my_envp);
+		dup2(fd_standard_int, 0);
+		dup2(fd_standard_out, 1);
+		if (sep.len > 1)
+			close_pipe_father(var_redir);
+		if (close_redir_father(sep.pipel[var_redir->y], var_redir, 0) == 1)
+			return (1);
+		return (2);
+	}
+	return (0);
+}
+
+
+int		while_sep(t_separateurs sep, char ***my_envp, t_history *history_first,
 		t_var_redir *var_redir)
 {
 	int			status;
 	int			rep;
 
+	var_redir->fd_int = 0;
+	var_redir->fd_out = 1;
 	while (var_redir->y < sep.len)
 	{
-		var_redir->fd_int = 0;
-		var_redir->fd_out = 1;
 		if (sep.len > 1)
 			if (add_pipe(var_redir) == 1)
 				return (1);
 		if (add_redir(sep.pipel[var_redir->y], history_first, var_redir) == 1)
 			return (1);
-		if (fork_exec(sep, my_envp, var_redir) == 1)
+		rep = exec_built_int(var_redir, sep, my_envp, history_first);
+		if (rep == 0)
+		{
+			if (fork_exec(sep, my_envp, var_redir) == 1)
+				return (1);
+		}
+		else if (rep == 1)
 			return (1);
 		var_redir->int_or_out = !var_redir->int_or_out;
 		var_redir->y++;
@@ -264,7 +314,7 @@ int		while_sep(t_separateurs sep, char **my_envp, t_history *history_first,
 	return (0);
 }
 
-int		exec_base(t_parser_shell base, char **my_envp,
+int		exec_base(t_parser_shell base, char ***my_envp,
 		t_history *history_first)
 {
 	int			x;
@@ -283,7 +333,9 @@ int		exec_base(t_parser_shell base, char **my_envp,
 		var_redir.int_or_out = 0;
 		var_redir.end_pipe = base.sep[x].len - 1;
 		if (while_sep(base.sep[x], my_envp, history_first, &var_redir) == 1)
+		{
 			return (1);
+		}
 		x++;
 	}
 	return (0);

@@ -11,16 +11,16 @@ void	ft_print_lchar(t_lchar *buf)
 	x = 0;
 	while (x < buf->len)
 	{
-		write(0, "buf = [", 7);
+		write(1, "buf = [", 7);
 		nbr = ft_itoa(x);
-		write(0, nbr, ft_strlen(nbr));
+		write(1, nbr, ft_strlen(nbr));
 		free(nbr);
-		write(0, "], [", 4);
-		write(0, buf->c + x, 1);
-		write(0, "], [", 4);
-		write(0, which_define(buf->type[x]),
+		write(1, "], [", 4);
+		write(1, buf->c + x, 1);
+		write(1, "], [", 4);
+		write(1, which_define(buf->type[x]),
 				ft_strlen(which_define(buf->type[x])));
-		write(0, "]\n", 2);
+		write(1, "]\n", 2);
 		x++;
 	}
 }
@@ -34,36 +34,36 @@ void	print_base(t_parser_shell base)
 	char	*nbr;
 
 	x = 0;
-	write(0, "len sep [", 9);
+	write(1, "len sep [", 9);
 	nbr = ft_itoa(base.len);
-	write(0, nbr, ft_strlen(nbr));
+	write(1, nbr, ft_strlen(nbr));
 	free(nbr);
-	write(0, "]\n", 2);
+	write(1, "]\n", 2);
 	while (x < base.len)
 	{
-		write(0, "	sep [", 6);
+		write(1, "	sep [", 6);
 		nbr = ft_itoa(x);
-		write(0, nbr, ft_strlen(nbr));
+		write(1, nbr, ft_strlen(nbr));
 		free(nbr);
-		write(0, "]\n", 2);
-		write(0, "	len pipe [", 11);
+		write(1, "]\n", 2);
+		write(1, "	len pipe [", 11);
 		nbr = ft_itoa(base.sep[x].len);
-		write(0, nbr, ft_strlen(nbr));
+		write(1, nbr, ft_strlen(nbr));
 		free(nbr);
-		write(0, "]\n", 2);
+		write(1, "]\n", 2);
 		y = 0;
 		while (y < base.sep[x].len)
 		{
-			write(0, "		pipe [", 8);
+			write(1, "		pipe [", 8);
 			nbr = ft_itoa(y);
-			write(0, nbr, ft_strlen(nbr));
+			write(1, nbr, ft_strlen(nbr));
 			free(nbr);
-			write(0, "]\n", 2);
-			write(0, "		len cmd [", 11);
+			write(1, "]\n", 2);
+			write(1, "		len cmd [", 11);
 			nbr = ft_itoa(base.sep[x].pipel[y].argc);
-			write(0, nbr, ft_strlen(nbr));
+			write(1, nbr, ft_strlen(nbr));
 			free(nbr);
-			write(0, "]\n", 2);
+			write(1, "]\n", 2);
 			z = 0;
 			a = 0;
 			if (base.sep[x].pipel[y].argc == 0 && x != (base.len - 1))
@@ -72,70 +72,70 @@ void	print_base(t_parser_shell base)
 			}
 			while (z < base.sep[x].pipel[y].argc)
 			{
-				write(0, "			cmp [", 9);
+				write(1, "			cmp [", 9);
 				nbr = ft_itoa(z);
-				write(0, nbr, ft_strlen(nbr));
+				write(1, nbr, ft_strlen(nbr));
 				free(nbr);
-				write(0, "]\n", 2);
-				write(0, "				argv [", 10);
-				write(0, base.sep[x].pipel[y].argv[z],
+				write(1, "]\n", 2);
+				write(1, "				argv [", 10);
+				write(1, base.sep[x].pipel[y].argv[z],
 						ft_strlen(base.sep[x].pipel[y].argv[z]));
-				write(0, "]\n", 2);
+				write(1, "]\n", 2);
 				z++;
 			}
-			write(0, "		len redir [", 13);
+			write(1, "		len redir [", 13);
 			nbr = ft_itoa(base.sep[x].pipel[y].len);
-			write(0, nbr, ft_strlen(nbr));
+			write(1, nbr, ft_strlen(nbr));
 			free(nbr);
-			write(0, "]\n", 2);
+			write(1, "]\n", 2);
 			while (a < base.sep[x].pipel[y].len)
 			{
-				write(0, "			redir [", 10);
+				write(1, "			redir [", 10);
 				nbr = ft_itoa(a);
-				write(0, nbr, ft_strlen(nbr));
+				write(1, nbr, ft_strlen(nbr));
 				free(nbr);
-				write(0, "]\n", 2);
-				write(0, "				type [", 10);
-				write(0, which_define(base.sep[x].pipel[y].redir[a].type),
+				write(1, "]\n", 2);
+				write(1, "				type [", 10);
+				write(1, which_define(base.sep[x].pipel[y].redir[a].type),
 						ft_strlen(which_define(
 								base.sep[x].pipel[y].redir[a].type)));
-				write(0, "]\n", 2);
-				write(0, "				fd_int [", 12);
+				write(1, "]\n", 2);
+				write(1, "				fd_int [", 12);
 				nbr = ft_itoa(base.sep[x].pipel[y].redir[a].fd_int);
-				write(0, nbr, ft_strlen(nbr));
+				write(1, nbr, ft_strlen(nbr));
 				free(nbr);
-				write(0, "]\n", 2);
-				write(0, "				file_int [", 14);
+				write(1, "]\n", 2);
+				write(1, "				file_int [", 14);
 				if (base.sep[x].pipel[y].redir[a].file_int == NULL)
-					write(0, "(NULL)", 6);
+					write(1, "(NULL)", 6);
 				else
-					write(0, base.sep[x].pipel[y].redir[a].file_int,
+					write(1, base.sep[x].pipel[y].redir[a].file_int,
 							ft_strlen(base.sep[x].pipel[y].redir[a].file_int));
-				write(0, "]\n", 2);
-				write(0, "				fd_out [", 12);
+				write(1, "]\n", 2);
+				write(1, "				fd_out [", 12);
 				nbr = ft_itoa(base.sep[x].pipel[y].redir[a].fd_out);
-				write(0, nbr, ft_strlen(nbr));
+				write(1, nbr, ft_strlen(nbr));
 				free(nbr);
-				write(0, "]\n", 2);
-				write(0, "				file_out [", 14);
+				write(1, "]\n", 2);
+				write(1, "				file_out [", 14);
 				if (base.sep[x].pipel[y].redir[a].file_out == NULL)
-					write(0, "(NULL)", 6);
+					write(1, "(NULL)", 6);
 				else
-					write(0, base.sep[x].pipel[y].redir[a].file_out,
+					write(1, base.sep[x].pipel[y].redir[a].file_out,
 							ft_strlen(base.sep[x].pipel[y].redir[a].file_out));
-				write(0, "]\n", 2);
-				write(0, "				len_here [", 14);
+				write(1, "]\n", 2);
+				write(1, "				len_here [", 14);
 				nbr = ft_itoa(base.sep[x].pipel[y].redir[a].len_heredoc);
-				write(0, nbr, ft_strlen(nbr));
+				write(1, nbr, ft_strlen(nbr));
 				free(nbr);
-				write(0, "]\n", 2);
-				write(0, "				here [", 10);
+				write(1, "]\n", 2);
+				write(1, "				here [", 10);
 				if (base.sep[x].pipel[y].redir[a].heredoc == NULL)
-					write(0, "(NULL)", 6);
+					write(1, "(NULL)", 6);
 				else
-					write(0, base.sep[x].pipel[y].redir[a].heredoc,
+					write(1, base.sep[x].pipel[y].redir[a].heredoc,
 							ft_strlen(base.sep[x].pipel[y].redir[a].heredoc));
-				write(0, "]\n", 2);
+				write(1, "]\n", 2);
 				a++;
 			}
 			y++;
@@ -144,9 +144,47 @@ void	print_base(t_parser_shell base)
 	}
 }
 
+void	free_base(t_parser_shell base)
+{
+	int		x;
+	int		y;
+	int		z;
+	int		a;
 
+	x = 0;
+	while (x < base.len)
+	{
+		y = 0;
+		while (y < base.sep[x].len)
+		{
+			z = 0;
+			a = 0;
+			while (z < base.sep[x].pipel[y].argc)
+			{
+				free(base.sep[x].pipel[y].argv[z]);
+				z++;
+			}
+			free(base.sep[x].pipel[y].argv);
+			while (a < base.sep[x].pipel[y].len)
+			{
+				if (base.sep[x].pipel[y].redir[a].file_int != NULL)
+					free(base.sep[x].pipel[y].redir[a].file_int);
+				if (base.sep[x].pipel[y].redir[a].file_out != NULL)
+					free(base.sep[x].pipel[y].redir[a].file_out);
+				if (base.sep[x].pipel[y].redir[a].heredoc != NULL)
+					free(base.sep[x].pipel[y].redir[a].heredoc);
+				a++;
+			}
+			free(base.sep[x].pipel[y].redir);
+			y++;
+		}
+		free(base.sep[x].pipel);
+		x++;
+	}
+	free(base.sep);
+}
 
-int		parser(t_lchar *buf, char **my_envp, t_history *history_first)
+int		parser(t_lchar *buf, char ***my_envp, t_history *history_first)
 {
 	int				x;
 	t_parser_shell	base;
@@ -198,7 +236,10 @@ int		parser(t_lchar *buf, char **my_envp, t_history *history_first)
 		else if (buf->c[x] == '<')
 			buf->type[x] = _GUILLEMET_LEFT;
 		else if (buf->c[x] == '=')
-			buf->type[x] = _EQUAL_SIGN;
+		{
+			//buf->type[x] = _EQUAL_SIGN;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '>')
 			buf->type[x] = _GUILLEMET_RIGHT;
 		else if (buf->c[x] == '?')
@@ -241,5 +282,6 @@ int		parser(t_lchar *buf, char **my_envp, t_history *history_first)
 	ft_print_lchar(buf);
 	print_base(base);
 	exec_base(base, my_envp, history_first);
+	free_base(base);
 	return (0);
 }

@@ -123,17 +123,60 @@ int				add_new_history(t_history *history_first, t_history *history_copy)
 	return (0);
 }
 
+int				free_history(t_history *history)
+{
+	int		count;
+
+	count = 0;
+	while (count <= history->len_buf)
+	{
+		free(history->buf[count]);
+		count++;
+	}
+	free(history->len);
+	free(history->len_malloc);
+	free(history->pos);
+	free(history->buf);
+	return (0);
+}
+
+/*
+**
+** 0 = normal exit
+** 1 = normal error
+** 2 = exit for quit the term (like ctrl-D)
+** 3 = exit for clean the buff and add a new ligne (ctrl-C)
+**
+*/
+
 int				while_main(int type, t_history *history_first, t_history *history_copy)
 {
+	int		err;
+
 	if ((ft_history_copy(history_first, history_copy)) == 1)
 		return (1);
 	while (1)
 	{
-		if ((line_edition(type, history_copy)) == 1)
+		err = line_edition(type, history_copy);
+		if (err == 1)
+		{
+			free_history(history_copy);
 			return (1);
+		}
+		else if (err == 2)
+		{
+			free_history(history_copy);
+			return (2);
+		}
+		else if (err == 3)
+		{
+			free_history(history_copy);
+			if ((ft_history_copy(history_first, history_copy)) == 1)
+				return (1);
+		}
 		if (history_copy->len[history_copy->pos_buf] != 0)
 			break ;
-		write(0, "\n", 1);
+		write(1, "\n", 1);
 	}
 	if ((add_new_history(history_first, history_copy)) == 1)
 		return (1);
@@ -157,6 +200,7 @@ int				free_envp(char **envp)
 int				main(int argc, char **argv, char **envp)
 {
 	int			error;
+	int			exit_err;
 	char		**my_envp;
 	t_lchar		buf;
 	t_history	history_first;
@@ -175,20 +219,25 @@ int				main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		error = 0;
-		if ((while_main(0, &history_first, &history_copy)) == 1)
+		ft_signal();
+		exit_err = while_main(0, &history_first, &history_copy);
+		if (exit_err == 1)
 			return (1);
-		if (ft_memcmp("exit\n", history_first.buf[history_first.pos_buf], history_first.len[history_first.pos_buf]) == 0)
+
+		else if (exit_err == 2 || ft_memcmp("exit\n",
+					history_first.buf[history_first.pos_buf],
+					history_first.len[history_first.pos_buf]) == 0)
 		{
 			error = 1;
 			break ;
 		}
-		write(0, "\n", 1);
+		write(1, "\n", 1);
 		/* ** parser ** */
 		buf.len = history_first.len[history_first.pos_buf];
 		buf.c = ft_strdup(history_first.buf[history_first.pos_buf]);
 		if ((buf.type = ft_memalloc(sizeof(char *) * buf.len)) == NULL)
 			return (1);
-		if (parser(&buf, my_envp, &history_first) == 1)
+		if (parser(&buf, &my_envp, &history_first) == 1)
 			return (1);
 		free(buf.c);
 		free(buf.type);

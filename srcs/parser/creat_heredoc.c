@@ -31,6 +31,7 @@ int				ft_history_copy_heredoc(t_history *history_first, t_history *history_copy
 
 int		creat_heredoc(t_pipelines pipel, t_history *history_first, int z)
 {
+	int			exit_err;
 	int			len_heredoc;
 	int			count_heredoc;
 	int			start_heredoc;
@@ -42,13 +43,17 @@ int		creat_heredoc(t_pipelines pipel, t_history *history_first, int z)
 	start_heredoc = history_heredoc.pos_buf + 1;
 	while (1)
 	{
-		if ((while_main(1, &history_heredoc, &history_copy)) == 1)
+		exit_err = while_main(1, &history_heredoc, &history_copy);
+		if (exit_err == 1)
 			return (1);
-		if (ft_memcmp(pipel.redir[z].file_int , history_heredoc.buf[history_heredoc.pos_buf], history_heredoc.len[history_heredoc.pos_buf]) == 0)
+		else if (exit_err == 2 || ft_memcmp(pipel.redir[z].file_int,
+					history_heredoc.buf[history_heredoc.pos_buf],
+					history_heredoc.len[history_heredoc.pos_buf]) == 0)
 		{
+			write(1, "\n", 1);
 			break ;
 		}
-		write(0, "\n", 1);
+		write(1, "\n", 1);
 	}
 	count_heredoc = start_heredoc;
 	len_heredoc = 0;
@@ -61,15 +66,26 @@ int		creat_heredoc(t_pipelines pipel, t_history *history_first, int z)
 	if ((pipel.redir[z].heredoc = ft_memalloc((sizeof(char) * (len_heredoc + 1)))) == NULL)
 		return (1);
 	pipel.redir[z].len_heredoc = 0;
-	count_heredoc = start_heredoc;
+	count_heredoc = 0;
+	//count_heredoc = start_heredoc;
+	while (count_heredoc < start_heredoc)
+	{
+		free(history_heredoc.buf[count_heredoc]);
+		count_heredoc++;
+	}
 	while (count_heredoc < history_heredoc.len_buf)
 	{
 		ft_memcpy(pipel.redir[z].heredoc + pipel.redir[z].len_heredoc, history_heredoc.buf[count_heredoc], history_heredoc.len[count_heredoc]);
 		pipel.redir[z].len_heredoc += history_heredoc.len[count_heredoc];
+		free(history_heredoc.buf[count_heredoc]);
 		ft_memcpy(pipel.redir[z].heredoc + pipel.redir[z].len_heredoc, "\n", 1);
 		pipel.redir[z].len_heredoc++;
 		count_heredoc++;
 	}
+	free(history_heredoc.len);
+	free(history_heredoc.len_malloc);
+	free(history_heredoc.pos);
+	free(history_heredoc.buf);
 	return (0);
 }
 

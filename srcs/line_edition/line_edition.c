@@ -1,6 +1,7 @@
 #include "../../include/line_edition.h"
 #include "../../include/ft_termcaps.h"
 #include "../../include/history.h"
+#include "../../include/vingt_et_un_sh.h"
 #include <stdio.h>
 
 char PC;   /* For tputs.  */
@@ -103,7 +104,7 @@ static void		replace_cursor_start_line(t_pos *pos)
 
 int			write_buf(t_history *history)
 {
-	write(0, history->buf[history->pos_buf] + history->pos[history->pos_buf], history->len[history->pos_buf] - history->pos[history->pos_buf]);
+	write(1, history->buf[history->pos_buf] + history->pos[history->pos_buf], history->len[history->pos_buf] - history->pos[history->pos_buf]);
 	return (0);
 }
 
@@ -170,9 +171,10 @@ static void		delete_key(t_history *history)
 
 /*
 **
-** Line edition:
-**
-** allor
+** 0 = normal exit
+** 1 = normal error
+** 2 = exit for quit the term (like ctrl-D)
+** 3 = exit for clean the buff and add a new ligne (ctrl-C)
 **
 */
 
@@ -191,13 +193,20 @@ int				line_edition(int type, t_history *history)
 	PC = temp ? *temp : 24;
 	BC = tgetstr ("le", NULL);
 	UP = tgetstr ("up", NULL);
-	write(0, PROMT, LEN_PROMT);
+	write(1, PROMT, LEN_PROMT);
 	while (1)
 	{
 		ft_memset(&buffer, 0, sizeof(char) * 4);
 		read(0, buffer, 3);
+		if (g_sig == SIGINT)
+		{
+			g_sig = 0;
+			return (3);
+		}
 		if (buffer[0] == 4 && buffer[1] == 0 && buffer[2] == 0)
-			break ;
+		{
+			return (2);
+		}
 		if (buffer[0] == 127 && buffer[1] == 0 && buffer[2] == 0)
 			backspace_key(history);
 		else if (buffer[0] == 126 && buffer[1] == 0 && buffer[2] == 0)
@@ -210,8 +219,8 @@ int				line_edition(int type, t_history *history)
 				history->pos_buf--;
 				tputs(tgetstr("cr", NULL), 1, f_putchar);
 				tputs(tgetstr("cd", NULL), 1, f_putchar);
-				write(0, PROMT, LEN_PROMT);
-				write(0, history->buf[history->pos_buf], history->len[history->pos_buf]);
+				write(1, PROMT, LEN_PROMT);
+				write(1, history->buf[history->pos_buf], history->len[history->pos_buf]);
 				history->pos[history->pos_buf] = history->len[history->pos_buf];
 				replace_cursor(type, history, &pos, 2);
 			}
@@ -221,8 +230,8 @@ int				line_edition(int type, t_history *history)
 				history->pos_buf++;
 				tputs(tgetstr("cr", NULL), 1, f_putchar);
 				tputs(tgetstr("cd", NULL), 1, f_putchar);
-				write(0, PROMT, LEN_PROMT);
-				write(0, history->buf[history->pos_buf], history->len[history->pos_buf]);
+				write(1, PROMT, LEN_PROMT);
+				write(1, history->buf[history->pos_buf], history->len[history->pos_buf]);
 				history->pos[history->pos_buf] = history->len[history->pos_buf];
 				replace_cursor(type, history, &pos, 2);
 			}

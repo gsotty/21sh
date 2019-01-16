@@ -1,7 +1,5 @@
 #include "../../include/execute.h"
 
-#include <stdio.h>
-
 char			*find_var_envp(char *name, char **my_envp)
 {
 	int		x;
@@ -66,9 +64,25 @@ static int		ft_exe_path(char **path, int len_cmd, char **my_argv,
 	return (1);
 }
 
+int				free_tab(char **tab)
+{
+	int		x;
+
+	x = 0;
+	while (tab[x] != NULL)
+	{
+		free(tab[x]);
+		x++;
+	}
+	free(tab);
+	return (0);
+}
+
+
 void			exec_cmd(int my_argc, char **my_argv, char **my_envp)
 {
 	int		len_cmd;
+	char	**tab_path;
 
 	my_argv[my_argc] = NULL;
 	len_cmd = ft_strlen(my_argv[0]);
@@ -76,12 +90,13 @@ void			exec_cmd(int my_argc, char **my_argv, char **my_envp)
 		execve(my_argv[0], my_argv, my_envp);
 	else
 	{
-		if (ft_exe_path(ft_strsplit_space(find_var_envp("PATH", my_envp), ":"),
-					len_cmd, my_argv, my_envp) == 1)
+		tab_path = ft_strsplit_space(find_var_envp("PATH", my_envp), ":");
+		if (ft_exe_path(tab_path, len_cmd, my_argv, my_envp) == 1)
 		{
 			write(2, "21sh: command not found: ", 25);
 			write(2, my_argv[0], len_cmd);
 			write(2, "\n", 1);
 		}
+		free_tab(tab_path);
 	}
 }

@@ -1,18 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   f_putchar.c                                        :+:      :+:    :+:   */
+/*   unsetenv.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/18 15:06:34 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/18 15:07:42 by gsotty           ###   ########.fr       */
+/*   Created: 2017/04/03 15:49:00 by gsotty            #+#    #+#             */
+/*   Updated: 2017/04/25 13:13:20 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/ft_termcaps.h"
+#include "minishell.h"
 
-int		f_putchar(int c)
+void	ft_unsetenv(char **cmd)
 {
-	return (write(1, &c, 1));
+	int		x;
+
+	x = 1;
+	while (cmd[x] != NULL)
+	{
+		remove_env(cmd[x]);
+		x++;
+	}
+	return ;
 }
