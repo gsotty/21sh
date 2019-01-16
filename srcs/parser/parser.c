@@ -184,7 +184,7 @@ void	free_base(t_parser_shell base)
 	free(base.sep);
 }
 
-int		parser(t_lchar *buf, char ***my_envp, t_history *history_first)
+int		parser(t_lchar *buf, t_envp *my_envp, t_history *history_first)
 {
 	int				x;
 	t_parser_shell	base;

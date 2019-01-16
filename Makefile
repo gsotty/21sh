@@ -43,7 +43,12 @@ SRC =	main.c \
 		find_var_env.c \
 		add_env.c \
 		tab_envp.c \
-		setenv.c
+		setenv.c \
+		unsetenv.c \
+		cd.c \
+		echo.c \
+		add_pwd.c \
+		add_oldpwd.c
 
 OBJ = $(SRC:.c=.o)
 

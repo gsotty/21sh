@@ -6,21 +6,21 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/03 15:49:00 by gsotty            #+#    #+#             */
-/*   Updated: 2017/04/25 13:13:20 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/01/16 14:09:03 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../include/built_int.h"
 
-void	ft_unsetenv(char **cmd)
+int		ft_unsetenv(char **cmd, t_envp *my_envp)
 {
 	int		x;
 
 	x = 1;
 	while (cmd[x] != NULL)
 	{
-		remove_env(cmd[x]);
+		remove_env(cmd[x], my_envp);
 		x++;
 	}
-	return ;
+	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/22 15:34:40 by gsotty            #+#    #+#             */
-/*   Updated: 2017/05/03 10:18:41 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/01/16 13:17:29 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,74 +36,67 @@ static char	**envp_null(char *name_var, char *data_var)
 	return (envp);
 }
 
-void		envp_no_null(char *name_var, char *data_var, char ***envp)
+int			envp_no_null(char *name_var, char *data_var, t_envp *my_envp)
 {
 	int		x;
-	int		y;
 	char	*p;
 	int		len_name;
 	int		len_data;
 
 	x = 0;
-	while (*envp[x] != NULL)
+	while (my_envp->envp[x] != NULL)
 	{
-		p = ft_strchr(*envp[x], '=');
-		if (ft_memcmp(*envp[x], name_var, p - *envp[x]) == 0)
+		p = ft_strchr(my_envp->envp[x], '=');
+		if (ft_memcmp(my_envp->envp[x], name_var, p - my_envp->envp[x]) == 0)
 			break ;
 		x++;
 	}
-	if (*envp[x] == NULL)
+	if (my_envp->envp[x] == NULL)
 	{
-		y = 0;
-		while (*envp[y] != NULL)
-		{
-			printf("envp[%d] = {%s}\n", y, *envp[y]);
-			y++;
-		}
-		remalloc_env(envp, 1);
-		y = 0;
-		while (envp[y] != NULL)
-		{
-			printf("envp[%d] = {%s}\n", y, *envp[y]);
-			y++;
-		}
+		remalloc_env(my_envp, 1);
 		len_name = ft_strlen(name_var);
 		if (data_var != NULL)
 			len_data = ft_strlen(data_var);
 		else
 			len_data = 0;
-		if((*envp[x] = ft_memalloc((sizeof(char *) * (len_name + len_data + 1))
+		if((my_envp->envp[x] = ft_memalloc((sizeof(char *) * (len_name + len_data + 1))
 						+ 1)) == NULL)
-			return ;
-		ft_memcpy(*envp[x], name_var, len_name);
-		ft_memcpy(*envp[x] + len_name, "=", 1);
-		ft_memcpy(*envp[x] + len_name + 1, data_var, len_data);
-		*envp[x][len_name + len_data + 1] = '\0';
+			return (1);
+		ft_memcpy(my_envp->envp[x], name_var, len_name);
+		ft_memcpy(my_envp->envp[x] + len_name, "=", 1);
+		ft_memcpy(my_envp->envp[x] + len_name + 1, data_var, len_data);
+		my_envp->envp[x][len_name + len_data + 1] = '\0';
 	}
 	else
 	{
-		free(*envp[x]);
+		free(my_envp->envp[x]);
 		len_name = ft_strlen(name_var);
 		if (data_var != NULL)
 			len_data = ft_strlen(data_var);
 		else
 			len_data = 0;
-		if((*envp[x] = ft_memalloc((sizeof(char *) * (len_name + len_data + 1))
+		if((my_envp->envp[x] = ft_memalloc((sizeof(char *) * (len_name + len_data + 1))
 						+ 1)) == NULL)
-			return ;
-		ft_memcpy(*envp[x], name_var, len_name);
-		ft_memcpy(*envp[x] + len_name, "=", 1);
-		ft_memcpy(*envp[x] + len_name + 1, data_var, len_data);
-		*envp[x][len_name + len_data + 1] = '\0';
+			return (1);
+		ft_memcpy(my_envp->envp[x], name_var, len_name);
+		ft_memcpy(my_envp->envp[x] + len_name, "=", 1);
+		ft_memcpy(my_envp->envp[x] + len_name + 1, data_var, len_data);
+		my_envp->envp[x][len_name + len_data + 1] = '\0';
 	}
-	return ;
+	return (0);
 }
 
-void		add_env(char *name_var, char *data_var, char ***envp)
+int			add_env(char *name_var, char *data_var, t_envp *my_envp)
 {
-	if (*envp == NULL)
-		*envp = envp_null(name_var, data_var);
+	if (my_envp->envp == NULL)
+	{
+		if ((my_envp->envp = envp_null(name_var, data_var)) == NULL)
+			return (1);
+	}
 	else
-		envp_no_null(name_var, data_var, envp);
-	return ;
+	{
+		if (envp_no_null(name_var, data_var, my_envp) == 1)
+			return (1);
+	}
+	return (0);
 }

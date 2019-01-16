@@ -183,25 +183,27 @@ int				while_main(int type, t_history *history_first, t_history *history_copy)
 	return (0);
 }
 
-int				free_envp(char **envp)
+int				free_envp(t_envp *my_envp)
 {
 	int		x;
 
 	x = 0;
-	while (envp[x] != NULL)
+	while (my_envp->envp[x] != NULL)
 	{
-		free(envp[x]);
+		free(my_envp->envp[x]);
 		x++;
 	}
-	free(envp);
+	free(my_envp->envp);
 	return (0);
 }
+
+#include <stdio.h>
 
 int				main(int argc, char **argv, char **envp)
 {
 	int			error;
 	int			exit_err;
-	char		**my_envp;
+	t_envp		my_envp;
 	t_lchar		buf;
 	t_history	history_first;
 	t_history	history_copy;
@@ -210,7 +212,7 @@ int				main(int argc, char **argv, char **envp)
 	(void)argv;
 	(void)buf;
 	/* ** recuper l'envp ** */
-	if ((my_envp = creat_envp(envp)) == NULL)
+	if ((creat_envp(envp, &my_envp)) == 1)
 		return (1);
 	/* ** inporter l'history ** */
 	if (inport_history(&history_first) == 1)
@@ -246,7 +248,7 @@ int				main(int argc, char **argv, char **envp)
 	/* ** exporter l'history ** */
 	if (export_history(&history_first, error) == 1)
 		return (1);
-	if (free_envp(my_envp) == 1)
+	if (free_envp(&my_envp) == 1)
 		return (1);
 	return (0);
 }

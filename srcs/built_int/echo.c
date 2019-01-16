@@ -6,11 +6,11 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/31 12:58:10 by gsotty            #+#    #+#             */
-/*   Updated: 2017/03/31 14:10:42 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/01/16 14:19:44 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../include/built_int.h"
 
 int			check_flag_echo(char **argv)
 {
@@ -27,10 +27,9 @@ static void	flag_n(char **argv)
 	x = 2;
 	while (argv[x] != NULL)
 	{
+		write(1, argv[x], ft_strlen(argv[x]));
 		if (argv[x + 1] != NULL)
-			ft_printf("%s ", argv[x]);
-		else
-			ft_printf("%s", argv[x]);
+			write(1, " ", 1);
 		x++;
 	}
 }
@@ -42,10 +41,9 @@ static void	no_flag_n(char **argv)
 	x = 1;
 	while (argv[x] != NULL)
 	{
+		write(1, argv[x], ft_strlen(argv[x]));
 		if (argv[x + 1] != NULL)
-			ft_printf("%s ", argv[x]);
-		else
-			ft_printf("%s", argv[x]);
+			write(1, " ", 1);
 		x++;
 	}
 	write(1, "\n", 1);

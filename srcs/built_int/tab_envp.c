@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/09 12:45:18 by gsotty            #+#    #+#             */
-/*   Updated: 2017/04/25 16:56:00 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/01/16 13:30:12 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,38 +33,36 @@ char	**creat_env(char **envp_begin, char **envp)
 	return (envp);
 }
 
-void	remalloc_env(char ***envp, int plus)
+int		remalloc_env(t_envp *my_envp, int plus)
 {
 	int		x;
-	int		size_envp;
 	char	**new_envp;
 	int		len_var;
 
-	size_envp = 0;
-	while (*envp[size_envp] != NULL)
-		size_envp++;
-	if ((new_envp = ft_memalloc((sizeof(char *) * (size_envp + plus + 1))
+	if ((new_envp = ft_memalloc((sizeof(char *) * (my_envp->len + plus + 1))
 					+ 1)) == NULL)
-		return ;
+		return (1);
 	x = 0;
-	while (x < (size_envp + plus))
+	while (x < (my_envp->len + plus))
 	{
-		if (*envp[x] != NULL)
+		if (my_envp->envp[x] != NULL)
 		{
-			new_envp[x] = ft_strdup(*envp[x]);
-			len_var = ft_strlen(*envp[x]);
+			new_envp[x] = ft_strdup(my_envp->envp[x]);
+			len_var = ft_strlen(my_envp->envp[x]);
 			if((new_envp[x] = ft_memalloc(sizeof(char *) * (len_var) + 1))
 						== NULL)
-				return ;
-			ft_memcpy(new_envp[x], *envp[x], len_var);
+				return (1);
+			ft_memcpy(new_envp[x], my_envp->envp[x], len_var);
 			new_envp[x][len_var] = '\0';
-			free(*envp[x]);
+			free(my_envp->envp[x]);
 		}
 		else
 			new_envp[x] = NULL;
 		x++;
 	}
-	free(*envp);
-	*envp = new_envp;
-	return ;
+	free(my_envp->envp);
+	my_envp->envp = new_envp;
+	my_envp->len += plus;
+	my_envp->len_malloc = my_envp->len;
+	return (0);
 }

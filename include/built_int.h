@@ -1,7 +1,7 @@
 #ifndef BUILT_INT_H
 # define BUILT_INT_H
 
-#include "./vingt_et_un_sh.h"
+# include "./vingt_et_un_sh.h"
 
 typedef struct		s_flag_cd
 {
@@ -24,16 +24,18 @@ typedef struct		s_intflag
 	int				y;
 }					t_intflag;
 
-int					check_flag_env(char **cmd, t_flag_env *flag, char ***envp);
-char				*find_var_env(char *name);
-void				cd(char **argv);
-void				ft_env(char **cmd, char ***envp);
-void				add_env(char *name_data, char *data_var, char ***envp);
-void				ft_setenv(char **cmd, char ***envp);
-void				remove_env(char *name, char ***envp);
-void				ft_unsetenv(char **cmd);
-void				add_pwd(t_flag_cd *flag_cd, char *path);
-void				add_oldpwd(t_flag_cd *flag_cd, char *path);
-void				remalloc_env(char ***envp, int plus);
+int					check_flag_env(char **cmd, t_flag_env *flag, 
+		t_envp *my_envp);
+char				*find_var_env(char *name, t_envp *my_envp);
+int					cd(char **argv, t_envp *my_envp);
+int					ft_env(char **cmd, t_envp *my_envp);
+int					add_env(char *name_data, char *data_var, t_envp *my_envp);
+int					ft_setenv(char **cmd, t_envp *my_envp);
+int					remove_env(char *name, t_envp *my_envp);
+int					ft_unsetenv(char **cmd, t_envp *my_envp);
+int					add_pwd(t_flag_cd *flag_cd, char *path, t_envp *my_envp);
+int					add_oldpwd(t_flag_cd *flag_cd, char *path, t_envp *my_envp);
+int					remalloc_env(t_envp *my_envp, int plus);
+int					echo(char **argv);
 
 #endif

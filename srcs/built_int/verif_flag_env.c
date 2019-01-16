@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/22 15:37:23 by gsotty            #+#    #+#             */
-/*   Updated: 2017/04/25 13:34:11 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/01/16 13:53:21 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,19 +23,19 @@ static int	ft_printf_erreur(char **cmd, int x, int y)
 }
 
 static int	verif_u_min(char **cmd, t_intflag *var, t_flag_env *flag,
-		char ***envp)
+		t_envp *my_envp)
 {
 	flag->u_min += 1;
 	if (cmd[var->x][var->y + 1] != '\0')
 	{
 		flag->name = ft_strdup(cmd[var->x] + var->y + 1);
-		remove_env(cmd[var->x] + var->y + 1, envp);
+		remove_env(cmd[var->x] + var->y + 1, my_envp);
 		return (1);
 	}
 	else if (cmd[var->x][var->y + 1] == '\0' && cmd[var->x + 1] != NULL)
 	{
 		flag->name = ft_strdup(cmd[var->x + 1]);
-		remove_env(cmd[var->x + 1], envp);
+		remove_env(cmd[var->x + 1], my_envp);
 		return (2);
 	}
 	else
@@ -49,7 +49,7 @@ static int	verif_u_min(char **cmd, t_intflag *var, t_flag_env *flag,
 }
 
 static int	verif_flag_env(char **cmd, t_intflag *var, t_flag_env *flag,
-		char ***envp)
+		t_envp *my_envp)
 {
 	var->y = 1;
 	if (cmd[var->x][0] == '-' && cmd[var->x][1] != '\0')
@@ -59,7 +59,7 @@ static int	verif_flag_env(char **cmd, t_intflag *var, t_flag_env *flag,
 			if (cmd[var->x][var->y] == 'i')
 				flag->i_min = 1;
 			else if (cmd[var->x][var->y] == 'u')
-				return (verif_u_min(cmd, var, flag, envp));
+				return (verif_u_min(cmd, var, flag, my_envp));
 			else
 				return (ft_printf_erreur(cmd, var->x, var->y));
 			var->y++;
@@ -73,7 +73,7 @@ static int	verif_flag_env(char **cmd, t_intflag *var, t_flag_env *flag,
 	return (1);
 }
 
-int			check_flag_env(char **cmd, t_flag_env *flag, char ***envp)
+int			check_flag_env(char **cmd, t_flag_env *flag, t_envp *my_envp)
 {
 	int			ret;
 	t_intflag	var;
@@ -82,7 +82,7 @@ int			check_flag_env(char **cmd, t_flag_env *flag, char ***envp)
 	var.x = 1;
 	while (cmd[var.x] != NULL)
 	{
-		if ((ret = verif_flag_env(cmd, &var, flag, envp)) == 0)
+		if ((ret = verif_flag_env(cmd, &var, flag, my_envp)) == 0)
 			break ;
 		if (ret == -1)
 			return (-1);

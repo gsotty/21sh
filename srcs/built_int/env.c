@@ -6,30 +6,29 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/22 15:28:33 by gsotty            #+#    #+#             */
-/*   Updated: 2017/05/03 10:26:23 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/01/16 13:15:33 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/built_int.h"
 #include <stdio.h>
 
-static void	free_tab(char **tab)
+static void	free_tab(t_envp *my_envp)
 {
 	int		x;
 
 	x = 0;
-	if (tab == NULL || tab[0] == NULL)
+	if (my_envp->envp == NULL || my_envp->envp[0] == NULL)
 		return ;
-	while (tab[x] != NULL)
+	while (my_envp->envp[x] != NULL)
 	{
-		free(tab[x]);
+		free(my_envp->envp[x]);
 		x++;
 	}
-	if (tab != NULL)
-		free(tab);
+	free(my_envp->envp);
 }
 
-void	env_argv(char **cmd, int ret, char ***envp)
+int		env_argv(char **cmd, int ret, t_envp *my_envp)
 {
 	int		y;
 	char	*p;
@@ -41,7 +40,8 @@ void	env_argv(char **cmd, int ret, char ***envp)
 				cmd[ret + y][0] != '=')
 		{
 			*p = '\0';
-			add_env(cmd[ret + y], p + 1, envp);
+			if (add_env(cmd[ret + y], p + 1, my_envp) == 1)
+				return (1);
 		}
 		else
 			break ;
@@ -49,56 +49,59 @@ void	env_argv(char **cmd, int ret, char ***envp)
 	}
 	if (cmd[ret + y] != NULL)
 	{
-		exec_cmd(1, cmd + ret + y, *envp);
+		exec_cmd(1, cmd + ret + y, my_envp->envp);
 		y++;
 	}
 	else if (cmd[ret + y] == NULL)
 	{
 		cmd[0] = ft_strdup("env");
 		cmd[1] = NULL;
-		ft_env(cmd, envp);
+		ft_env(cmd, my_envp);
 	}
-	return ;
+	return (0);
 }
 
-void	env_no_argv(char **envp)
+int		env_no_argv(t_envp *my_envp)
 {
 	int		x;
 
 	x = 0;
-	if (envp == NULL || envp[0] == NULL)
-		return ;
-	while (envp[x] != NULL)
+	if (my_envp->envp == NULL || my_envp->envp[0] == NULL)
+		return (1);
+	while (my_envp->envp[x] != NULL)
 	{
-		write(1, envp[x], ft_strlen(envp[x]));
+		write(1, my_envp->envp[x], ft_strlen(my_envp->envp[x]));
 		write(1, "\n", 1);
 		x++;
 	}
-	return ;
+	return (0);
 }
 
-void	ft_env(char **cmd, char ***envp)
+int		ft_env(char **cmd, t_envp *my_envp)
 {
 	int				ret;
 	t_flag_env		flag;
 
 	ft_memset(&flag, '\0', sizeof(t_flag_env));
-	if ((ret = check_flag_env(cmd, &flag, envp)) == -1)
-		return ;
+	if ((ret = check_flag_env(cmd, &flag, my_envp)) == -1)
+		return (1);
 	if (flag.i_min == 1)
 	{
-		free_tab(*envp);
-		*envp = NULL;
+		free_tab(my_envp);
+		my_envp->envp = NULL;
 	}
 	if (cmd[ret] == NULL && flag.u_min == 0)
-		env_no_argv(*envp);
+	{
+		if (env_no_argv(my_envp) == 1)
+			return (1);
+	}
 	else
 	{
 		if (flag.u_min >= 1)
-			remove_env(flag.name, envp);
-		env_argv(cmd, ret, envp);
+			remove_env(flag.name, my_envp);
+		env_argv(cmd, ret, my_envp);
 	}
 	if (flag.u_min == 1)
 		free(flag.name);
-	return ;
-}
+	return (0);
+};

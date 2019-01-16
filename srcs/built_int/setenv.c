@@ -6,14 +6,14 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/03 15:18:51 by gsotty            #+#    #+#             */
-/*   Updated: 2017/05/03 10:18:33 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/01/16 13:28:20 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/built_int.h"
 #include <stdio.h>
 
-void	ft_setenv(char **cmd, char ***envp)
+int		ft_setenv(char **cmd, t_envp *my_envp)
 {
 	int		x;
 	char	*p;
@@ -24,15 +24,16 @@ void	ft_setenv(char **cmd, char ***envp)
 		if (((p = ft_strchr(cmd[x], '=')) != NULL) && cmd[x][0] != '=')
 		{
 			*p = '\0';
-			add_env(cmd[x], p + 1, envp);
+			if (add_env(cmd[x], p + 1, my_envp) == 1)
+				return (1);
 		}
 		else
 		{
 			printf("\033[31mminishell: setenv: \033[0m%s", cmd[x]);
 			printf("\033[31m: invalid argument\n\033[0m");
-			return ;
+			return (1);
 		}
 		x++;
 	}
-	return ;
+	return (0);
 }
