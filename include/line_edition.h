@@ -17,10 +17,11 @@ typedef struct		s_pos
 {
 	int				co_max;
 	int				li_max;
-	int				co_pos;
-	int				li_pos;
-	int				co_len;
-	int				li_len;
+	int				*pos_act;
+	int				*pos_buf;
+	int				*pos_len;
+	int				*pos_promt;
+	int				len_tab;
 }					t_pos;
 
 #endif

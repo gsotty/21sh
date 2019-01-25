@@ -2,10 +2,10 @@
 # define FT_TERMCAPS_H
 
 # include "../lib/libft/libft.h"
+# include <term.h>
 # include <unistd.h>
 # include <stdlib.h>
-# include <termcap.h>
-# include <term.h>
+# include <stdio.h>
 
 int		f_putchar(int c);
 int		init_termcaps(void);
