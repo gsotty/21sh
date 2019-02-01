@@ -26,6 +26,8 @@ typedef struct		s_pos
 	int				co_max;
 	int				li_max;
 	int				len_tab;
+	int				start;
+	int				end;
 	int				nbr_line_pos;
 	int				nbr_line_len;
 

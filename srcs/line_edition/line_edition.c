@@ -277,7 +277,7 @@ int			real_length(t_pos *pos, t_real_length *struct_length,
 	x = 0;
 	while (x < pos->malloc)
 	{
-		fprintf(stderr, "pos_char = [%d], pos_cursor = [%d]\n", struct_length->pos_char[x], struct_length->pos_cursor[x]);
+	//	fprintf(stderr, "pos_char = [%d], pos_cursor = [%d]\n", struct_length->pos_char[x], struct_length->pos_cursor[x]);
 		x++;
 	}
 	return (0);
@@ -289,7 +289,7 @@ int				nbr_line_total(t_pos *pos)
 	int	nbr_line_len;
 
 	nbr_line_pos = 0;
-	fprintf(stderr, "	li_max = [%d], co_max = [%d]\n", pos->li_max, pos->co_max);
+//	fprintf(stderr, "	li_max = [%d], co_max = [%d]\n", pos->li_max, pos->co_max);
 	while ((pos->promt.pos_cursor[nbr_line_pos] +
 				pos->buf_pos.pos_cursor[nbr_line_pos]) >= pos->co_max
 			&& nbr_line_pos < pos->malloc)
@@ -304,22 +304,45 @@ int				nbr_line_total(t_pos *pos)
 	return (0);
 }
 
+int			where_is_start(t_pos *pos)
+{
+	if (pos->nbr_line_pos > pos->end)
+	{
+		pos->end = pos->nbr_line_pos;
+		if (pos->nbr_line_len > (pos->li_max - 1))
+			pos->start = pos->end - (pos->li_max - 1);
+		else
+			pos->start = 0;
+	}
+	else if (pos->nbr_line_pos < pos->start)
+	{
+		pos->start = pos->nbr_line_pos;
+		if (pos->nbr_line_len > (pos->li_max - 1))
+			pos->end = pos->start + (pos->li_max - 1);
+		else
+			pos->end = 0;
+	}
+//	fprintf(stderr, "	pos->start = [%d], pos->end = [%d]\n", pos->start, pos->end);
+	return (0);
+}
+
 int			refresh_size_win(int type, t_history *history, t_pos *pos)
 {
-	pos->co_max = tgetnum("co") - 1;
+	pos->co_max = tgetnum("co");
 	pos->li_max = tgetnum("li");
 	pos->len_tab = tgetnum ("it");
-	fprintf(stderr, "	promt\n");
+//	fprintf(stderr, "	promt\n");
 	real_length(pos, &pos->promt, 0, PROMT, LEN_PROMT);
-	fprintf(stderr, "	buf_pos\n");
+//	fprintf(stderr, "	buf_pos\n");
 	real_length(pos, &pos->buf_pos, pos->promt.len,
 			history->buf[history->pos_buf], history->pos[history->pos_buf]);
-	fprintf(stderr, "	buf_len\n");
+//	fprintf(stderr, "	buf_len\n");
 	real_length(pos, &pos->buf_len, pos->promt.len,
 			history->buf[history->pos_buf], history->len[history->pos_buf]);
 	nbr_line_total(pos);
-	fprintf(stderr, "		pos->nbr_line_pos = [%d]\n", pos->nbr_line_pos);
-	fprintf(stderr, "		pos->nbr_line_len = [%d]\n", pos->nbr_line_len);
+	where_is_start(pos);
+//	fprintf(stderr, "		pos->nbr_line_pos = [%d]\n", pos->nbr_line_pos);
+//	fprintf(stderr, "		pos->nbr_line_len = [%d]\n", pos->nbr_line_len);
 	return (0);
 }
 
@@ -335,7 +358,8 @@ void		replace_cursor(int type, t_history *history, t_pos *pos,
 		count_line = 0;
 		while (count_line < pos->nbr_line_pos)
 		{
-			tputs(tgetstr("do", NULL), 0, f_putchar);
+			if (count_line >= pos->start && count_line < pos->end)
+				tputs(tgetstr("do", NULL), 0, f_putchar);
 			count_line++;
 		}
 		count_pos = 0;
@@ -352,10 +376,12 @@ void		replace_cursor(int type, t_history *history, t_pos *pos,
 		count_line = 0;
 		while (count_line < pos->nbr_line_pos)
 		{
-			if (count_line > (pos->nbr_line_pos - pos->li_max))
-				tputs(tgetstr("sr", NULL), 0, f_putchar);
-			else
+			if (count_line >= pos->start && count_line < pos->end)
 				tputs(tgetstr("up", NULL), 0, f_putchar);
+			//	if (count_line > (pos->nbr_line_pos - pos->li_max))
+			//		tputs(tgetstr("sr", NULL), 0, f_putchar);
+			//	else
+			//		tputs(tgetstr("up", NULL), 0, f_putchar);
 			count_line++;
 		}
 	}
@@ -365,10 +391,12 @@ void		replace_cursor(int type, t_history *history, t_pos *pos,
 		count_line = 0;
 		while (count_line < pos->nbr_line_len)
 		{
-			if (count_line > (pos->nbr_line_len - pos->li_max))
-				tputs(tgetstr("sr", NULL), 0, f_putchar);
-			else
+			if (count_line >= pos->start && count_line < pos->end)
 				tputs(tgetstr("up", NULL), 0, f_putchar);
+			//if (count_line > (pos->nbr_line_len - pos->li_max))
+			//	tputs(tgetstr("sr", NULL), 0, f_putchar);
+		//	else
+		//		tputs(tgetstr("up", NULL), 0, f_putchar);
 			count_line++;
 		}
 	}
@@ -377,10 +405,12 @@ void		replace_cursor(int type, t_history *history, t_pos *pos,
 		count_line = pos->nbr_line_pos;
 		while (count_line < pos->nbr_line_len)
 		{
-			if (count_line > (pos->nbr_line_len - pos->li_max))
-				tputs(tgetstr("sr", NULL), 0, f_putchar);
-			else
+			if (count_line >= pos->start && count_line < pos->end)
 				tputs(tgetstr("up", NULL), 0, f_putchar);
+			//if (count_line > (pos->nbr_line_len - pos->li_max))
+			//	tputs(tgetstr("sr", NULL), 0, f_putchar);
+			//else
+		//		tputs(tgetstr("up", NULL), 0, f_putchar);
 			count_line++;
 		}
 		tputs(tgetstr("cr", NULL), 0, f_putchar);
@@ -397,7 +427,8 @@ void		replace_cursor(int type, t_history *history, t_pos *pos,
 		count_line = pos->nbr_line_pos;
 		while (count_line < pos->nbr_line_len)
 		{
-			tputs(tgetstr("do", NULL), 0, f_putchar);
+			if (count_line >= pos->start && count_line < pos->end)
+				tputs(tgetstr("do", NULL), 0, f_putchar);
 			count_line++;
 		}
 		tputs(tgetstr("cr", NULL), 0, f_putchar);
@@ -455,7 +486,7 @@ void		delete_key(t_history *history)
  ** 2 = exit for quit the term (like ctrl-D)
  ** 3 = exit for clean the buff and add a new ligne (ctrl-C)
  **
- */
+*/
 
 /*
 
@@ -474,11 +505,15 @@ void		delete_key(t_history *history)
 int				creat_struct_pos(int type, t_pos *pos)
 {
 	(void)type;
-	pos->co_max = tgetnum("co") - 1;
+	pos->co_max = tgetnum("co");
 	pos->li_max = tgetnum("li");
 	pos->len_tab = tgetnum ("it");
 
 	pos->malloc = 1;
+	pos->start = 0;
+	pos->end = (pos->li_max - 1);
+	pos->nbr_line_pos = 0;
+	pos->nbr_line_len = 0;
 
 	pos->promt.len = 0;
 	pos->promt.nbr_line = 0;
@@ -530,20 +565,29 @@ int				print_the_buf(int type, t_history *history, t_pos *pos)
 	len_use_buf = 0;
 	len_use_promt = 0;
 	refresh_size_win(type, history, pos);
-	while (x <= pos->nbr_line_len)
+	while (x < pos->start)
+	{
+		len_use_promt += pos->promt.pos_char[x];
+		len_use_buf += pos->buf_len.pos_char[x];
+		x++;
+	}
+//	fprintf(stderr, "x = [%d], pos->nbr_line_len = [%d], pos->end = [%d]\n", x, pos->nbr_line_len, pos->end);
+	tputs(tgetstr("cd", NULL), 0, f_putchar);
+	while (x <= pos->nbr_line_len && x <= pos->end)
 	{
 		write(STDOUT_FILENO, PROMT + len_use_promt, pos->promt.pos_char[x]);
+		write(2, PROMT + len_use_promt, pos->promt.pos_char[x]);
 		write(STDOUT_FILENO, history->buf[history->pos_buf] + len_use_buf,
+				pos->buf_len.pos_char[x]);
+		write(2, history->buf[history->pos_buf] + len_use_buf,
 				pos->buf_len.pos_char[x]);
 		len_use_promt += pos->promt.pos_char[x];
 		len_use_buf += pos->buf_len.pos_char[x];
-		if (x < pos->nbr_line_len)
+		if (x < pos->nbr_line_len && x < pos->end)
 			tputs(tgetstr("do", NULL), 0, f_putchar);
 		x++;
 	}
 	replace_cursor(type, history, pos, 3);
-//	replace_cursor(type, history, pos, 2);
-//	replace_cursor(type, history, pos, 0);
 	return (0);
 }
 
@@ -580,14 +624,16 @@ int				line_edition(int type, t_history *history)
 	{
 		ft_memset(&buffer, 0, sizeof(char) * 4);
 		ret = read(0, buffer, 4095);
-/*		int		print = 0;
+/*
+		int		print = 0;
 		printf("ret = [%d]\n", ret);
 		while (print < ret)
 		{
 			printf("[%d]", buffer[print]);
 			print++;
 		}
-		printf("\n");*/
+		printf("\n");
+*/
 //		write(1, buffer, ret);
 		if (g_sig == SIGINT)
 		{
@@ -614,21 +660,18 @@ int				line_edition(int type, t_history *history)
 		else if (buffer[0] == 4 && ret == 1)
 		{
 			replace_cursor(type, history, &pos, 1);
-			tputs(tgetstr("cd", NULL), 0, f_putchar);
 			delete_key(history);
 			print_the_buf(type, history, &pos);
 		}
 		else if (buffer[0] == 127 && ret == 1)
 		{
 			replace_cursor(type, history, &pos, 1);
-			tputs(tgetstr("cd", NULL), 0, f_putchar);
 			backspace_key(history);
 			print_the_buf(type, history, &pos);
 		}
 		else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 51)
 		{
 			replace_cursor(type, history, &pos, 1);
-			tputs(tgetstr("cd", NULL), 0, f_putchar);
 			delete_key(history);
 			print_the_buf(type, history, &pos);
 		}
@@ -637,7 +680,6 @@ int				line_edition(int type, t_history *history)
 			if (buffer[2] == 65 && history->pos_buf > 0) // up
 			{
 				replace_cursor(type, history, &pos, 1);
-				tputs(tgetstr("cd", NULL), 0, f_putchar);
 				history->pos_buf--;
 				history->pos[history->pos_buf] = history->len[history->pos_buf];
 				print_the_buf(type, history, &pos);
@@ -646,7 +688,6 @@ int				line_edition(int type, t_history *history)
 					history->len_buf) // down
 			{
 				replace_cursor(type, history, &pos, 1);
-				tputs(tgetstr("cd", NULL), 0, f_putchar);
 				history->pos_buf++;
 				history->pos[history->pos_buf] = history->len[history->pos_buf];
 				print_the_buf(type, history, &pos);
@@ -655,20 +696,26 @@ int				line_edition(int type, t_history *history)
 					pos.buf_len.len) // right
 			{
 				replace_cursor(type, history, &pos, 1);
-				tputs(tgetstr("cd", NULL), 0, f_putchar);
 				history->pos[history->pos_buf]++;
 				print_the_buf(type, history, &pos);
 			}
 			else if (buffer[2] == 68 && pos.buf_pos.len > 0) // left
 			{
 				replace_cursor(type, history, &pos, 1);
-				tputs(tgetstr("cd", NULL), 0, f_putchar);
 				history->pos[history->pos_buf]--;
+				print_the_buf(type, history, &pos);
+			}
+			else if (buffer[2] == 70) // end
+			{
+				replace_cursor(type, history, &pos, 1);
+				history->pos[history->pos_buf] = history->len[history->pos_buf];
 				print_the_buf(type, history, &pos);
 			}
 			else if (buffer[2] == 72) // home
 			{
 				replace_cursor(type, history, &pos, 1);
+				history->pos[history->pos_buf] = 0;
+				print_the_buf(type, history, &pos);
 			}
 		}
 		else if (buffer[0] == 10 && buffer[1] == 0 && buffer[2] == 0)
@@ -678,7 +725,6 @@ int				line_edition(int type, t_history *history)
 		else
 		{
 			replace_cursor(type, history, &pos, 1);
-			tputs(tgetstr("cd", NULL), 0, f_putchar);
 			creat_buf(history, buffer, ret);
 			print_the_buf(type, history, &pos);
 		}
