@@ -93,6 +93,14 @@ int				inport_history(t_history *history)
 		history->len_buf = 0;
 		history->malloc_buf = 0;
 		history->pos_buf = 0;
+		if ((history->len = ft_memalloc(sizeof(int))) == NULL)
+			return (1);
+		if ((history->len_malloc = ft_memalloc(sizeof(int))) == NULL)
+			return (1);
+		if ((history->pos = ft_memalloc(sizeof(int))) == NULL)
+			return (1);
+		if ((history->buf = ft_memalloc(sizeof(char *))) == NULL)
+			return (1);
 	}
 	close(fd);
 	return (0);

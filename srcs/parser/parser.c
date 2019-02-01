@@ -199,38 +199,74 @@ int		parser(t_lchar *buf, t_envp *my_envp, t_history *history_first)
 		else if (buf->c[x] == '\"')
 			buf->type[x] = _DOUBLE_QUOTE;
 		else if (buf->c[x] == '#')
+		{
 			buf->type[x] = _POUND;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '$')
+		{
 			buf->type[x] = _DOLLAR_SIGN;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '%')
+		{
 			buf->type[x] = _PORCENT_SIGN;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '^')
+		{
 			buf->type[x] = _AMPERSAND;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '\'')
 			buf->type[x] = _APOSTROPHE;
 		else if (buf->c[x] == '(')
+		{
 			buf->type[x] = _ROUND_BRACKET_LEFT;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == ')')
+		{
 			buf->type[x] = _ROUND_BRACKET_RIGHT;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '*')
+		{
 			buf->type[x] = _ASTERISK;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '+')
+		{
 			buf->type[x] = _PLUS_SIGN;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == ',')
+		{
 			buf->type[x] = _COMMA;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '-')
 		{
 			//buf->type[x] = _HYPHEN;
 			buf->type[x] = _WORD;
 		}
 		else if (buf->c[x] == '.')
+		{
 			buf->type[x] = _FULL_STOP;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '/')
+		{
 			buf->type[x] = _SLASH;
+			buf->type[x] = _WORD;
+		}
 		else if (ft_isdigit(buf->c[x]) == 1)
 			buf->type[x] = _DIGIT;
 		else if (buf->c[x] == ':')
+		{
 			buf->type[x] = _COLON;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == ';')
 			buf->type[x] = _SEP;
 		else if (buf->c[x] == '<')
@@ -243,33 +279,63 @@ int		parser(t_lchar *buf, t_envp *my_envp, t_history *history_first)
 		else if (buf->c[x] == '>')
 			buf->type[x] = _GUILLEMET_RIGHT;
 		else if (buf->c[x] == '?')
+		{
 			buf->type[x] = _QUESTION_MARK;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '@')
+		{
 			buf->type[x] = _AT_SIGN;
+			buf->type[x] = _WORD;
+		}
 		else if (ft_isalpha(buf->c[x]) == 1)
 			buf->type[x] = _ALPHA;
 		else if (buf->c[x] == '[')
+		{
 			buf->type[x] = _SQUARE_BRACKET_LEFT;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '\\')
 			buf->type[x] = _BACKSLASH;
 		else if (buf->c[x] == ']')
+		{
 			buf->type[x] = _SQUARE_BRACKET_RIGHT;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '^')
+		{
 			buf->type[x] = _CARET;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '_')
+		{
 			buf->type[x] = _UNDERSCORE;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '`')
+		{
 			buf->type[x] = _PRIME;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '{')
+		{
 			buf->type[x] = _CURLY_BRACKET_RIGHT;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '|')
 			buf->type[x] = _PIPE;
 		else if (buf->c[x] == '}')
+		{
 			buf->type[x] = _CURLY_BRACKET_LEFT;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '~')
+		{
 			buf->type[x] = _TILDE;
+			buf->type[x] = _WORD;
+		}
 		else if (buf->c[x] == '\t' || buf->c[x] == '\v')
-			buf->type[x] = _TAB;
+			buf->type[x] = _SPACE;
 		else if (buf->c[x] == '\n')
 			buf->type[x] = _NEW_LINE;
 		else
@@ -279,8 +345,8 @@ int		parser(t_lchar *buf, t_envp *my_envp, t_history *history_first)
 	cut_quoting(buf);
 	cut_commands(buf);
 	creat_sep(buf, &base);
-	ft_print_lchar(buf);
-	print_base(base);
+//	ft_print_lchar(buf);
+//	print_base(base);
 	exec_base(base, my_envp, history_first);
 	free_base(base);
 	return (0);

@@ -13,15 +13,27 @@
 # define PROMT_HER "> "
 # define LEN_PROMT_HER 2
 
+typedef struct		s_real_length
+{
+	int				len;
+	int				nbr_line;
+	int				*pos_char;
+	int				*pos_cursor;
+}					t_real_length;
+
 typedef struct		s_pos
 {
 	int				co_max;
 	int				li_max;
-	int				*pos_act;
-	int				*pos_buf;
-	int				*pos_len;
-	int				*pos_promt;
 	int				len_tab;
+	int				nbr_line_pos;
+	int				nbr_line_len;
+
+	int				malloc;
+
+	t_real_length	promt;
+	t_real_length	buf_pos;
+	t_real_length	buf_len;
 }					t_pos;
 
 #endif

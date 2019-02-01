@@ -19,7 +19,7 @@ typedef	struct		s_envp
 
 sig_atomic_t		g_sig;
 
-void	ft_signal(void);
+void	ft_signal(int signum, int flags);
 int		creat_envp(char **envp, t_envp *my_envp);
 int		inport_history(t_history *history);
 int		export_history(t_history *history, int error);

@@ -9,21 +9,12 @@ int		closing_pipefd(t_var_redir *var_redir, int which_pipefd,
 	char	*tmp_itoa;
 
 	tmp_itoa = ft_itoa(which_entry);
-	write(2, "which_entry = (", 15);
-	write(2, tmp_itoa, ft_strlen(tmp_itoa));
-	write(2, ")\n", 2);
 	free(tmp_itoa);
 	tmp_itoa = ft_itoa(which_pipefd);
-	write(2, "which_pipefd = (", 16);
-	write(2, tmp_itoa, ft_strlen(tmp_itoa));
-	write(2, ")\n", 2);
 	free(tmp_itoa);
 	tmp_itoa = ft_itoa(var_redir->int_or_out == which_pipefd ?
 			var_redir->pipefd_one[which_entry] :
 			var_redir->pipefd_two[which_entry]);
-	write(2, "close(", 6);
-	write(2, tmp_itoa, ft_strlen(tmp_itoa));
-	write(2, ")\n", 2);
 	free(tmp_itoa);
 	close((var_redir->int_or_out == which_pipefd ?
 				var_redir->pipefd_one[which_entry] :
@@ -349,7 +340,6 @@ int		exec_built_int(t_var_redir *var_redir, t_separateurs sep,
 int		while_sep(t_separateurs sep, t_envp *my_envp, t_history *history_first,
 		t_var_redir *var_redir)
 {
-	int			status;
 	int			rep;
 
 	var_redir->fd_int = 0;
@@ -361,20 +351,24 @@ int		while_sep(t_separateurs sep, t_envp *my_envp, t_history *history_first,
 				return (1);
 		if (add_redir(sep.pipel[var_redir->y], history_first, var_redir) == 1)
 			return (1);
+		ft_signal(SIGINT, SA_NODEFER);
 		rep = exec_built_int(var_redir, sep, my_envp);
 		if (rep == 0)
 		{
 			if (fork_exec(sep, my_envp, var_redir) == 1)
+			{
+				ft_signal(SIGINT, SA_SIGINFO);
 				return (1);
+			}
 		}
 		else if (rep == 1)
+		{
+			ft_signal(SIGINT, SA_SIGINFO);
 			return (1);
+		}
+		ft_signal(SIGINT, SA_SIGINFO);
 		var_redir->int_or_out = !var_redir->int_or_out;
 		var_redir->y++;
-	}
-	while ((rep = waitpid(-1, &status, 0)) > -1)
-	{
-		printf("wait = [%d], rep = [%d]\n", rep, WEXITSTATUS(status));
 	}
 	return (0);
 }
@@ -383,6 +377,8 @@ int		exec_base(t_parser_shell base, t_envp *my_envp,
 		t_history *history_first)
 {
 	int			x;
+	int			rep;
+	int			status;
 	t_var_redir	var_redir;
 
 	x = 0;
@@ -398,8 +394,10 @@ int		exec_base(t_parser_shell base, t_envp *my_envp,
 		var_redir.int_or_out = 0;
 		var_redir.end_pipe = base.sep[x].len - 1;
 		if (while_sep(base.sep[x], my_envp, history_first, &var_redir) == 1)
-		{
 			return (1);
+		while ((rep = waitpid(-1, &status, 0)) > -1)
+		{
+		//	printf("wait = [%d], rep = [%d]\n", rep, WEXITSTATUS(status));
 		}
 		x++;
 	}

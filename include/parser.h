@@ -10,6 +10,9 @@
 
 /*
  **	1er block:
+ **		' " and \
+ **
+ **	1er block:
  **		_SEP = separateur: {;}
  **	2eme block:
  **		_PIPE = pipe: {|}

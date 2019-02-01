@@ -165,7 +165,8 @@ int				while_main(int type, t_history *history_first, t_history *history_copy)
 		}
 		else if (err == 2)
 		{
-			free_history(history_copy);
+			if ((add_new_history(history_first, history_copy)) == 1)
+				return (1);
 			return (2);
 		}
 		else if (err == 3)
@@ -221,11 +222,10 @@ int				main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		error = 0;
-		ft_signal();
+		ft_signal(SIGINT, SA_SIGINFO);
 		exit_err = while_main(0, &history_first, &history_copy);
 		if (exit_err == 1)
 			return (1);
-
 		else if (exit_err == 2 || ft_memcmp("exit\n",
 					history_first.buf[history_first.pos_buf],
 					history_first.len[history_first.pos_buf]) == 0)

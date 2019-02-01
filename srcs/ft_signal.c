@@ -19,13 +19,14 @@ static void		signal_act(int x, siginfo_t *siginfo, void *context)
 	g_sig = x;
 }
 
-void			ft_signal(void)
+void			ft_signal(int signum, int flags)
 {
 	struct sigaction	act;
 
 	g_sig = 0;
 	ft_memset(&act, '\0', sizeof(act));
 	act.sa_sigaction = &signal_act;
-	act.sa_flags = SA_SIGINFO;
-	sigaction(SIGINT, &act, NULL);
+	sigemptyset(&act.sa_mask);
+	act.sa_flags = flags;
+	sigaction(signum, &act, NULL);
 }

@@ -1,6 +1,6 @@
 #include "../../include/parser.h"
 
-static int	add_type(int *x, t_lchar *buf, int limit)
+/*static int	add_type(int *x, t_lchar *buf, int limit)
 {
 	buf->type[*x] = _DEL;
 	if ((*x + 1) < buf->len)
@@ -37,15 +37,34 @@ static int	while_cut(int *x, t_lchar *buf)
 		buf->type[*x] = _WORD;
 	return (0);
 }
-
+*/
 int		cut_quoting(t_lchar *buf)
 {
 	int		x;
+	int		is_apost;
+	int		is_quote;
 
 	x = 0;
+	is_apost = 0;
+	is_quote = 0;
 	while (x < buf->len)
 	{
-		while_cut(&x, buf);
+		//while_cut(&x, buf);
+		if (buf->type[x] == _APOSTROPHE)
+		{
+			is_apost = 0;
+			buf->type[x] = _DEL;
+			x++;
+			while (buf->type[x] != _APOSTROPHE)
+			{
+				buf->type[x] = _WORD;
+				x++;
+			}
+			buf->type[x] = _DEL;
+		}
+		if (buf->type[x] == _DOUBLE_QUOTE)
+		{
+		}
 		x++;
 	}
 	return (0);
