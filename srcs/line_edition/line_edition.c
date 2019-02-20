@@ -576,11 +576,11 @@ int				print_the_buf(int type, t_history *history, t_pos *pos)
 	while (x <= pos->nbr_line_len && x <= pos->end)
 	{
 		write(STDOUT_FILENO, PROMT + len_use_promt, pos->promt.pos_char[x]);
-		write(2, PROMT + len_use_promt, pos->promt.pos_char[x]);
+	//	write(2, PROMT + len_use_promt, pos->promt.pos_char[x]);
 		write(STDOUT_FILENO, history->buf[history->pos_buf] + len_use_buf,
 				pos->buf_len.pos_char[x]);
-		write(2, history->buf[history->pos_buf] + len_use_buf,
-				pos->buf_len.pos_char[x]);
+	//	write(2, history->buf[history->pos_buf] + len_use_buf,
+	//			pos->buf_len.pos_char[x]);
 		len_use_promt += pos->promt.pos_char[x];
 		len_use_buf += pos->buf_len.pos_char[x];
 		if (x < pos->nbr_line_len && x < pos->end)
