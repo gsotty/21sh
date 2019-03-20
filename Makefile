@@ -2,7 +2,7 @@ NAME = 21sh
 
 CC = clang
 
-FLAG = -g -Wall -Wextra -Werror
+FLAG = -g # -Wall -Wextra -Werror
 
 TERMCAP = -ltermcap
 
@@ -28,8 +28,6 @@ SRC =	main.c \
 		reset_termcaps.c \
 		parser.c \
 		which_define.c \
-		cut_quoting.c \
-		cut_commands.c \
 		creat_cmd.c \
 		creat_pipe.c \
 		creat_redirection.c \
@@ -48,11 +46,17 @@ SRC =	main.c \
 		cd.c \
 		echo.c \
 		add_pwd.c \
-		add_oldpwd.c
+		add_oldpwd.c \
+		ft_lchardup.c \
+		ft_historycpy.c \
+		ft_remallochistory.c \
+		ft_freehistory.c \
+		ft_addtype.c \
+		ft_lcharsplit.c
 
 OBJ = $(SRC:.c=.o)
 
-VPATH = srcs:srcs/envp:srcs/history:srcs/line_edition:srcs/termcaps:srcs/parser:srcs/execute:srcs/built_int
+VPATH = srcs:srcs/envp:srcs/history:srcs/line_edition:srcs/termcaps:srcs/parser:srcs/execute:srcs/built_int:srcs/lchar
 
 %.o: %.c
 		$(CC) -c $(FLAG) $< -o $@

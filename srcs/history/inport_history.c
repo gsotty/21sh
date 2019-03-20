@@ -1,4 +1,5 @@
 #include "../../include/history.h"
+#include "../../include/parser.h"
 
 static int		ft_nbr_line(void)
 {
@@ -21,6 +22,7 @@ static int		ft_nbr_line(void)
 	return (count);
 }
 
+
 static int		while_get_next_line(int fd, t_history *history)
 {
 	int		ret;
@@ -33,14 +35,19 @@ static int		while_get_next_line(int fd, t_history *history)
 	{
 		if (ret == -1)
 			return (-1);
+		if ((history->buf[count] = ft_memalloc(sizeof(t_lchar) + 1)) == NULL)
+			return (1);
 		len_arg = ft_strlen(line);
-		history->len[count] = len_arg;
-		history->len_malloc[count] = len_arg;
+		history->buf[count]->len = len_arg;
 		history->pos[count] = 0;
-		if ((history->buf[count] = ft_memalloc((sizeof(char) *
+		if ((history->buf[count]->c = ft_memalloc((sizeof(char) *
 							len_arg) + 1)) == NULL)
 			return (1);
-		ft_memcpy(history->buf[count], line, len_arg);
+		ft_memcpy(history->buf[count]->c, line, len_arg);
+		if ((history->buf[count]->type = ft_memalloc((sizeof(int) *
+							len_arg) + 1)) == NULL)
+			return (1);
+		ft_addtype(history->buf[count], 0, history->buf[count]->len);
 		free(line);
 		count++;
 	}
@@ -55,16 +62,12 @@ static int		take_line(int len, t_history *history)
 		return (-1);
 	if (len == -1)
 		return (1);
-	history->len_buf = len - 1;
-	history->malloc_buf = len - 1;
+	history->len = len - 1;
+	history->malloc = len - 1;
 	history->pos_buf = len - 1;
-	if ((history->len = ft_memalloc(sizeof(int) * (len + 1))) == NULL)
-		return (1);
-	if ((history->len_malloc = ft_memalloc(sizeof(int) * (len + 1))) == NULL)
-		return (1);
 	if ((history->pos = ft_memalloc(sizeof(int) * (len + 1))) == NULL)
 		return (1);
-	if ((history->buf = ft_memalloc(sizeof(char *) * (len + 1))) == NULL)
+	if ((history->buf = ft_memalloc(sizeof(t_lchar *) * (len + 1))) == NULL)
 		return (1);
 	while_get_next_line(fd, history);
 	close(fd);
@@ -90,16 +93,12 @@ int				inport_history(t_history *history)
 		if ((fd = open(PATH_HISTORY, O_CREAT | O_RDONLY,
 						S_IRUSR | S_IWUSR)) == -1)
 			return (1);
-		history->len_buf = 0;
-		history->malloc_buf = 0;
+		history->len = 0;
+		history->malloc = 0;
 		history->pos_buf = 0;
-		if ((history->len = ft_memalloc(sizeof(int))) == NULL)
-			return (1);
-		if ((history->len_malloc = ft_memalloc(sizeof(int))) == NULL)
-			return (1);
 		if ((history->pos = ft_memalloc(sizeof(int))) == NULL)
 			return (1);
-		if ((history->buf = ft_memalloc(sizeof(char *))) == NULL)
+		if ((history->buf = ft_memalloc(sizeof(t_lchar *))) == NULL)
 			return (1);
 	}
 	close(fd);

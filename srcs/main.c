@@ -1,143 +1,34 @@
 #include "../include/vingt_et_un_sh.h"
 #include "../include/lchar.h"
+#include "../include/parser.h"
 
-int				ft_history_copy(t_history *history_first, t_history *history_copy)
+int				ft_strmatch(char *str1, char *str2)
 {
-	int			count;
+	int		x;
 
-	history_copy->len_buf = history_first->len_buf + 1;
-	history_copy->malloc_buf = history_first->len_buf + 1;
-	history_copy->pos_buf = history_first->pos_buf + 1;
-	if ((history_copy->len = ft_memalloc(sizeof(int) * (history_copy->malloc_buf + 1))) == NULL)
+	x = 0;
+	while (str1[x] == str2[x] && str1[x] != '\0' && str2[x] != '\0')
+		x++;
+	if (str1[x] == '\0' && str2[x] == '\0')
 		return (1);
-	if ((history_copy->len_malloc = ft_memalloc(sizeof(int) * (history_copy->malloc_buf + 1))) == NULL)
-		return (1);
-	if ((history_copy->pos = ft_memalloc(sizeof(int) * (history_copy->malloc_buf + 1))) == NULL)
-		return (1);
-	if ((history_copy->buf = ft_memalloc(sizeof(char *) * (history_copy->malloc_buf + 1))) == NULL)
-		return (1);
-	count = 0;
-	while (count <= history_first->len_buf)
-	{
-		history_copy->len[count] = history_first->len[count];
-		history_copy->len_malloc[count] = history_first->len_malloc[count];
-		history_copy->pos[count] = history_first->pos[count];
-		if ((history_copy->buf[count] = ft_memalloc(sizeof(char) * (history_copy->len_malloc[count] + 1))) == NULL)
-			return (1);
-		ft_memcpy(history_copy->buf[count], history_first->buf[count], history_first->len[count]);
-		count++;
-	}
-	history_copy->len[count] = 0;
-	history_copy->len_malloc[count] = 0;
-	history_copy->pos[count] = 0;
-	history_copy->buf[count] = NULL;
 	return (0);
 }
 
-int				add_new_history(t_history *history_first, t_history *history_copy)
+t_history		*add_new_history(t_history *history, t_lchar *buf)
 {
-	int		count;
-	int		*tmp_len;
-	int		*tmp_len_malloc;
-	int		*tmp_pos;
-	char	**tmp_buf;
+	t_history	*tmp_history;
 
-	if (history_copy->len_buf >= history_first->malloc_buf)
+	if (ft_strmatch(history->buf[history->len]->c, buf->c) == 0)
 	{
-		history_first->malloc_buf += REMALLOC_HISTORY;
-		if ((tmp_len = ft_memalloc(sizeof(int) * (history_first->malloc_buf + 1))) == NULL)
-			return (1);
-		if ((tmp_len_malloc = ft_memalloc(sizeof(int) * (history_first->malloc_buf + 1))) == NULL)
-			return (1);
-		if ((tmp_pos = ft_memalloc(sizeof(int) * (history_first->malloc_buf + 1))) == NULL)
-			return (1);
-		if ((tmp_buf = ft_memalloc(sizeof(char *) * (history_first->malloc_buf + 1))) == NULL)
-			return (1);
-		count = 0;
-		while (count <= history_first->len_buf)
-		{
-			tmp_len[count] = history_first->len[count];
-			tmp_len_malloc[count] = history_first->len_malloc[count];
-			tmp_pos[count] = history_first->pos[count];
-			if ((tmp_buf[count] = ft_memalloc(sizeof(char) * (history_first->len_malloc[count] + 1))) == NULL)
-				return (1);
-			ft_memcpy(tmp_buf[count], history_first->buf[count], history_first->len[count]);
-			tmp_buf[count][history_first->len[count]] = '\0';
-			free(history_first->buf[count]);
-			count++;
-		}
-		tmp_len[history_copy->len_buf] = history_copy->len[history_copy->pos_buf];
-		tmp_len_malloc[history_copy->len_buf] = history_copy->len_malloc[history_copy->pos_buf];
-		tmp_pos[history_copy->len_buf] = history_copy->pos[history_copy->pos_buf];
-		if ((tmp_buf[history_copy->len_buf] = ft_memalloc((sizeof(char) *
-							history_copy->len_malloc[history_copy->pos_buf]) + 1)) == NULL)
-			return (1);
-		ft_memcpy(tmp_buf[history_copy->len_buf], history_copy->buf[history_copy->pos_buf], history_copy->len[history_copy->pos_buf]);
-		tmp_buf[history_copy->len_buf][history_copy->len[history_copy->pos_buf]] = '\0';
-		history_first->len_buf = history_copy->len_buf;
-		count = 0;
-		while (count <= history_copy->len_buf)
-		{
-			free(history_copy->buf[count]);
-			count++;
-		}
-		free(history_copy->len);
-		free(history_copy->len_malloc);
-		free(history_copy->pos);
-		free(history_copy->buf);
-		free(history_first->len);
-		free(history_first->len_malloc);
-		free(history_first->pos);
-		free(history_first->buf);
-		history_first->len = tmp_len;
-		history_first->len_malloc = tmp_len_malloc;
-		history_first->pos = tmp_pos;
-		history_first->buf = tmp_buf;
+		if ((tmp_history = ft_memalloc(sizeof(t_history) + 1)) == NULL)
+			return (NULL);
+		ft_historycpy(history, tmp_history, 1);
+		ft_freehistory(history);
+		ft_lchardup(tmp_history->buf[tmp_history->len], buf, 0);
+		ft_historycpy(tmp_history, history, 0);
+		ft_freehistory(tmp_history);
 	}
-	else
-	{
-		history_first->len_buf = history_copy->len_buf;
-		history_first->len[history_first->len_buf] = history_copy->len[history_copy->pos_buf];
-		history_first->len_malloc[history_first->len_buf] = history_copy->len_malloc[history_copy->pos_buf];
-		history_first->pos[history_first->len_buf] = history_copy->pos[history_copy->pos_buf];
-		free(history_first->buf[history_first->len_buf]);
-		if ((history_first->buf[history_first->len_buf] = ft_memalloc(sizeof(char) *
-						(history_copy->len_malloc[history_copy->pos_buf] + 1))) == NULL)
-			return (1);
-		ft_memcpy(history_first->buf[history_first->len_buf], history_copy->buf[history_copy->pos_buf],
-				history_copy->len[history_copy->pos_buf]);
-		history_first->buf[history_first->len_buf][history_copy->len[history_copy->pos_buf]] = '\0';
-
-		count = 0;
-		while (count <= history_copy->len_buf)
-		{
-			free(history_copy->buf[count]);
-			count++;
-		}
-		free(history_copy->len);
-		free(history_copy->len_malloc);
-		free(history_copy->pos);
-		free(history_copy->buf);
-	}
-	history_first->pos_buf = history_first->len_buf;
-	return (0);
-}
-
-int				free_history(t_history *history)
-{
-	int		count;
-
-	count = 0;
-	while (count <= history->len_buf)
-	{
-		free(history->buf[count]);
-		count++;
-	}
-	free(history->len);
-	free(history->len_malloc);
-	free(history->pos);
-	free(history->buf);
-	return (0);
+	return (history);
 }
 
 /*
@@ -149,39 +40,49 @@ int				free_history(t_history *history)
 **
 */
 
-int				while_main(int type, t_history *history_first, t_history *history_copy)
+/*
+static int		ft_printhistory(t_history *history)
 {
-	int		err;
+	int		x;
+	int		y;
 
-	if ((ft_history_copy(history_first, history_copy)) == 1)
-		return (1);
-	while (1)
+	x = 0;
+	printf("len = \"%d\", malloc = \"%d\"\n", history->len, history->malloc);
+	printf("pos_buf = \"%d\"\n", history->pos_buf);
+	while (x <= history->len)
 	{
-		err = line_edition(type, history_copy);
-		if (err == 1)
+		printf("pos[%d] = \"%d\"\n", x, history->pos[x]);
+		printf("	buf[%d]->len = \"%d\"\n", x, history->buf[x]->len);
+		printf("	buf[%d]->c = \"%s\"\n", x, history->buf[x]->c);
+		printf("	buf[%d]->type = \"", x);
+		y = 0;
+		while (y < history->buf[x]->len)
 		{
-			free_history(history_copy);
-			return (1);
+			printf("%d,", history->buf[x]->type[y]);
+			y++;
 		}
-		else if (err == 2)
-		{
-			if ((add_new_history(history_first, history_copy)) == 1)
-				return (1);
-			return (2);
-		}
-		else if (err == 3)
-		{
-			free_history(history_copy);
-			if ((ft_history_copy(history_first, history_copy)) == 1)
-				return (1);
-		}
-		if (history_copy->len[history_copy->pos_buf] != 0)
-			break ;
-		write(1, "\n", 1);
+		printf("\"\n");
+		x++;
 	}
-	if ((add_new_history(history_first, history_copy)) == 1)
-		return (1);
 	return (0);
+}
+*/
+
+t_lchar			*while_main(int type, t_history *history)
+{
+	int			err;
+	t_lchar		*buf;
+	t_history	history_cpy;
+
+	if ((ft_historycpy(history, &history_cpy, 1)) == NULL)
+		return (NULL);
+	history_cpy.pos_buf = history_cpy.len;
+	buf = line_edition(type, &history_cpy);
+	if (buf->len == -1)
+		return (buf);
+	if ((add_new_history(history, buf)) == NULL)
+		return (NULL);
+	return (buf);
 }
 
 int				free_envp(t_envp *my_envp)
@@ -200,54 +101,47 @@ int				free_envp(t_envp *my_envp)
 
 #include <stdio.h>
 
+
 int				main(int argc, char **argv, char **envp)
 {
 	int			error;
-	int			exit_err;
+	t_lchar		*buf;
 	t_envp		my_envp;
-	t_lchar		buf;
-	t_history	history_first;
-	t_history	history_copy;
+	t_history	history;
 
 	(void)argc;
 	(void)argv;
-	(void)buf;
 	/* ** recuper l'envp ** */
 	if ((creat_envp(envp, &my_envp)) == 1)
 		return (1);
 	/* ** inporter l'history ** */
-	if (inport_history(&history_first) == 1)
+	if (inport_history(&history) == 1)
 		return (1);
 	/* ** edition de ligne ** */
 	while (1)
 	{
 		error = 0;
 		ft_signal(SIGINT, SA_SIGINFO);
-		exit_err = while_main(0, &history_first, &history_copy);
-		if (exit_err == 1)
+		if ((buf = while_main(0, &history)) == NULL)
 			return (1);
-		else if (exit_err == 2 || ft_memcmp("exit\n",
-					history_first.buf[history_first.pos_buf],
-					history_first.len[history_first.pos_buf]) == 0)
+		if (buf->len != -1)
 		{
-			error = 1;
-			break ;
+			if (ft_strmatch("exit", buf->c) == 1 ||
+						(buf->type[0] == _EOT && buf->len == 1))
+			{
+				error = 1;
+				break ;
+			}
+			/* ** parser ** */
+			if (parser(buf, &history, &my_envp) == 1)
+				return (1);
 		}
-		write(1, "\n", 1);
-		/* ** parser ** */
-		buf.len = history_first.len[history_first.pos_buf];
-		buf.c = ft_strdup(history_first.buf[history_first.pos_buf]);
-		if ((buf.type = ft_memalloc(sizeof(char *) * buf.len)) == NULL)
-			return (1);
-		if (parser(&buf, &my_envp, &history_first) == 1)
-			return (1);
-		free(buf.c);
-		free(buf.type);
-		buf.len = 0;
+		free(buf);
 	}
 	/* ** exporter l'history ** */
-	if (export_history(&history_first, error) == 1)
-		return (1);
+//	if (export_history(&history_first, error) == 1)
+//		return (1);
+	ft_freehistory(&history);
 	if (free_envp(&my_envp) == 1)
 		return (1);
 	return (0);

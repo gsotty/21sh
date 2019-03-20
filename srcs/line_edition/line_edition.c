@@ -2,65 +2,72 @@
 #include "../../include/ft_termcaps.h"
 #include "../../include/history.h"
 #include "../../include/vingt_et_un_sh.h"
+#include "../../include/parser.h"
 #include <stdio.h>
 
 char PC;   /* For tputs.  */
 char *BC;  /* For tgoto.  */
 char *UP;
 
-int			ft_remalloc_buf(t_history *history)
-{
-	char		*new_buf;
+t_promt			promt[] = {
+	{LEN_PROMT_EDIT, PROMT_EDIT},
+	{LEN_PROMT_HER, PROMT_HER},
+	{LEN_PROMT_HER, PROMT_HER}
+};
 
-	if ((new_buf = ft_memalloc(sizeof(char) *
-					(history->len_malloc[history->pos_buf]))) == NULL)
-		return (1);
-	ft_memcpy(new_buf, history->buf[history->pos_buf],
-			history->len[history->pos_buf]);
-	if (history->len[history->pos_buf] != 0)
-		free(history->buf[history->pos_buf]);
-	if ((history->buf[history->pos_buf] = ft_memalloc(sizeof(char) *
-					(history->len_malloc[history->pos_buf]))) == NULL)
-		return (1);
-	ft_memcpy(history->buf[history->pos_buf], new_buf,
-			history->len[history->pos_buf]);
-	if (history->len[history->pos_buf] != 0)
-		free(new_buf);
+int			ft_freelchar(t_lchar *buf)
+{
+	free(buf->type);
+	free(buf->c);
+	return (0);
+}
+
+int			ft_remalloc_buf(t_history *history, int ret)
+{
+	t_lchar		new_buf;
+
+	ft_lchardup(&new_buf, history->buf[history->pos_buf], 0);
+	ft_freelchar(history->buf[history->pos_buf]);
+	ft_lchardup(history->buf[history->pos_buf], &new_buf, ret);
+	ft_freelchar(&new_buf);
 	return (0);
 }
 
 int			creat_buf(t_history *history, char *buffer, int ret)
 {
+	int		tmp_len;
 	int		new_len;
 	char	*after_pos;
 	int		len_after;
 
-	new_len = history->len[history->pos_buf] + ret;
-	if (new_len >= history->len_malloc[history->pos_buf])
-	{
-		history->len_malloc[history->pos_buf] = new_len;
-		if (ft_remalloc_buf(history) == 1)
-			return (1);
-	}
-	len_after = history->len[history->pos_buf] - history->pos[history->pos_buf];
+	tmp_len = history->buf[history->pos_buf]->len;
+	new_len = history->buf[history->pos_buf]->len + ret;
+	if (ft_remalloc_buf(history, ret) == 1)
+		return (1);
+	len_after = tmp_len - history->pos[history->pos_buf];
 	if (len_after > 0)
 	{
-		if ((after_pos = ft_memalloc(sizeof(char) * (len_after))) == NULL)
+		if ((after_pos = ft_memalloc(sizeof(char) * (len_after + 1))) == NULL)
 			return (1);
-		ft_memcpy(after_pos, history->buf[history->pos_buf] +
+		ft_memcpy(after_pos, history->buf[history->pos_buf]->c +
 				history->pos[history->pos_buf], len_after);
-		ft_memcpy(history->buf[history->pos_buf] +
+		ft_memcpy(history->buf[history->pos_buf]->c +
 				history->pos[history->pos_buf], buffer, ret);
-		ft_memcpy(history->buf[history->pos_buf] +
-				history->pos[history->pos_buf] + ret, after_pos, len_after);
+		ft_memcpy(history->buf[history->pos_buf]->c +
+				(history->pos[history->pos_buf] + ret), after_pos, len_after);
+		ft_addtype(history->buf[history->pos_buf],
+				history->pos[history->pos_buf],
+				history->pos[history->pos_buf] + ret + len_after);
 		free(after_pos);
 	}
 	else
 	{
-		ft_memcpy(history->buf[history->pos_buf] +
+		ft_memcpy(history->buf[history->pos_buf]->c +
 				history->pos[history->pos_buf], buffer, ret);
+		ft_addtype(history->buf[history->pos_buf],
+				history->pos[history->pos_buf],
+				history->pos[history->pos_buf] + ret);
 	}
-	history->len[history->pos_buf] += ret;
 	history->pos[history->pos_buf] += ret;
 	return (0);
 }
@@ -169,6 +176,8 @@ int			nbr_line_for_malloc(t_pos *pos, int count_tab, char *str, int len)
 				next_tab = pos->co_max;
 			length = (next_tab - count_tab) + (pos->co_max * nbr_line);
 		}
+		else if (str[count_len] == 10)
+			nbr_line++;
 		else
 			length++;
 		if ((count_tab + length) >= (pos->co_max * (nbr_line + 1)))
@@ -202,11 +211,13 @@ int			length_for_malloc(t_pos *pos, int count_tab, char *str, int len)
 				next_tab = pos->co_max;
 			length = (next_tab - count_tab) + (pos->co_max * nbr_line);
 		}
+		else if (str[count_len] == 10)
+			nbr_line++;
 		else
 			length++;
+		count_len++;
 		if ((count_tab + length) >= (pos->co_max * (nbr_line + 1)))
 			nbr_line++;
-		count_len++;
 	}
 	return (length);
 }
@@ -249,6 +260,14 @@ int			real_length(t_pos *pos, t_real_length *struct_length,
 			struct_length->len = (next_tab - count_tab) + (pos->co_max *
 					struct_length->nbr_line);
 		}
+		else if (str[count_len] == 10)
+		{
+			len_use_char = count_len;
+			len_use_cursor = struct_length->len;
+			struct_length->nbr_line++;
+			struct_length->pos_cursor[struct_length->nbr_line] = 0;
+			struct_length->pos_char[struct_length->nbr_line] = 0;
+		}
 		else
 			struct_length->len++;
 		count_len++;
@@ -274,33 +293,32 @@ int			real_length(t_pos *pos, t_real_length *struct_length,
 		struct_length->pos_char[x] = 0;
 		x++;
 	}
-	x = 0;
-	while (x < pos->malloc)
-	{
-	//	fprintf(stderr, "pos_char = [%d], pos_cursor = [%d]\n", struct_length->pos_char[x], struct_length->pos_cursor[x]);
-		x++;
-	}
 	return (0);
 }
 
-int				nbr_line_total(t_pos *pos)
+int			nbr_line_total(t_pos *pos)
 {
 	int	nbr_line_pos;
 	int	nbr_line_len;
 
 	nbr_line_pos = 0;
-//	fprintf(stderr, "	li_max = [%d], co_max = [%d]\n", pos->li_max, pos->co_max);
-	while ((pos->promt.pos_cursor[nbr_line_pos] +
-				pos->buf_pos.pos_cursor[nbr_line_pos]) >= pos->co_max
-			&& nbr_line_pos < pos->malloc)
-		nbr_line_pos++;
-	pos->nbr_line_pos = nbr_line_pos;
+	/*
+	   while ((pos->promt.pos_cursor[nbr_line_pos] +
+	   pos->buf_pos.pos_cursor[nbr_line_pos]) >= pos->co_max
+	   && nbr_line_pos < pos->malloc)
+	   nbr_line_pos++;
+	   pos->nbr_line_pos = nbr_line_pos;
+	   */
+	pos->nbr_line_pos = pos->buf_pos.nbr_line;
 	nbr_line_len = 0;
-	while ((pos->promt.pos_cursor[nbr_line_len] +
-			pos->buf_len.pos_cursor[nbr_line_len]) >= pos->co_max
-			&& nbr_line_len < pos->malloc)
-		nbr_line_len++;
-	pos->nbr_line_len = nbr_line_len;
+	/*
+	   while ((pos->promt.pos_cursor[nbr_line_len] +
+	   pos->buf_len.pos_cursor[nbr_line_len]) >= pos->co_max
+	   && nbr_line_len < pos->malloc)
+	   nbr_line_len++;
+	   pos->nbr_line_len = nbr_line_len;
+	   */
+	pos->nbr_line_len = pos->buf_len.nbr_line;
 	return (0);
 }
 
@@ -322,37 +340,62 @@ int			where_is_start(t_pos *pos)
 		else
 			pos->end = 0;
 	}
-//	fprintf(stderr, "	pos->start = [%d], pos->end = [%d]\n", pos->start, pos->end);
 	return (0);
 }
 
-int			refresh_size_win(int type, t_history *history, t_pos *pos)
+static int		ft_printhistory(t_history *history)
+{
+	int		x;
+
+	x = 0;
+	//	printf("len = \"%d\", malloc = \"%d\"\n", history->len, history->malloc);
+	//	printf("pos_buf = \"%d\"\n", history->pos_buf);
+	while (x < history->malloc)
+	{
+		//		printf("pos[%d] = \"%d\"\n", x, history->pos[x]);
+		//		printf("buf[%d]->c = \"%s\"\n", x, history->buf[x]->c);
+		x++;
+	}
+	return (0);
+}
+
+int			refresh_size_win(int type, t_lchar *buf, int pos_buf, t_pos *pos)
 {
 	pos->co_max = tgetnum("co");
 	pos->li_max = tgetnum("li");
 	pos->len_tab = tgetnum ("it");
-//	fprintf(stderr, "	promt\n");
+	//	ft_printhistory(history);
 	real_length(pos, &pos->promt, 0, PROMT, LEN_PROMT);
-//	fprintf(stderr, "	buf_pos\n");
-	real_length(pos, &pos->buf_pos, pos->promt.len,
-			history->buf[history->pos_buf], history->pos[history->pos_buf]);
-//	fprintf(stderr, "	buf_len\n");
-	real_length(pos, &pos->buf_len, pos->promt.len,
-			history->buf[history->pos_buf], history->len[history->pos_buf]);
+	real_length(pos, &pos->buf_pos, pos->promt.len, buf->c, pos_buf);
+	real_length(pos, &pos->buf_len, pos->promt.len, buf->c, buf->len);
+	/*
+	   int x=0;
+	   printf("promt = [%d], [%d]\n", pos->promt.len, pos->promt.nbr_line);
+	   while (x <= pos->promt.nbr_line)
+	   {
+	   printf("		[%d], [%d]\n", pos->promt.pos_char[x], pos->promt.pos_cursor[x]);
+	   x++;
+	   }
+	   printf("buf_pos = [%d], [%d]\n", pos->buf_pos.len, pos->buf_pos.nbr_line);
+	   x = 0;
+	   while (x <= pos->buf_pos.nbr_line)
+	   {
+	   printf("		[%d], [%d]\n", pos->buf_pos.pos_char[x], pos->buf_pos.pos_cursor[x]);
+	   x++;
+	   }
+	   */
 	nbr_line_total(pos);
 	where_is_start(pos);
-//	fprintf(stderr, "		pos->nbr_line_pos = [%d]\n", pos->nbr_line_pos);
-//	fprintf(stderr, "		pos->nbr_line_len = [%d]\n", pos->nbr_line_len);
 	return (0);
 }
 
-void		replace_cursor(int type, t_history *history, t_pos *pos,
+void		replace_cursor(int type, t_lchar *buf, int pos_buf, t_pos *pos,
 		int mode)
 {
 	int		count_line;
 	int		count_pos;
 
-	refresh_size_win(type, history, pos);
+	refresh_size_win(type, buf, pos_buf, pos);
 	if (mode == 0) // go to the new pos with pos at the start
 	{
 		count_line = 0;
@@ -378,10 +421,6 @@ void		replace_cursor(int type, t_history *history, t_pos *pos,
 		{
 			if (count_line >= pos->start && count_line < pos->end)
 				tputs(tgetstr("up", NULL), 0, f_putchar);
-			//	if (count_line > (pos->nbr_line_pos - pos->li_max))
-			//		tputs(tgetstr("sr", NULL), 0, f_putchar);
-			//	else
-			//		tputs(tgetstr("up", NULL), 0, f_putchar);
 			count_line++;
 		}
 	}
@@ -393,10 +432,6 @@ void		replace_cursor(int type, t_history *history, t_pos *pos,
 		{
 			if (count_line >= pos->start && count_line < pos->end)
 				tputs(tgetstr("up", NULL), 0, f_putchar);
-			//if (count_line > (pos->nbr_line_len - pos->li_max))
-			//	tputs(tgetstr("sr", NULL), 0, f_putchar);
-		//	else
-		//		tputs(tgetstr("up", NULL), 0, f_putchar);
 			count_line++;
 		}
 	}
@@ -407,10 +442,6 @@ void		replace_cursor(int type, t_history *history, t_pos *pos,
 		{
 			if (count_line >= pos->start && count_line < pos->end)
 				tputs(tgetstr("up", NULL), 0, f_putchar);
-			//if (count_line > (pos->nbr_line_len - pos->li_max))
-			//	tputs(tgetstr("sr", NULL), 0, f_putchar);
-			//else
-		//		tputs(tgetstr("up", NULL), 0, f_putchar);
 			count_line++;
 		}
 		tputs(tgetstr("cr", NULL), 0, f_putchar);
@@ -445,37 +476,49 @@ void		replace_cursor(int type, t_history *history, t_pos *pos,
 void		backspace_key(t_history *history)
 {
 	int		x;
-	char	tmp;
+	char	tmp_c;
+	int		tmp_type;
 
 	if ((history->pos[history->pos_buf]) > 0)
 	{
 		history->pos[history->pos_buf]--;
 		x = history->pos[history->pos_buf];
-		while (x <= history->len[history->pos_buf])
+		while (x < history->buf[history->pos_buf]->len)
 		{
-			tmp = history->buf[history->pos_buf][x + 1];
-			history->buf[history->pos_buf][x] = tmp;
+			tmp_c = history->buf[history->pos_buf]->c[x + 1];
+			history->buf[history->pos_buf]->c[x] = tmp_c;
+			tmp_type = history->buf[history->pos_buf]->type[x + 1];
+			history->buf[history->pos_buf]->type[x] = tmp_type;
 			x++;
 		}
-		history->len[history->pos_buf]--;
+		history->buf[history->pos_buf]->len--;
+		ft_addtype(history->buf[history->pos_buf],
+				history->pos[history->pos_buf],
+				history->buf[history->pos_buf]->len);
 	}
 }
 
 void		delete_key(t_history *history)
 {
 	int		x;
-	char	tmp;
+	char	tmp_c;
+	int		tmp_type;
 
-	if (history->pos[history->pos_buf] < history->len[history->pos_buf])
+	if (history->pos[history->pos_buf] < history->buf[history->pos_buf]->len)
 	{
 		x = history->pos[history->pos_buf];
-		while (x <= history->len[history->pos_buf])
+		while (x < history->buf[history->pos_buf]->len)
 		{
-			tmp = history->buf[history->pos_buf][x + 1];
-			history->buf[history->pos_buf][x] = tmp;
+			tmp_c = history->buf[history->pos_buf]->c[x + 1];
+			history->buf[history->pos_buf]->c[x] = tmp_c;
+			tmp_type = history->buf[history->pos_buf]->type[x + 1];
+			history->buf[history->pos_buf]->type[x] = tmp_type;
 			x++;
 		}
-		history->len[history->pos_buf]--;
+		history->buf[history->pos_buf]->len--;
+		ft_addtype(history->buf[history->pos_buf],
+				history->pos[history->pos_buf],
+				history->buf[history->pos_buf]->len);
 	}
 }
 
@@ -486,7 +529,7 @@ void		delete_key(t_history *history)
  ** 2 = exit for quit the term (like ctrl-D)
  ** 3 = exit for clean the buff and add a new ligne (ctrl-C)
  **
-*/
+ */
 
 /*
 
@@ -508,13 +551,11 @@ int				creat_struct_pos(int type, t_pos *pos)
 	pos->co_max = tgetnum("co");
 	pos->li_max = tgetnum("li");
 	pos->len_tab = tgetnum ("it");
-
 	pos->malloc = 1;
 	pos->start = 0;
 	pos->end = (pos->li_max - 1);
 	pos->nbr_line_pos = 0;
 	pos->nbr_line_len = 0;
-
 	pos->promt.len = 0;
 	pos->promt.nbr_line = 0;
 	if ((pos->promt.pos_cursor = ft_memalloc(sizeof(int) *
@@ -523,7 +564,6 @@ int				creat_struct_pos(int type, t_pos *pos)
 	if ((pos->promt.pos_char = ft_memalloc(sizeof(int) *
 					pos->malloc)) == NULL)
 		return (1);
-
 	pos->buf_pos.len = 0;
 	pos->buf_pos.nbr_line = 0;
 	if ((pos->buf_pos.pos_cursor = ft_memalloc(sizeof(int) *
@@ -532,7 +572,6 @@ int				creat_struct_pos(int type, t_pos *pos)
 	if ((pos->buf_pos.pos_char = ft_memalloc(sizeof(int) *
 					pos->malloc)) == NULL)
 		return (1);
-
 	pos->buf_len.len = 0;
 	pos->buf_len.nbr_line = 0;
 	if ((pos->buf_len.pos_cursor = ft_memalloc(sizeof(int) *
@@ -555,7 +594,7 @@ int		free_pos(t_pos *pos)
 	return (0);
 }
 
-int				print_the_buf(int type, t_history *history, t_pos *pos)
+int				print_the_buf(int type, t_lchar *buf, int pos_buf, t_pos *pos)
 {
 	int		x;
 	int		len_use_promt;
@@ -564,40 +603,168 @@ int				print_the_buf(int type, t_history *history, t_pos *pos)
 	x = 0;
 	len_use_buf = 0;
 	len_use_promt = 0;
-	refresh_size_win(type, history, pos);
+	refresh_size_win(type, buf, pos_buf, pos);
 	while (x < pos->start)
 	{
 		len_use_promt += pos->promt.pos_char[x];
 		len_use_buf += pos->buf_len.pos_char[x];
 		x++;
 	}
-//	fprintf(stderr, "x = [%d], pos->nbr_line_len = [%d], pos->end = [%d]\n", x, pos->nbr_line_len, pos->end);
 	tputs(tgetstr("cd", NULL), 0, f_putchar);
 	while (x <= pos->nbr_line_len && x <= pos->end)
 	{
 		write(STDOUT_FILENO, PROMT + len_use_promt, pos->promt.pos_char[x]);
-		write(2, PROMT + len_use_promt, pos->promt.pos_char[x]);
-		write(STDOUT_FILENO, history->buf[history->pos_buf] + len_use_buf,
-				pos->buf_len.pos_char[x]);
-		write(2, history->buf[history->pos_buf] + len_use_buf,
-				pos->buf_len.pos_char[x]);
+		//		write(2, PROMT + len_use_promt, pos->promt.pos_char[x]);
+		write(STDOUT_FILENO, buf->c + len_use_buf, pos->buf_len.pos_char[x]);
+		//		write(2, history->buf[history->pos_buf] + len_use_buf,
+		//				pos->buf_len.pos_char[x]);
 		len_use_promt += pos->promt.pos_char[x];
 		len_use_buf += pos->buf_len.pos_char[x];
-		if (x < pos->nbr_line_len && x < pos->end)
+		if ((pos->promt.pos_char[pos->nbr_line_pos] +
+					pos->buf_len.pos_char[pos->nbr_line_pos]) >= pos->co_max &&
+				pos->nbr_line_pos < pos->malloc && x < pos->nbr_line_len &&
+				x < pos->end)
 			tputs(tgetstr("do", NULL), 0, f_putchar);
 		x++;
 	}
-	replace_cursor(type, history, pos, 3);
+	replace_cursor(type, buf, pos_buf, pos, 3);
 	return (0);
 }
 
-int				line_edition(int type, t_history *history)
+void	ft_printf_lchar(t_lchar *buf)
+{
+	int		x;
+	char	*nbr;
+
+	x = 0;
+	while (x < buf->len)
+	{
+		write(1, "buf = [", 7);
+		nbr = ft_itoa(x);
+		write(1, nbr, ft_strlen(nbr));
+		free(nbr);
+		write(1, "], [", 4);
+		write(1, buf->c + x, 1);
+		write(1, "], [", 4);
+		nbr = ft_itoa(buf->type[x]);
+		write(1, nbr, ft_strlen(nbr));
+		free(nbr);
+		write(1, "], [", 4);
+		write(1, which_define(buf->type[x]),
+				ft_strlen(which_define(buf->type[x])));
+		write(1, "]\n", 2);
+		x++;
+	}
+}
+
+t_lchar	*add_lchar(t_lchar *buf_start, t_lchar *buf_add)
+{
+	int		x;
+	t_lchar	*new_buf;
+
+	if ((new_buf = ft_memalloc(sizeof(t_lchar))) == NULL)
+		return (NULL);
+	new_buf->len = buf_start->len + buf_add->len + 1;
+	if ((new_buf->c = ft_memalloc(sizeof(char) * new_buf->len + 1)) == NULL)
+		return (NULL);
+	if ((new_buf->type = ft_memalloc(sizeof(int) * new_buf->len + 1)) == NULL)
+		return (NULL);
+	x = 0;
+	while (x < new_buf->len)
+	{
+		if (x < buf_start->len)
+		{
+			new_buf->c[x] = buf_start->c[x];
+			new_buf->type[x] = buf_start->type[x];
+		}
+		else if (x == buf_start->len)
+		{
+			new_buf->c[x] = '\n';
+			new_buf->type[x] = _NEW_LINE;
+		}
+		else
+		{
+			new_buf->c[x] = buf_add->c[(x - 1) - buf_start->len];
+			new_buf->type[x] = buf_add->type[(x - 1) - buf_start->len];
+		}
+		x++;
+	}
+	return (new_buf);
+}
+
+int			verif_exit(t_history *history, t_lchar *buf)
+{
+	int			x;
+	int			backslash;
+	int			open_quote;
+	int			open_double_quote;
+	int			open_backquote;
+	int			open_pipe;
+	t_lchar		*new_buf;
+	t_lchar		*buf_edition;
+	t_history	history_cpy;
+
+	backslash = 0;
+	open_quote = 0;
+	open_double_quote = 0;
+	open_backquote = 0;
+	x = 0;
+	while (x < buf->len)
+	{
+		if (buf->type[x] == _BACKSLASH && backslash == 0 && open_quote == 0)
+			backslash = ~backslash;
+		else if (buf->type[x] == _APOSTROPHE && open_double_quote == 0)
+			open_quote = ~open_quote;
+		else if (buf->type[x] == _DOUBLE_QUOTE && open_backquote == 0 &&
+				backslash == 0 && open_quote == 0)
+			open_double_quote = ~open_double_quote;
+		else if (buf->type[x] == _PRIME && backslash == 0 && open_quote == 0)
+			open_backquote = ~open_backquote;
+		else if (buf->type[x] == _PIPE && backslash == 0 && open_quote == 0 &&
+				open_double_quote == 0)
+			open_pipe = ~open_pipe;
+		else if (backslash == -1 || open_quote == -1 || open_double_quote == -1)
+		{
+			if (open_backquote == 0)
+				buf->type[x] = _ALPHA;
+			backslash = 0;
+		}
+		else if (buf->type[x] != _SPACE)
+			open_pipe = 0;
+		x++;
+	}
+	if (open_backquote == -1 || backslash == -1 || open_quote == -1
+			|| open_double_quote == -1 || open_pipe == -1)
+		return (1);
+	return (0);
+}
+
+int				free_history(t_history *history)
+{
+	int		x;
+
+	x = 0;
+	while (x < history->malloc)
+	{
+		if (x != history->pos_buf)
+			free(history->buf[x]);
+		x++;
+	}
+	free(history->buf);
+	free(history->pos);
+	return (1);
+}
+
+t_lchar			*line_edition(int type, t_history *history)
 {
 	char			buffer[4095];
 	struct winsize	win;
 	t_pos			pos;
 	char			*temp;
 	int				ret;
+	t_lchar			*buf;
+	t_lchar			*tmp_buf;
+	t_lchar			*new_buf;
 
 #ifdef Unix
 	/* Here we assume that an explicit term_buffer
@@ -612,128 +779,169 @@ int				line_edition(int type, t_history *history)
 	ft_memset(&pos, 0, sizeof(t_pos));
 	ioctl(0, TIOCGWINSZ, &win);
 	if (init_termcaps() == 1)
-		return (1);
+		return (NULL);
 	temp = tgetstr ("pc", BUFFADDR);
 	PC = temp ? *temp : 0;
 	BC = tgetstr ("le", BUFFADDR);
 	UP = tgetstr ("up", BUFFADDR);
 	if (creat_struct_pos(type, &pos) == 1)
-		return (1);
+		return (NULL);
 	write(1, PROMT, LEN_PROMT);
 	while (1)
 	{
 		ft_memset(&buffer, 0, sizeof(char) * 4);
 		ret = read(0, buffer, 4095);
-/*
-		int		print = 0;
-		printf("ret = [%d]\n", ret);
-		while (print < ret)
-		{
-			printf("[%d]", buffer[print]);
-			print++;
-		}
-		printf("\n");
-*/
-//		write(1, buffer, ret);
+		/*
+		   int		print = 0;
+		   printf("ret = [%d]\n", ret);
+		   while (print < ret)
+		   {
+		   printf("[%d]", buffer[print]);
+		   print++;
+		   }
+		   printf("\n");
+		   */
+		//		write(1, buffer, ret);
+		//		fprintf(stderr, "history->pos[history->pos_buf] = [%d], history->buf[history->pos_buf]->len = [%d]\n", history->pos[history->pos_buf], history->buf[history->pos_buf]->len);
 		if (g_sig == SIGINT)
 		{
 			g_sig = 0;
-			replace_cursor(type, history, &pos, 2);
-			history->pos[history->pos_buf] = history->len[history->pos_buf];
-			replace_cursor(type, history, &pos, 0);
-			free_pos(&pos);
-			if (reset_termcaps() == 1)
-				return (1);
-			return (3);
+			history->buf[history->pos_buf]->len = -1;
+			write(1, "\n", 1);
+			break ;
 		}
 		if (buffer[0] == 4 && ret == 1 &&
-				history->len[history->pos_buf] == 0)
+				history->buf[history->pos_buf]->len == 0 && type == 0)
 		{
-			replace_cursor(type, history, &pos, 2);
-			history->pos[history->pos_buf] = history->len[history->pos_buf];
-			replace_cursor(type, history, &pos, 0);
-			free_pos(&pos);
-			if (reset_termcaps() == 1)
-				return (1);
-			return (2);
+			creat_buf(history, buffer, ret);
+			break ;
 		}
 		else if (buffer[0] == 4 && ret == 1)
 		{
-			replace_cursor(type, history, &pos, 1);
+			replace_cursor(type, history->buf[history->pos_buf],
+					history->pos[history->pos_buf], &pos, 1);
 			delete_key(history);
-			print_the_buf(type, history, &pos);
+			print_the_buf(type, history->buf[history->pos_buf],
+					history->pos[history->pos_buf], &pos);
 		}
 		else if (buffer[0] == 127 && ret == 1)
 		{
-			replace_cursor(type, history, &pos, 1);
+			replace_cursor(type, history->buf[history->pos_buf],
+					history->pos[history->pos_buf], &pos, 1);
 			backspace_key(history);
-			print_the_buf(type, history, &pos);
+			print_the_buf(type, history->buf[history->pos_buf],
+					history->pos[history->pos_buf], &pos);
 		}
 		else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 51)
 		{
-			replace_cursor(type, history, &pos, 1);
+			replace_cursor(type, history->buf[history->pos_buf],
+					history->pos[history->pos_buf], &pos, 1);
 			delete_key(history);
-			print_the_buf(type, history, &pos);
+			print_the_buf(type, history->buf[history->pos_buf],
+					history->pos[history->pos_buf], &pos);
 		}
 		else if (buffer[0] == 27 && buffer[1] == 91)
 		{
 			if (buffer[2] == 65 && history->pos_buf > 0) // up
 			{
-				replace_cursor(type, history, &pos, 1);
+				replace_cursor(type, history->buf[history->pos_buf],
+						history->pos[history->pos_buf], &pos, 1);
 				history->pos_buf--;
-				history->pos[history->pos_buf] = history->len[history->pos_buf];
-				print_the_buf(type, history, &pos);
+				history->pos[history->pos_buf] =
+					history->buf[history->pos_buf]->len;
+				print_the_buf(type, history->buf[history->pos_buf],
+						history->pos[history->pos_buf], &pos);
 			}
 			else if (buffer[2] == 66 && history->pos_buf <
-					history->len_buf) // down
+					history->len) // down
 			{
-				replace_cursor(type, history, &pos, 1);
+				replace_cursor(type, history->buf[history->pos_buf],
+						history->pos[history->pos_buf], &pos, 1);
 				history->pos_buf++;
-				history->pos[history->pos_buf] = history->len[history->pos_buf];
-				print_the_buf(type, history, &pos);
+				history->pos[history->pos_buf] =
+					history->buf[history->pos_buf]->len;
+				print_the_buf(type, history->buf[history->pos_buf],
+						history->pos[history->pos_buf], &pos);
 			}
-			else if (buffer[2] == 67 && pos.buf_pos.len <
-					pos.buf_len.len) // right
+			else if (buffer[2] == 67 && history->pos[history->pos_buf] <
+					history->buf[history->pos_buf]->len) // right
 			{
-				replace_cursor(type, history, &pos, 1);
+				replace_cursor(type, history->buf[history->pos_buf],
+						history->pos[history->pos_buf], &pos, 1);
 				history->pos[history->pos_buf]++;
-				print_the_buf(type, history, &pos);
+				print_the_buf(type, history->buf[history->pos_buf],
+						history->pos[history->pos_buf], &pos);
 			}
-			else if (buffer[2] == 68 && pos.buf_pos.len > 0) // left
+			else if (buffer[2] == 68 && history->pos[history->pos_buf] > 0) // left
 			{
-				replace_cursor(type, history, &pos, 1);
+				replace_cursor(type, history->buf[history->pos_buf],
+						history->pos[history->pos_buf], &pos, 1);
 				history->pos[history->pos_buf]--;
-				print_the_buf(type, history, &pos);
+				print_the_buf(type, history->buf[history->pos_buf],
+						history->pos[history->pos_buf], &pos);
 			}
 			else if (buffer[2] == 70) // end
 			{
-				replace_cursor(type, history, &pos, 1);
-				history->pos[history->pos_buf] = history->len[history->pos_buf];
-				print_the_buf(type, history, &pos);
+				replace_cursor(type, history->buf[history->pos_buf],
+						history->pos[history->pos_buf], &pos, 1);
+				history->pos[history->pos_buf] =
+					history->buf[history->pos_buf]->len;
+				print_the_buf(type, history->buf[history->pos_buf],
+						history->pos[history->pos_buf], &pos);
 			}
 			else if (buffer[2] == 72) // home
 			{
-				replace_cursor(type, history, &pos, 1);
+				replace_cursor(type, history->buf[history->pos_buf],
+						history->pos[history->pos_buf], &pos, 1);
 				history->pos[history->pos_buf] = 0;
-				print_the_buf(type, history, &pos);
+				print_the_buf(type, history->buf[history->pos_buf],
+						history->pos[history->pos_buf], &pos);
 			}
 		}
 		else if (buffer[0] == 10 && buffer[1] == 0 && buffer[2] == 0)
 		{
+			replace_cursor(type, history->buf[history->pos_buf],
+					history->pos[history->pos_buf], &pos, 1);
+			history->pos[history->pos_buf] =
+				history->buf[history->pos_buf]->len;
+			print_the_buf(type, history->buf[history->pos_buf],
+					history->pos[history->pos_buf], &pos);
+			write(1, "\n", 1);
 			break ;
 		}
 		else
 		{
-			replace_cursor(type, history, &pos, 1);
+			replace_cursor(type, history->buf[history->pos_buf],
+					history->pos[history->pos_buf], &pos, 1);
 			creat_buf(history, buffer, ret);
-			print_the_buf(type, history, &pos);
+			print_the_buf(type, history->buf[history->pos_buf],
+					history->pos[history->pos_buf], &pos);
 		}
 	}
-	replace_cursor(type, history, &pos, 2);
-	history->pos[history->pos_buf] = history->len[history->pos_buf];
-	replace_cursor(type, history, &pos, 0);
-	free_pos(&pos);
 	if (reset_termcaps() == 1)
-		return (1);
-	return (0);
+		return (NULL);
+	if ((buf = ft_memalloc(sizeof(t_lchar) + 1)) == NULL)
+		return (NULL);
+	ft_lchardup(buf, history->buf[history->pos_buf], 0);
+//	ft_printf_lchar(buf);
+	if (type == 0)
+	{
+		while (verif_exit(history, buf) == 1)
+		{
+			tmp_buf = while_main(1, history);
+			if (tmp_buf->len != -1)
+			{
+				new_buf = add_lchar(buf, tmp_buf);
+				buf = new_buf;
+			}
+			else
+				return (tmp_buf);
+		}
+	}
+	//	replace_cursor(type, buf, buf->len, &pos, 1);
+	//	print_the_buf(type, buf, buf->len, &pos);
+	//	write(1, "\n", 1);
+	ft_freehistory(history);
+	free_pos(&pos);
+	return (buf);
 }

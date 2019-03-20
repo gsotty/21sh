@@ -19,8 +19,8 @@
  **	3eme block:
  **		_ROUTERR = redirection output est erreur: {&>} || {>&} fd = 2 est
  **						digit = 1
- **		_DUP_INPUT = dupication input: {[N]<&digit[-]} N de base a 0
- **		_DUP_OUTPUT = dupication output: {[N]>&digit[-]} N de base a 1
+ **		_DUP_FD = dupication fd: {[N][<>]&digit}
+ **		_CLOSE_FD = close fd: {[N][<>]&-}
  **		_APPROUT = append redirection output: {[N]>>} N de base a 1
  **		_HEREDOC = Here documents: {[N]<<[-]} N de base a 0
  **	4eme block:
@@ -73,64 +73,67 @@
  **
  */
 
-# define _OTHER 0
-# define _SPACE 1
-# define _EXCLAMATION_MARK 2
-# define _DOUBLE_QUOTE 3
-# define _POUND 4
-# define _DOLLAR_SIGN 5
-# define _PORCENT_SIGN 6
-# define _AMPERSAND 7
-# define _APOSTROPHE 8
-# define _ROUND_BRACKET_LEFT 9
-# define _ROUND_BRACKET_RIGHT 10
-# define _ASTERISK 11
-# define _PLUS_SIGN 12
-# define _COMMA 13
-# define _HYPHEN 14
-# define _FULL_STOP 15
-# define _SLASH 16
-# define _DIGIT 17
-# define _COLON 18
-# define _SEP 19
-# define _GUILLEMET_LEFT 20
-# define _EQUAL_SIGN 21
-# define _GUILLEMET_RIGHT 22
-# define _QUESTION_MARK 23
-# define _AT_SIGN 24
-# define _ALPHA 25
-# define _SQUARE_BRACKET_LEFT 26
-# define _BACKSLASH 27
-# define _SQUARE_BRACKET_RIGHT 28
-# define _CARET 29
-# define _UNDERSCORE 30
-# define _PRIME 31
-# define _CURLY_BRACKET_LEFT 32
-# define _PIPE 33
-# define _CURLY_BRACKET_RIGHT 34
-# define _TILDE 35
-# define _TAB 36
-# define _NEW_LINE 37
+# define _NOPRINT -1 // is between 0 to 8 and 12 to 31
+# define _SPACE -2 // is 9, 11 et 32
+# define _EOT 4
+# define _NEW_LINE 10
+# define _EXCLAMATION_MARK 33
+# define _DOUBLE_QUOTE 34
+# define _POUND 35
+# define _DOLLAR_SIGN 36
+# define _PORCENT_SIGN 37
+# define _AMPERSAND 38
+# define _APOSTROPHE 39
+# define _ROUND_BRACKET_LEFT 40
+# define _ROUND_BRACKET_RIGHT 41
+# define _ASTERISK 42
+# define _PLUS_SIGN 43
+# define _COMMA 44
+# define _HYPHEN 45
+# define _FULL_STOP 46
+# define _SLASH 47
+# define _DIGIT -3 // is between 48 to 57
+# define _COLON 58
+# define _SEP 59
+# define _GUILLEMET_LEFT 60
+# define _EQUAL_SIGN 61
+# define _GUILLEMET_RIGHT 62
+# define _QUESTION_MARK 63
+# define _AT_SIGN 64
+# define _ALPHA -4 // is between 65 to 90 and 97 to 122
+# define _SQUARE_BRACKET_LEFT 91
+# define _BACKSLASH 92
+# define _SQUARE_BRACKET_RIGHT 93
+# define _CARET 94
+# define _UNDERSCORE 95
+# define _PRIME 96
+# define _CURLY_BRACKET_LEFT 123
+# define _PIPE 124
+# define _CURLY_BRACKET_RIGHT 125
+# define _TILDE 126
+//# define _DEL 127
 
 /*
  ** Define du lexer
  */
 
-# define _WORD 38
-# define _ROUT 39
-# define _RINT 40
-# define _APPROUT 41
-# define _HEREDOC 42
-# define _OR 43
-# define _AND 44
-# define _DUP_ROUT 45
-# define _DUP_RINT 46
-# define _ROUTERR 47
-# define _FD 48
-# define _ARGV 49
-# define _CMD 50
-# define _FILE_NAME 51
-# define _DEL 52
+# define _NOT 0
+# define _WORD 1
+
+# define _RINT 2 // l_fd = out et r_fd = in <
+
+# define _ROUT 3 // l_fd = in et r_fd = out >
+# define _APPROUT 4 // l_fd = out et r_fd = in >>
+
+# define _RRDWR 5 // l_fd = in et r_fd = out <>
+
+# define _HEREDOC 6 // l_fd = in et out = (le here_document write in it) <<
+
+# define _DUPINT 7 // if file == _DIGIT l_fd = r_fd if else file == '-' close(l_fd) else _RINT <&
+# define _DUPOUT 8 // if file == _DIGIT l_fd = r_fd if else file == '-' close(l_fd) else _ROUT >&
+
+# define _INTFD 9
+# define _FILE 10
 
 /*
  **	stack la commande avant execution:
@@ -144,6 +147,13 @@
  **
  */
 
+/*
+ * token:
+ *  WORD
+ *  SEPARATOR
+ *  OPERATOR:
+*/
+
 typedef struct		s_var_redir
 {
 	int				y;
@@ -156,6 +166,15 @@ typedef struct		s_var_redir
 	int				pipefd_here[2];
 }					t_var_redir;
 
+typedef struct		s_redir
+{
+	int				type;
+	int				fd_int;
+	char			*file_int;
+	int				fd_out;
+	char			*file_out;
+}					t_redir;
+
 typedef struct		s_redirections
 {
 	int				type;
@@ -167,12 +186,60 @@ typedef struct		s_redirections
 	char			*heredoc;
 }					t_redirections;
 
+typedef struct		s_pipefd
+{
+	int				var;
+	int				one[2];
+	int				two[2];
+	int				here_doc[2];
+}					t_pipefd;
+
+typedef struct		s_fdexec
+{
+	int				in;
+	int				out;
+	int				fd_in;
+	int				fd_out;
+	int				src;
+	int				dest;
+	int				close;
+	t_lchar			*here_document;
+}					t_fdexec;
+
+typedef struct		s_lenexec
+{
+	int				sep;
+	int				*pipe;
+	int				**cmd;
+}					t_lenexec;
+
+typedef struct		s_typecmd
+{
+	int				len;
+	char			*c;
+	int				*type;
+
+	int				type_cmd;
+	t_lchar			*here_document;
+	int				l_fd;
+	int				r_fd;
+	int				digit;
+	t_lchar			*file;
+
+	int				block;
+
+	int				len_heredoc;
+	char			*heredoc;
+}					t_typecmd;
+
 typedef struct		s_pipelines
 {
-	char			**argv;
+//	char			**argv;
+//	t_redirections	*redir;
+//	int				len;
 	int				argc;
-	t_redirections	*redir;
-	int				len;
+	t_typecmd		**argv;
+//	t_typecmd		**argv;
 }					t_pipelines;
 
 typedef struct		s_separateurs
@@ -188,15 +255,13 @@ typedef struct		s_parser_shell
 }					t_parser_shell;
 
 char	*which_define(int nbr);
-int		cut_quoting(t_lchar *buf);
-int		cut_commands(t_lchar *buf);
 int		creat_cmd(t_lchar *buf, int start_pipe,
-		int end_pipe, t_pipelines *pipe);
+		int end_pipe, t_pipelines *pipe, t_history *history);
 int		creat_redirection(t_lchar *buf, int start_pipe,
 		int end_pipe, t_pipelines *pipe);
 int		creat_pipe(t_lchar *buf, int start_sep,
-		int end_sep, t_separateurs *sep);
-int		creat_sep(t_lchar *buf, t_parser_shell *base);
+		int end_sep, t_separateurs *sep, t_history *history);
+int		creat_sep(t_lchar *buf, t_parser_shell *base, t_history *history);
 int		creat_heredoc(t_pipelines pipe, t_history *history_first, int z);
 
 #endif

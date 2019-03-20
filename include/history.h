@@ -2,6 +2,7 @@
 # define HISTORY_H
 
 # include "../lib/libft/libft.h"
+# include "lchar.h"
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <fcntl.h>
@@ -13,13 +14,16 @@
 
 typedef struct		s_history
 {
-	int				len_buf;
-	int				malloc_buf;
+	int				len;
+	int				malloc;
 	int				pos_buf;
-	int				*len;
-	int				*len_malloc;
 	int				*pos;
-	char			**buf;
+	t_lchar			**buf;
 }					t_history;
+
+int					ft_freehistory(t_history *history);
+t_history			*ft_historycpy(t_history *history_first,
+		t_history *history_copy, int n);
+int					ft_remallochistory(t_history *history_first);
 
 #endif

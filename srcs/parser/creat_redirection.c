@@ -1,5 +1,5 @@
 #include "../../include/parser.h"
-
+/*
 static int	creat_file_name(t_lchar *buf, int x, int end_redir,
 		t_redirections *redir)
 {
@@ -44,16 +44,25 @@ static int	creat_file_name(t_lchar *buf, int x, int end_redir,
 	return (0);
 }
 
+*/
 static int	nbr_of_redir(t_lchar *buf, int x, int end_pipe)
 {
 	int		nbr_redir;
 
 	nbr_redir = 0;
-	while (x < end_pipe)
+	while (1)
 	{
-		if (buf->type[x] == _ROUT || buf->type[x] == _RINT ||
-				buf->type[x] == _APPROUT || buf->type[x] == _HEREDOC)
+		if (buf->type[x] == _GUILLEMET_RIGHT ||
+				buf->type[x] == _GUILLEMET_LEFT)
+		{
 			nbr_redir++;
+			nbr_redir++;
+		}
+		if (x >= end_pipe)
+		{
+			nbr_redir++;
+			break;
+		}
 		x++;
 	}
 	return (nbr_redir);
@@ -62,23 +71,30 @@ static int	nbr_of_redir(t_lchar *buf, int x, int end_pipe)
 int			creat_redirection(t_lchar *buf, int start_pipe, int end_pipe,
 		t_pipelines *pipel)
 {
-	int		x;
+	(void)buf;
+	(void)start_pipe;
+	(void)end_pipe;
+	(void)pipel;
+/*	int		x;
 	int		nbr_redir;
 	int		start_redir;
 
 	pipel->len = nbr_of_redir(buf, start_pipe, end_pipe);
-	if ((pipel->redir = ft_memalloc(sizeof(t_redirections) * (pipel->len + 1))) == NULL)
+	if ((pipel->redir = ft_memalloc(sizeof(t_redirections) *
+					(pipel->len + 1))) == NULL)
 		return (1);
 	nbr_redir = -1;
 	x = start_pipe;
 	while (x <= end_pipe)
 	{
-		if (x < end_pipe && (buf->type[x] == _ROUT || buf->type[x] == _RINT || buf->type[x] == _HEREDOC
+		if (x < end_pipe && (buf->type[x] == _ROUT ||
+					buf->type[x] == _RINT || buf->type[x] == _HEREDOC
 					|| buf->type[x] == _APPROUT || buf->type[x] == _DUP_ROUT
 					|| buf->type[x] == _DUP_RINT || buf->type[x] == _ROUTERR))
 		{
 			if (nbr_redir != -1)
-				creat_file_name(buf, start_redir, x - 1, &pipel->redir[nbr_redir]);
+				creat_file_name(buf, start_redir, x - 1,
+						&pipel->redir[nbr_redir]);
 			nbr_redir++;
 			start_redir = x + 1;
 			pipel->redir[nbr_redir].type = buf->type[x];
@@ -89,6 +105,6 @@ int			creat_redirection(t_lchar *buf, int start_pipe, int end_pipe,
 			break ;
 		}
 		x++;
-	}
+	}*/
 	return (0);
 }

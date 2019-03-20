@@ -8,7 +8,7 @@
 # include <limits.h>
 # include <stdlib.h>
 
-int		exec_base(t_parser_shell base, t_envp *my_envp,
+int		exec_base(t_typecmd ****base, t_lenexec *lenexec, t_envp *my_envp,
 		t_history *histry_first);
 
 #endif

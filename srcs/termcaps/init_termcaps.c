@@ -19,10 +19,16 @@ int				init_termcaps(void)
 	int				success;
 	char			*name_term;
 	struct termios	term;
-	char			term_buffer[4096];
+//	char			term_buffer[4096];
+	char			*term_buffer;
 
-	if (termtype == 0)
+	if (termtype == NULL)
+	{
 		write(2, "Specify a terminal type with `setenv TERM <yourtype>'.\n", 55);
+		exit(0);
+	}
+	if ((term_buffer = ft_memalloc(sizeof(char) * 4096)) == NULL)
+		return (1);
 	success = tgetent (term_buffer, termtype);
 	if (success < 0)
 	{
@@ -44,5 +50,8 @@ int				init_termcaps(void)
 	term.c_cc[VTIME] = 0;
 	if (tcsetattr(0, TCSADRAIN, &term) == -1)
 		return (-1);
+//	free(term_buffer);
+//	if (termtype != NULL)
+//		free(termtype);
 	return (0);
 }
