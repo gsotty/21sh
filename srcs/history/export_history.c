@@ -15,6 +15,8 @@ int		export_history(t_history *history, int error)
 			write(fd, history->buf[x]->c, history->buf[x]->len);
 			write(fd, "\n", 1);
 		}
+		free(history->buf[x]->c);
+		free(history->buf[x]->type);
 		free(history->buf[x]);
 		x++;
 	}

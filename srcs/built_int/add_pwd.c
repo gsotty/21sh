@@ -18,9 +18,13 @@ void		verif_pwd_2(char *path, char *pwd, t_envp *my_envp)
 	struct stat		phy;
 
 	if (stat(path, &lg) == -1 || stat(".", &phy) == -1)
+	{
 		add_env("PWD", pwd, my_envp);
-		if (lg.st_dev == phy.st_dev && lg.st_ino == phy.st_ino)
+	}
+	if (lg.st_dev == phy.st_dev && lg.st_ino == phy.st_ino)
+	{
 		add_env("PWD", path, my_envp);
+	}
 }
 
 void		verif_pwd(char *path, char *pwd, t_envp *my_envp)

@@ -200,14 +200,21 @@ typedef struct		s_fdexec
 	int				out;
 	int				fd_in;
 	int				fd_out;
+	int				close;
 	int				src;
 	int				dest;
-	int				close;
 	t_lchar			*here_document;
 }					t_fdexec;
 
+typedef struct		s_process
+{
+	int				rep;
+	pid_t			id;
+}					t_process;
+
 typedef struct		s_lenexec
 {
+	int				nbr_process;
 	int				sep;
 	int				*pipe;
 	int				**cmd;
@@ -255,13 +262,5 @@ typedef struct		s_parser_shell
 }					t_parser_shell;
 
 char	*which_define(int nbr);
-int		creat_cmd(t_lchar *buf, int start_pipe,
-		int end_pipe, t_pipelines *pipe, t_history *history);
-int		creat_redirection(t_lchar *buf, int start_pipe,
-		int end_pipe, t_pipelines *pipe);
-int		creat_pipe(t_lchar *buf, int start_sep,
-		int end_sep, t_separateurs *sep, t_history *history);
-int		creat_sep(t_lchar *buf, t_parser_shell *base, t_history *history);
-int		creat_heredoc(t_pipelines pipe, t_history *history_first, int z);
 
 #endif

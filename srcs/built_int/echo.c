@@ -49,8 +49,9 @@ static void	no_flag_n(char **argv)
 	write(1, "\n", 1);
 }
 
-int			echo(char **argv)
+int			ft_echo(char **argv, t_envp *my_envp)
 {
+	(void)my_envp;
 	if (check_flag_echo(argv) == 1)
 		flag_n(argv);
 	else

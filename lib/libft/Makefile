@@ -12,7 +12,7 @@
 
 NAME = libft.a
 
-CC = clang 
+CC = gcc
 
 FLAG = -Wall -Wextra -Werror -g ## -fsanitize=address
 

@@ -65,9 +65,9 @@ static int		take_line(int len, t_history *history)
 	history->len = len - 1;
 	history->malloc = len - 1;
 	history->pos_buf = len - 1;
-	if ((history->pos = ft_memalloc(sizeof(int) * (len + 1))) == NULL)
+	if ((history->pos = ft_memalloc(sizeof(int) * (len))) == NULL)
 		return (1);
-	if ((history->buf = ft_memalloc(sizeof(t_lchar *) * (len + 1))) == NULL)
+	if ((history->buf = ft_memalloc(sizeof(t_lchar *) * (len))) == NULL)
 		return (1);
 	while_get_next_line(fd, history);
 	close(fd);

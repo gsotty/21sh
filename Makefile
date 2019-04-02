@@ -1,10 +1,10 @@
 NAME = 21sh
 
-CC = clang
+CC = gcc
 
-FLAG = -g # -Wall -Wextra -Werror
+FLAG = -g -Wall -Wextra -Werror
 
-TERMCAP = -ltermcap
+TERMCAP = -lncurses
 
 LIB = ./lib/libft
 
@@ -28,13 +28,8 @@ SRC =	main.c \
 		reset_termcaps.c \
 		parser.c \
 		which_define.c \
-		creat_cmd.c \
-		creat_pipe.c \
-		creat_redirection.c \
-		creat_sep.c \
 		exec_base.c \
 		exec_cmd.c \
-		creat_heredoc.c \
 		env.c \
 		remove_env.c \
 		verif_flag_env.c \
@@ -65,7 +60,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 		make -s -C $(LIB)
-		$(CC) $(TERMCAP) $(FLAG) $^ ./lib/libft/libft.a -o $(NAME)
+		$(CC) $(FLAG) $^ ./lib/libft/libft.a -o $(NAME) $(TERMCAP)
 
 clean:
 		make -s -C $(LIB) clean

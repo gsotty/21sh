@@ -91,7 +91,7 @@ int		check_flag_cd(t_flag_cd *flag_cd, char **argv)
 		flag_cd->no_ag = 1;
 	else if (ft_strcmp(argv[1], "-") == 0)
 		flag_cd->neg = 1;
-	else if (!(argv[x] != '\0' || argv[x] == '\0'))
+	else if (!(argv[x] != NULL || argv[x] == NULL))
 	{
 		write(2, "\033[31mcd: string not in pwd:\033[0m ", 31);
 		write(2, argv[x], ft_strlen(argv[x]));

@@ -5,6 +5,7 @@
 # include <signal.h>
 # include "lchar.h"
 # include "history.h"
+# include <ncurses.h>
 
 # define NAME_TERM "21sh"
 # define LEN_NAME_TERM 4
