@@ -180,7 +180,7 @@ int		ft_onlyspace(int *type, int len)
 	int		x;
 
 	x = 0;
-	while (x < len && type[x] == _SPACE)
+	while (x < len && type[x] == _SPACE && type[x] == _NEW_LINE)
 		x++;
 	if (x == len)
 		return (1);
@@ -798,7 +798,7 @@ int		ft_nbrsep(t_lchar **tab)
 	{
 		if (ft_strmatch(tab[count_sep]->c, ";") == 1)
 		{
-			printf("start_pipe = [%d], count_sep = [%d]\n", start_pipe, count_sep);
+//			printf("start_pipe = [%d], count_sep = [%d]\n", start_pipe, count_sep);
 			if (start_pipe == count_sep)
 			{
 				printf("error\n");
@@ -807,20 +807,20 @@ int		ft_nbrsep(t_lchar **tab)
 			test = start_pipe;
 			while (test < count_sep)
 			{
-				write(1, "sep = [", 7);
-				write(1, tab[test]->c, tab[test]->len);
-				write(1, "]\n", 2);
+//				write(1, "sep = [", 7);
+//				write(1, tab[test]->c, tab[test]->len);
+//				write(1, "]\n", 2);
 				test++;
 			}
-			write(1, "sep = [", 7);
-			write(1, tab[count_sep]->c, tab[count_sep]->len);
-			write(1, "]\n", 2);
+//			write(1, "sep = [", 7);
+//			write(1, tab[count_sep]->c, tab[count_sep]->len);
+//			write(1, "]\n", 2);
 			count_sep++;
 			start_pipe = count_sep;
 			sep++;
 			if (tab[count_sep] == NULL)
 			{
-				printf("nbr_sep error = [%d]\n", sep);
+//				printf("nbr_sep error = [%d]\n", sep);
 				return (sep);
 			}
 		}
@@ -830,13 +830,13 @@ int		ft_nbrsep(t_lchar **tab)
 	test = start_pipe;
 	while (test < count_sep)
 	{
-		write(1, "sep = [", 7);
-		write(1, tab[test]->c, tab[test]->len);
-		write(1, "]\n", 2);
+//		write(1, "sep = [", 7);
+//		write(1, tab[test]->c, tab[test]->len);
+//		write(1, "]\n", 2);
 		test++;
 	}
 	sep++;
-	printf("nbr_sep = [%d]\n", sep);
+//	printf("nbr_sep = [%d]\n", sep);
 	return (sep);
 }
 
@@ -844,22 +844,22 @@ int		parser(t_lchar *buf, t_history *history, t_envp *my_envp)
 {
 	t_parser_shell	base;
 
-	char	*nbr;
+//	char	*nbr;
 
 	(void)base;
 	(void)my_envp;
 	(void)history;
 
-	int				count;
+//	int				count;
 	t_lchar			**tab;
 
 	tab = ft_lcharsplit(buf, token);
-	count = 0;
-	while (tab[count] != NULL)
-	{
-		printf("tab[%d]->c = [%s]\n", count, tab[count]->c);
-		count++;
-	}
+//	count = 0;
+//	while (tab[count] != NULL)
+//	{
+//		printf("tab[%d]->c = [%s]\n", count, tab[count]->c);
+//		count++;
+//	}
 
 	t_lenexec		*lenexec;
 	t_process		*process;
@@ -885,7 +885,7 @@ int		parser(t_lchar *buf, t_history *history, t_envp *my_envp)
 	if ((ft_addvalue_sep(exec_struct, tab, history)) == 1)
 		return (1);
 
-///*
+/*
 	int		x = 0;
 	int		y = 0;
 	int		z = 0;
@@ -928,7 +928,7 @@ int		parser(t_lchar *buf, t_history *history, t_envp *my_envp)
 		}
 		x++;
 	}
-//*/
+*/
 
 //	if (creat_sep(buf, &base, history) == 1)
 //		return (0);

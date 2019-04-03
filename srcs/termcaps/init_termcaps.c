@@ -15,58 +15,38 @@
 #include <curses.h>
 #include <term.h>
 
-/*
-t_key			keys[] = {
-	{"kl"},
-	{"kr"},
-	{"ku"},
-	{"kd"},
-	{"kh"},
-	{"kH"},
-	{"kb"},
-	{"ka"},
-	{"kt"},
-	{"kC"},
-	{"kD"},
-	{"kL"},
-	{"kM"},
-	{"kE"},
-	{"kS"},
-	{"kI"},
-	{"kA"},
-	{"kN"},
-	{"kP"},
-	{"kF"},
-	{"kT"},
-	{"ko"},
-	{NULL}
-};
-*/
-
 static void		ft_add_value_key(t_key *key, t_sequence *sequence)
 {
-	key[0].str = tgetstr("kl", &sequence->buffer);
-	key[1].str = tgetstr("kr", &sequence->buffer);
-	key[2].str = tgetstr("ku", &sequence->buffer);
-	key[3].str = tgetstr("kd", &sequence->buffer);
-	key[4].str = tgetstr("kh", &sequence->buffer);
-	key[5].str = tgetstr("kH", &sequence->buffer);
-	key[6].str = tgetstr("kb", &sequence->buffer);
-	key[7].str = tgetstr("ka", &sequence->buffer);
-	key[8].str = tgetstr("kt", &sequence->buffer);
-	key[9].str = tgetstr("kC", &sequence->buffer);
-	key[10].str = tgetstr("kD", &sequence->buffer);
-	key[11].str = tgetstr("kL", &sequence->buffer);
-	key[12].str = tgetstr("kM", &sequence->buffer);
-	key[13].str = tgetstr("kE", &sequence->buffer);
-	key[14].str = tgetstr("kS", &sequence->buffer);
-	key[15].str = tgetstr("kI", &sequence->buffer);
-	key[16].str = tgetstr("kA", &sequence->buffer);
-	key[17].str = tgetstr("kN", &sequence->buffer);
-	key[18].str = tgetstr("kP", &sequence->buffer);
-	key[19].str = tgetstr("kF", &sequence->buffer);
-	key[20].str = tgetstr("kT", &sequence->buffer);
-	key[21].str = tgetstr("ko", &sequence->buffer);
+	key[0].str = sequence->buffer;
+	key[0].str[0] = 10;
+	key[0].str[1] = '\0';
+	sequence->buffer = &key[0].str[2];
+	key[1].str = sequence->buffer;
+	key[1].str[0] = 4;
+	key[1].str[1] = '\0';
+	sequence->buffer = &key[1].str[2];
+	key[2].str = tgetstr("kl", &sequence->buffer);
+	key[3].str = tgetstr("kr", &sequence->buffer);
+	key[4].str = tgetstr("ku", &sequence->buffer);
+	key[5].str = tgetstr("kd", &sequence->buffer);
+	key[6].str = tgetstr("kh", &sequence->buffer);
+	key[7].str = tgetstr("kH", &sequence->buffer);
+	key[8].str = tgetstr("kb", &sequence->buffer);
+	key[9].str = tgetstr("ka", &sequence->buffer);
+	key[10].str = tgetstr("kt", &sequence->buffer);
+	key[11].str = tgetstr("kC", &sequence->buffer);
+	key[12].str = tgetstr("kD", &sequence->buffer);
+	key[13].str = tgetstr("kL", &sequence->buffer);
+	key[14].str = tgetstr("kM", &sequence->buffer);
+	key[15].str = tgetstr("kE", &sequence->buffer);
+	key[16].str = tgetstr("kS", &sequence->buffer);
+	key[17].str = tgetstr("kI", &sequence->buffer);
+	key[18].str = tgetstr("kA", &sequence->buffer);
+	key[19].str = tgetstr("kN", &sequence->buffer);
+	key[20].str = tgetstr("kP", &sequence->buffer);
+	key[21].str = tgetstr("kF", &sequence->buffer);
+	key[22].str = tgetstr("kT", &sequence->buffer);
+	key[23].str = tgetstr("ko", &sequence->buffer);
 }
 
 static int		ft_add_value_sequence(int len_term, t_key *key,
@@ -81,7 +61,7 @@ static int		ft_add_value_sequence(int len_term, t_key *key,
 	sequence->right_cursor = tgetstr("nd", &sequence->buffer);
 	sequence->up_scroll = tgetstr("sf", &sequence->buffer);
 	sequence->down_scroll = tgetstr("sr", &sequence->buffer);
-	sequence->go_start_line = tgetstr("cr", &sequence->buffer);
+	sequence->clear_rest_screen = tgetstr("cd", &sequence->buffer);
 	tputs(sequence->start, 0, f_putchar);
 	ft_add_value_key(key, sequence);
 	return (0);
@@ -128,7 +108,7 @@ int				ft_init_termcaps(t_key *key, t_sequence *sequence)
 		return (1);
 	}
 	ft_change_var_term();
-	if ((ft_add_value_sequence(4096, key, sequence)) == 1)
+	if ((ft_add_value_sequence(4096 + 4, key, sequence)) == 1)
 		return (1);
 	return (0);
 }

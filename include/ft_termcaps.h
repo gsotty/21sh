@@ -24,6 +24,7 @@ typedef struct		s_sequence
 	char			*up_scroll;
 	char			*down_scroll;
 	char			*go_start_line;
+	char			*clear_rest_screen;
 }					t_sequence;
 
 typedef struct		s_key

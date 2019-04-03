@@ -41,6 +41,7 @@ t_lchar			*while_main(int type, t_history *history)
 		return (NULL);
 	history_cpy.pos_buf = history_cpy.len;
 	buf = line_edition(type, &history_cpy);
+	fprintf(stderr, "\033[31mbut->c = [%s]\033[0m\n", buf->c);
 	ft_freehistory(&history_cpy);
 	return (buf);
 }
@@ -83,7 +84,7 @@ int				main(int argc, char **argv, char **envp)
 			return (1);
 		if (buf->len > 0)
 		{
-			if (ft_strmatch("exit", buf->c) == 1 ||
+			if (ft_strmatch("exit\n", buf->c) == 1 ||
 						(buf->type[0] == _EOT && buf->len == 1))
 			{
 				error = 1;

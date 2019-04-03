@@ -4,7 +4,7 @@ CC = gcc
 
 FLAG = -g -Wall -Wextra -Werror
 
-TERMCAP = -lncurses
+TERMCAP = -ltermcap
 
 LIB = ./lib/libft
 
