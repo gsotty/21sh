@@ -284,6 +284,7 @@ int			real_length(t_pos *pos, t_promt promt, int pos_len, t_lchar *buf)
 	line.len_tab = tgetnum ("it");
 	ft_addvalue_lenbuf(pos, &line, promt, pos_len, buf);
 
+/*
 	int		x;
 	fprintf(stderr, "pos->\n");
 	fprintf(stderr, "\tco_max = [%d]\n", pos->co_max);
@@ -302,6 +303,7 @@ int			real_length(t_pos *pos, t_promt promt, int pos_len, t_lchar *buf)
 		fprintf(stderr, "\tpromt->pos_cursor[%d] = [%d]\n", x, pos->promt->pos_cursor[x]);
 		x++;
 	}
+*/
 
 	return (0);
 }
@@ -399,7 +401,6 @@ int				creat_struct_pos(int type, t_pos *pos)
 	pos->co_max = tgetnum("co");
 	pos->li_max = tgetnum("li");
 	pos->len_tab = tgetnum ("it");
-	fprintf(stderr, "pos->len_tab = [%d]\n", pos->len_tab);
 	pos->malloc = 1;
 	pos->start = 0;
 	pos->end = (pos->li_max - 1);
@@ -436,10 +437,10 @@ int				print_the_buf(t_sequence *sequence, t_promt promt, t_lchar *buf,
 	{
 		write(STDOUT_FILENO, promt.str + upromt, (pos->promt->pos_char[count]));
 		write(STDOUT_FILENO, buf->c + ubuf, (pos->buf->pos_char[count]));
-		fprintf(stderr, "\033[33m");
-		write(STDERR_FILENO, promt.str + upromt, (pos->promt->pos_char[count]));
-		write(STDERR_FILENO, buf->c + ubuf, (pos->buf->pos_char[count]));
-		fprintf(stderr, "\033[0m\n");
+//		fprintf(stderr, "\033[33m");
+//		write(STDERR_FILENO, promt.str + upromt, (pos->promt->pos_char[count]));
+//		write(STDERR_FILENO, buf->c + ubuf, (pos->buf->pos_char[count]));
+//		fprintf(stderr, "\033[0m\n");
 		if (count < pos->nbr_char &&
 				buf->c[upromt + pos->promt->pos_char[count]] != '\n' &&
 				buf->c[ubuf + pos->buf->pos_char[count]] != '\n')
@@ -631,6 +632,7 @@ int				ft_arrow_up(t_sequence *sequence, t_pos *pos, t_promt promt,
 	{
 		replace_cursor(sequence, pos, 1);
 		history->pos_buf--;
+		history->pos[history->pos_buf] = history->buf[history->pos_buf]->len;
 		refresh_size_win(promt, history->buf[history->pos_buf],
 				history->pos[history->pos_buf], pos);
 		print_the_buf(sequence, promt, history->buf[history->pos_buf], pos);
@@ -645,6 +647,7 @@ int				ft_arrow_down(t_sequence *sequence, t_pos *pos, t_promt promt,
 	{
 		replace_cursor(sequence, pos, 1);
 		history->pos_buf++;
+		history->pos[history->pos_buf] = history->buf[history->pos_buf]->len;
 		refresh_size_win(promt, history->buf[history->pos_buf],
 				history->pos[history->pos_buf], pos);
 		print_the_buf(sequence, promt, history->buf[history->pos_buf], pos);
@@ -667,8 +670,6 @@ int				ft_home_down(t_sequence *sequence, t_pos *pos, t_promt promt,
 		t_history *history)
 {
 	replace_cursor(sequence, pos, 1);
-	fprintf(stderr, "history->buf[history->pos_buf]->len = [%d]\n",
-			history->buf[history->pos_buf]->len);
 	history->pos[history->pos_buf] = history->buf[history->pos_buf]->len;
 	refresh_size_win(promt, history->buf[history->pos_buf],
 			history->pos[history->pos_buf], pos);
@@ -683,7 +684,7 @@ int				ft_char_return(t_sequence *sequence, t_pos *pos,
 			history->pos[history->pos_buf], pos);
 	print_the_buf(sequence, promt, history->buf[history->pos_buf], pos);
 	write(0, "\n", 1);
-	return (1);
+	return (2);
 }
 
 int				ft_exit_edition_line(t_sequence *sequence, t_pos *pos,
@@ -698,7 +699,7 @@ int				ft_exit_edition_line(t_sequence *sequence, t_pos *pos,
 	return (0);
 }
 
-int				ft_backspace(t_sequence *sequence, t_pos *pos,
+int				ft_delete(t_sequence *sequence, t_pos *pos,
 		t_promt promt, t_history *history)
 {
 	int		x;
@@ -763,13 +764,14 @@ int				ft_delete_char(t_sequence *sequence, t_pos *pos,
 t_which_key		which_key[] = {
 	{"char_return", ft_char_return},
 	{"exit", ft_exit_edition_line},
+	{"delete", ft_delete},
 	{"left_arrow", ft_arrow_left},
 	{"right_arrow", ft_arrow_right},
 	{"up_arrow", ft_arrow_up},
 	{"down_arrow", ft_arrow_down},
 	{"home_position", ft_home_position},
 	{"home_down", ft_home_down},
-	{"backspace", ft_backspace},
+	{"backspace", NULL},
 	{"clear_all_the_tabs", NULL},
 	{"clear_tab_column", NULL},
 	{"clear_the_screen", NULL},
@@ -798,7 +800,7 @@ t_lchar			*line_edition(int type, t_history *history)
 	t_lchar			*buf;
 	t_lchar			*tmp_buf;
 	t_lchar			*new_buf;
-	t_key			key[24];
+	t_key			key[25];
 	t_sequence		sequence;
 	int				count_buffer;
 
@@ -821,7 +823,7 @@ t_lchar			*line_edition(int type, t_history *history)
 		ret = read(STDIN_FILENO, buffer, 4095);
 		buffer[ret] = '\0';
 
-
+/*
 		int		print = 0;
 
 		fprintf(stderr, "\033[31mret = [%d]\n", ret);
@@ -831,7 +833,7 @@ t_lchar			*line_edition(int type, t_history *history)
 			print++;
 		}
 		fprintf(stderr, "\033[0m\n");
-
+*/
 
 		if (g_sig == SIGINT)
 		{
@@ -888,6 +890,10 @@ t_lchar			*line_edition(int type, t_history *history)
 			if (ret_f == 1)
 			{
 				creat_buf(history, buffer, ret);
+				break ;
+			}
+			else if (ret_f == 2)
+			{
 				break ;
 			}
 			else if (which_key[count_key].key == NULL)

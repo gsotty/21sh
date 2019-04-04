@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 14:51:01 by gsotty            #+#    #+#             */
-/*   Updated: 2019/04/04 15:40:04 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/04/04 17:35:22 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,22 @@
 
 static void		ft_add_value_key_tow(t_key *key, t_sequence *sequence)
 {
-	key[8].str = tgetstr("kb", &sequence->buffer);
-	key[9].str = tgetstr("ka", &sequence->buffer);
-	key[10].str = tgetstr("kt", &sequence->buffer);
-	key[11].str = tgetstr("kC", &sequence->buffer);
-	key[12].str = tgetstr("kD", &sequence->buffer);
-	key[13].str = tgetstr("kL", &sequence->buffer);
-	key[14].str = tgetstr("kM", &sequence->buffer);
-	key[15].str = tgetstr("kE", &sequence->buffer);
-	key[16].str = tgetstr("kS", &sequence->buffer);
-	key[17].str = tgetstr("kI", &sequence->buffer);
-	key[18].str = tgetstr("kA", &sequence->buffer);
-	key[19].str = tgetstr("kN", &sequence->buffer);
-	key[20].str = tgetstr("kP", &sequence->buffer);
-	key[21].str = tgetstr("kF", &sequence->buffer);
-	key[22].str = tgetstr("kT", &sequence->buffer);
-	key[23].str = tgetstr("ko", &sequence->buffer);
+	key[9].str = tgetstr("kb", &sequence->buffer);
+	key[10].str = tgetstr("ka", &sequence->buffer);
+	key[11].str = tgetstr("kt", &sequence->buffer);
+	key[12].str = tgetstr("kC", &sequence->buffer);
+	key[13].str = tgetstr("kD", &sequence->buffer);
+	key[14].str = tgetstr("kL", &sequence->buffer);
+	key[15].str = tgetstr("kM", &sequence->buffer);
+	key[16].str = tgetstr("kE", &sequence->buffer);
+	key[17].str = tgetstr("kS", &sequence->buffer);
+	key[18].str = tgetstr("kI", &sequence->buffer);
+	key[19].str = tgetstr("kA", &sequence->buffer);
+	key[20].str = tgetstr("kN", &sequence->buffer);
+	key[21].str = tgetstr("kP", &sequence->buffer);
+	key[22].str = tgetstr("kF", &sequence->buffer);
+	key[23].str = tgetstr("kT", &sequence->buffer);
+	key[24].str = tgetstr("ko", &sequence->buffer);
 }
 
 static void		ft_add_value_key(t_key *key, t_sequence *sequence)
@@ -45,20 +45,24 @@ static void		ft_add_value_key(t_key *key, t_sequence *sequence)
 	key[1].str[0] = 4;
 	key[1].str[1] = '\0';
 	sequence->buffer = &key[1].str[2];
-	key[2].str = tgetstr("kl", &sequence->buffer);
-	key[3].str = tgetstr("kr", &sequence->buffer);
-	key[4].str = tgetstr("ku", &sequence->buffer);
-	key[5].str = tgetstr("kd", &sequence->buffer);
-	key[6].str = tgetstr("kh", &sequence->buffer);
-	key[7].str = tgetstr("kH", &sequence->buffer);
-	if (key[7].str == NULL)
+	key[2].str = sequence->buffer;
+	key[2].str[0] = 127;
+	key[2].str[1] = '\0';
+	sequence->buffer = &key[2].str[2];
+	key[3].str = tgetstr("kl", &sequence->buffer);
+	key[4].str = tgetstr("kr", &sequence->buffer);
+	key[5].str = tgetstr("ku", &sequence->buffer);
+	key[6].str = tgetstr("kd", &sequence->buffer);
+	key[7].str = tgetstr("kh", &sequence->buffer);
+	key[8].str = tgetstr("kH", &sequence->buffer);
+	if (key[8].str == NULL)
 	{
-		key[7].str = sequence->buffer;
-		key[7].str[0] = 27;
-		key[7].str[1] = 79;
-		key[7].str[2] = 70;
-		key[7].str[3] = '\0';
-		sequence->buffer = &key[7].str[4];
+		key[8].str = sequence->buffer;
+		key[8].str[0] = 27;
+		key[8].str[1] = 79;
+		key[8].str[2] = 70;
+		key[8].str[3] = '\0';
+		sequence->buffer = &key[8].str[4];
 	}
 	ft_add_value_key_tow(key, sequence);
 }

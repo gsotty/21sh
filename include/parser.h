@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 16:35:02 by gsotty            #+#    #+#             */
-/*   Updated: 2019/04/04 16:41:26 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/04/04 17:08:02 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,16 +223,13 @@ typedef struct		s_typecmd
 	int				len;
 	char			*c;
 	int				*type;
-
 	int				type_cmd;
 	t_lchar			*here_document;
 	int				l_fd;
 	int				r_fd;
 	int				digit;
 	t_lchar			*file;
-
 	int				block;
-
 	int				len_heredoc;
 	char			*heredoc;
 }					t_typecmd;
@@ -254,5 +251,8 @@ typedef struct		s_parser_shell
 	t_separateurs	*sep;
 	int				len;
 }					t_parser_shell;
+
+int					ft_onlyspace(int *type, int len);
+int					ft_onlydigit(int *type, int len);
 
 #endif

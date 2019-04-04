@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_base.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/04/04 18:01:22 by gsotty            #+#    #+#             */
+/*   Updated: 2019/04/04 18:43:40 by gsotty           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/execute.h"
 #include "../../include/built_int.h"
 
@@ -189,9 +201,6 @@ int		check_builtin(t_process *process, int count_process, t_fdexec *fdexec, t_pi
 	{
 		if (ft_strmatch(argv[0], builtin[count].exec) == 1)
 		{
-			//			if (close_pipe_child(count_pipe, lenexec->pipe[count_sep],
-			//						fdexec, pipefd) == 1)
-			//				return (1);
 			if (fdexec->fd_in != -1)
 			{
 				fd_standard_in = dup(fdexec->in);
@@ -264,7 +273,6 @@ int		exec_base(t_typecmd ****base, t_process *process, t_lenexec *lenexec,
 		pipefd->var = 0;
 		while (base[count_sep][count_pipe] != NULL)
 		{
-			//			printf("term = [%d][%s]\n", ttyslot(), ttyname(ttyslot()));
 			if ((fdexec = ft_memalloc(sizeof(t_fdexec))) == NULL)
 				return (0);
 			fdexec->in = STDIN_FILENO;
@@ -403,9 +411,11 @@ int		exec_base(t_typecmd ****base, t_process *process, t_lenexec *lenexec,
 			if (check_builtin(process, count_process, fdexec, pipefd, argv, my_envp) == 0)
 			{
 				pid_t		father;
+
 				father = fork();
 				if (father == 0)
 				{
+					signal(SIGINT, SIG_DFL);
 					if (close_pipe_child(count_pipe, lenexec->pipe[count_sep],
 								pipefd) == 1)
 						return (1);
@@ -436,7 +446,8 @@ int		exec_base(t_typecmd ****base, t_process *process, t_lenexec *lenexec,
 //							fprintf(stderr, "print here-doc = %d\n", pipefd->here_doc[1]);
 							close(pipefd->here_doc[0]);
 							pipefd->here_doc[0] = -1;
-							write(pipefd->here_doc[1], fdexec->here_document->c, fdexec->here_document->len);
+							write(pipefd->here_doc[1], fdexec->here_document->c,
+									fdexec->here_document->len);
 							write(pipefd->here_doc[1], "\n", 1);
 							close(pipefd->here_doc[1]);
 							pipefd->here_doc[1] = -1;

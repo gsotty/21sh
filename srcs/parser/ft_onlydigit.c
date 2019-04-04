@@ -1,32 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   ft_onlydigit.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/07/21 15:15:00 by gsotty            #+#    #+#             */
-/*   Updated: 2019/04/04 18:41:01 by gsotty           ###   ########.fr       */
+/*   Created: 2019/04/04 16:54:26 by gsotty            #+#    #+#             */
+/*   Updated: 2019/04/04 16:57:55 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/vingt_et_un_sh.h"
+#include "../../include/parser.h"
 
-static void		signal_act(int x, siginfo_t *siginfo, void *context)
+int		ft_onlydigit(int *type, int len)
 {
-	(void)siginfo;
-	(void)context;
-	g_sig = x;
-}
+	int		x;
 
-void			ft_signal(int signum, int flags)
-{
-	struct sigaction	act;
-
-	g_sig = 0;
-	ft_memset(&act, '\0', sizeof(act));
-	act.sa_sigaction = &signal_act;
-	sigemptyset(&act.sa_mask);
-	act.sa_flags = flags;
-	sigaction(signum, &act, NULL);
+	x = 0;
+	while (x < len && type[x] == _DIGIT)
+		x++;
+	if (x == len)
+		return (1);
+	return (0);
 }

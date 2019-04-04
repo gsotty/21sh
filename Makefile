@@ -48,6 +48,8 @@ SRC =	main.c \
 		ft_addtype.c \
 		ft_lcharndup.c \
 		free_envp.c \
+		ft_onlydigit.c \
+		ft_onlyspace.c \
 		ft_lcharsplit.c
 
 OBJ = $(SRC:.c=.o)
