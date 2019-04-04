@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_cmd.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/04/04 14:28:11 by gsotty            #+#    #+#             */
+/*   Updated: 2019/04/04 14:28:13 by gsotty           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/execute.h"
 
 char			*find_var_envp(char *name, char **my_envp)
@@ -77,7 +89,6 @@ int				free_tab(char **tab)
 	free(tab);
 	return (0);
 }
-
 
 void			exec_cmd(int my_argc, char **my_argv, char **my_envp)
 {

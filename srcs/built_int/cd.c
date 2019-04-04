@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/31 14:35:53 by gsotty            #+#    #+#             */
-/*   Updated: 2019/01/16 14:17:13 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/04/04 14:14:17 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ void	cd_argv_neg(t_flag_cd *flag_cd, t_envp *my_envp)
 	char	*tmp;
 	char	*tmp_join;
 
-	if (my_envp->envp == NULL || ((tmp = find_var_env("OLDPWD", my_envp)) == NULL))
+	if (my_envp->envp == NULL ||
+			((tmp = find_var_env("OLDPWD", my_envp)) == NULL))
 	{
 		write(2, "\033[31mcd: OLDPWD not set\033[0m\n", 28);
 		return ;

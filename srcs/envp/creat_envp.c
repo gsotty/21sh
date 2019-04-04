@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   creat_envp.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/04/04 14:22:39 by gsotty            #+#    #+#             */
+/*   Updated: 2019/04/04 14:23:24 by gsotty           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/envp.h"
 #include "../../include/vingt_et_un_sh.h"
 
@@ -21,7 +33,8 @@ int		creat_envp(char **envp, t_envp *my_envp)
 	{
 		my_envp->len = len_tab(envp);
 		my_envp->len_malloc = my_envp->len;
-		if ((my_envp->envp = ft_memalloc(sizeof(char *) * (my_envp->len + 1))) == NULL)
+		if ((my_envp->envp = ft_memalloc(sizeof(char *) *
+						(my_envp->len + 1))) == NULL)
 			return (1);
 		cont = 0;
 		while (envp[cont] != NULL)

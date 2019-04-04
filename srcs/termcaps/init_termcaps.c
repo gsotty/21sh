@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 14:51:01 by gsotty            #+#    #+#             */
-/*   Updated: 2019/04/04 12:56:49 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/04/04 14:06:20 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,15 @@ static void		ft_add_value_key(t_key *key, t_sequence *sequence)
 	key[5].str = tgetstr("kd", &sequence->buffer);
 	key[6].str = tgetstr("kh", &sequence->buffer);
 	key[7].str = tgetstr("kH", &sequence->buffer);
+	if (key[7].str == NULL)
+	{
+		key[7].str = sequence->buffer;
+		key[7].str[0] = 27;
+		key[7].str[1] = 79;
+		key[7].str[2] = 70;
+		key[7].str[3] = '\0';
+		sequence->buffer = &key[7].str[4];
+	}
 	key[8].str = tgetstr("kb", &sequence->buffer);
 	key[9].str = tgetstr("ka", &sequence->buffer);
 	key[10].str = tgetstr("kt", &sequence->buffer);

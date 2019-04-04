@@ -1,46 +1,52 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_lcharsplit.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/04/04 14:53:16 by gsotty            #+#    #+#             */
+/*   Updated: 2019/04/04 15:23:46 by gsotty           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/parser.h"
 
-int			ft_lcharmatch(t_lchar *buf, int start, char **token)
+int				ft_lcharmatch(t_lchar *buf, int start, char **token)
 {
-	int		count;
-	int		count_token;
-	int		is_space;
+	int			x;
+	int			tx;
+	int			is_space;
 
-	count_token = 0;
 	is_space = 0;
-	count = 0;
-	while (buf->type[count + start] == _SPACE ||
-			buf->type[count + start] == _NEW_LINE)
+	x = 0;
+	while (buf->type[x + start] == _SPACE || buf->type[x + start] == _NEW_LINE)
 	{
 		is_space = 1;
-		count++;
+		x++;
 	}
 	if (is_space == 1)
-		return (count);
-	count = 0;
-	while (token[count_token] != NULL)
+		return (x);
+	tx = 0;
+	while (token[tx] != NULL)
 	{
-		count = 0;
-		while ((token[count_token][count] != '\0' &&
-				(count + start < buf->len) &&
-				buf->type[count + start] == (int)token[count_token][count]))
-			count++;
-		if (token[count_token][count] == '\0')
-			return (count);
-		count_token++;
+		x = 0;
+		while ((token[tx][x] != '\0' && (x + start < buf->len) &&
+					buf->type[x + start] == (int)token[tx][x]))
+			x++;
+		if (token[tx][x] == '\0')
+			return (x);
+		tx++;
 	}
 	return (-1);
 }
 
-int			ft_nbrlcharsplit(t_lchar *buf, char **token)
+int				ft_nbrlcharsplit(int count, int start, t_lchar *buf,
+		char **token)
 {
-	int		ret;
-	int		count;
-	int		start;
-	int		nbr_tab;
+	int			ret;
+	int			nbr_tab;
 
-	count = 0;
-	start = 0;
 	nbr_tab = 0;
 	while (count < buf->len)
 	{
@@ -51,11 +57,10 @@ int			ft_nbrlcharsplit(t_lchar *buf, char **token)
 				nbr_tab++;
 				start = count;
 			}
-			count = count + ret;
-			start = count;
 			nbr_tab++;
-			if (count >= buf->len)
+			if ((count = count + ret) >= buf->len)
 				return (nbr_tab);
+			start = count;
 		}
 		else
 			count++;
@@ -64,38 +69,13 @@ int			ft_nbrlcharsplit(t_lchar *buf, char **token)
 	return (nbr_tab);
 }
 
-t_lchar			*ft_lcharndup(t_lchar *src, int start, int end)
+int				ft_splitbuf(int count, t_lchar **tab, t_lchar *buf,
+		char **token)
 {
-	int			x;
-	t_lchar		*dest;
+	int			ret;
+	int			nbr_tab;
+	int			start;
 
-	if ((dest = ft_memalloc(sizeof(t_lchar))) == NULL)
-		return (NULL);
-	dest->len = (end - start) + 1;
-	if ((dest->c = ft_memalloc(sizeof(char) * (dest->len + 1))) == NULL)
-		return (NULL);
-	if ((dest->type = ft_memalloc(sizeof(int) * (dest->len + 1))) == NULL)
-		return (NULL);
-	x = 0;
-	while (x < dest->len)
-	{
-		dest->c[x] = src->c[x + start];
-		dest->type[x] = src->type[x + start];
-		x++;
-	}
-	dest->c[x] = '\0';
-	dest->type[x] = 0;
-	return (dest);
-}
-
-int			ft_splitbuf(t_lchar **tab, t_lchar *buf, char **token)
-{
-	int		ret;
-	int		count;
-	int		nbr_tab;
-	int		start;
-
-	count = 0;
 	start = 0;
 	nbr_tab = 0;
 	while (count < buf->len)
@@ -104,37 +84,29 @@ int			ft_splitbuf(t_lchar **tab, t_lchar *buf, char **token)
 		{
 			if (count != start)
 			{
-				tab[nbr_tab] = ft_lcharndup(buf, start, count - 1);
-				nbr_tab++;
+				tab[nbr_tab++] = ft_lcharndup(buf, start, count - 1);
 				start = count;
 			}
-			tab[nbr_tab] = ft_lcharndup(buf, start, count + (ret - 1));
-			count = count + ret;
-			start = count;
-			nbr_tab++;
-			if (count >= buf->len)
-			{
-				tab[nbr_tab] = NULL;
+			tab[nbr_tab++] = ft_lcharndup(buf, start, count + (ret - 1));
+			if ((count = count + ret) >= buf->len)
 				return (0);
-			}
+			start = count;
 		}
 		else
 			count++;
 	}
-	tab[nbr_tab] = ft_lcharndup(buf, start, count - 1);
-	nbr_tab++;
-	tab[nbr_tab] = NULL;
+	tab[nbr_tab++] = ft_lcharndup(buf, start, count - 1);
 	return (0);
 }
 
-t_lchar		**ft_lcharsplit(t_lchar *buf, char **token)
+t_lchar			**ft_lcharsplit(t_lchar *buf, char **token)
 {
 	int			len_tab;
 	t_lchar		**tab;
 
-	len_tab = ft_nbrlcharsplit(buf, token);
+	len_tab = ft_nbrlcharsplit(0, 0, buf, token);
 	if ((tab = ft_memalloc(sizeof(t_lchar *) * (len_tab + 1))) == NULL)
 		return (NULL);
-	ft_splitbuf(tab, buf, token);
+	ft_splitbuf(0, tab, buf, token);
 	return (tab);
 }

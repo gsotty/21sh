@@ -47,6 +47,7 @@ SRC =	main.c \
 		ft_remallochistory.c \
 		ft_freehistory.c \
 		ft_addtype.c \
+		ft_lcharndup.c \
 		ft_lcharsplit.c
 
 OBJ = $(SRC:.c=.o)

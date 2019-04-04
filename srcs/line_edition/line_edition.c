@@ -976,13 +976,13 @@ t_lchar			*line_edition(int type, t_history *history)
 
 		int		print = 0;
 
-		fprintf(stderr, "ret = [%d]\n", ret);
+		fprintf(stderr, "\033[31mret = [%d]\n", ret);
 		while (print < ret)
 		{
 			fprintf(stderr, "[%d]", buffer[print]);
 			print++;
 		}
-		fprintf(stderr, "\n");
+		fprintf(stderr, "\033[0m\n");
 
 
 		if (g_sig == SIGINT)
@@ -993,7 +993,7 @@ t_lchar			*line_edition(int type, t_history *history)
 			break ;
 		}
 		count_buffer = 0;
-		fprintf(stderr, "\n");
+//		fprintf(stderr, "\n");
 		ret_f = 0;
 		while (count_buffer < ret)
 		{
@@ -1002,31 +1002,31 @@ t_lchar			*line_edition(int type, t_history *history)
 			int		len_key = 0;
 			while (which_key[count_key].key != NULL)
 			{
-				fprintf(stderr, "key[%d] = {[%s] = ", count_key, which_key[count_key].key);
+//				fprintf(stderr, "key[%d] = {[%s] = ", count_key, which_key[count_key].key);
 				if (key[count_key].str != NULL)
 				{
 					len_key = ft_strlen(key[count_key].str);
 					count_len_key = 0;
 					while (count_len_key < len_key)
 					{
-						fprintf(stderr, "[%d]", key[count_key].str[count_len_key]);
+//						fprintf(stderr, "[%d]", key[count_key].str[count_len_key]);
 						count_len_key++;
 					}
 					if (ft_strmatch(key[count_key].str, buffer + count_buffer) == 1)
 					{
 						ret_f = which_key[count_key].f(&sequence, &pos, promt[type], history);
-						fprintf(stderr, " or ");
+//						fprintf(stderr, " or ");
 						count_len_key = 0;
 						while (count_len_key < len_key)
 						{
-							if (ft_isprint(key[count_key].str[count_len_key]))
-								fprintf(stderr, "[%c]", key[count_key].str[count_len_key]);
-							else
-								fprintf(stderr, "[%d]", key[count_key].str[count_len_key]);
+//							if (ft_isprint(key[count_key].str[count_len_key]))
+//								fprintf(stderr, "[%c]", key[count_key].str[count_len_key]);
+//							else
+//								fprintf(stderr, "[%d]", key[count_key].str[count_len_key]);
 							count_len_key++;
 						}
 						count_buffer += ft_strlen(key[count_key].str);
-						fprintf(stderr, "}\n");
+//						fprintf(stderr, "}\n");
 						break ;
 					}
 					else
@@ -1034,7 +1034,7 @@ t_lchar			*line_edition(int type, t_history *history)
 				}
 				else
 					count_key++;
-				fprintf(stderr, "}\n");
+//				fprintf(stderr, "}\n");
 			}
 //			fprintf(stderr, "ref_f == [%d]\n", ret_f);
 			if (ret_f == 1)

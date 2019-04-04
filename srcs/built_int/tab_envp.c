@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/09 12:45:18 by gsotty            #+#    #+#             */
-/*   Updated: 2019/01/16 13:30:12 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/04/04 14:21:49 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,30 @@ char	**creat_env(char **envp_begin, char **envp)
 	return (envp);
 }
 
+int		ft_loop_remalloc_env(int x, char **new_envp, t_envp *my_envp)
+{
+	int		len_var;
+
+	if (my_envp->envp[x] != NULL)
+	{
+		new_envp[x] = ft_strdup(my_envp->envp[x]);
+		len_var = ft_strlen(my_envp->envp[x]);
+		if ((new_envp[x] = ft_memalloc(sizeof(char *) * (len_var) + 1))
+					== NULL)
+			return (1);
+		ft_memcpy(new_envp[x], my_envp->envp[x], len_var);
+		new_envp[x][len_var] = '\0';
+		free(my_envp->envp[x]);
+	}
+	else
+		new_envp[x] = NULL;
+	return (0);
+}
+
 int		remalloc_env(t_envp *my_envp, int plus)
 {
 	int		x;
 	char	**new_envp;
-	int		len_var;
 
 	if ((new_envp = ft_memalloc((sizeof(char *) * (my_envp->len + plus + 1))
 					+ 1)) == NULL)
@@ -45,19 +64,8 @@ int		remalloc_env(t_envp *my_envp, int plus)
 	x = 0;
 	while (x < (my_envp->len + plus))
 	{
-		if (my_envp->envp[x] != NULL)
-		{
-			new_envp[x] = ft_strdup(my_envp->envp[x]);
-			len_var = ft_strlen(my_envp->envp[x]);
-			if((new_envp[x] = ft_memalloc(sizeof(char *) * (len_var) + 1))
-						== NULL)
-				return (1);
-			ft_memcpy(new_envp[x], my_envp->envp[x], len_var);
-			new_envp[x][len_var] = '\0';
-			free(my_envp->envp[x]);
-		}
-		else
-			new_envp[x] = NULL;
+		if ((ft_loop_remalloc_env(x, new_envp, my_envp)) == 1)
+			return (1);
 		x++;
 	}
 	free(my_envp->envp);
