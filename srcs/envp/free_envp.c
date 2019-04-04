@@ -1,36 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export_history.c                                   :+:      :+:    :+:   */
+/*   free_envp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/04 14:28:54 by gsotty            #+#    #+#             */
-/*   Updated: 2019/04/04 16:02:09 by gsotty           ###   ########.fr       */
+/*   Created: 2019/04/04 15:43:31 by gsotty            #+#    #+#             */
+/*   Updated: 2019/04/04 15:48:07 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/history.h"
+#include "../../include/envp.h"
 
-int		export_history(t_history *history)
+int				free_envp(t_envp *my_envp)
 {
-	int		fd;
 	int		x;
 
 	x = 0;
-	if ((fd = open(PATH_HIST, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR)) == -1)
-		return (1);
-	while (x <= history->len)
+	while (my_envp->envp[x] != NULL)
 	{
-		write(fd, history->buf[x]->c, history->buf[x]->len);
-		write(fd, "\n", 1);
-		free(history->buf[x]->c);
-		free(history->buf[x]->type);
-		free(history->buf[x]);
+		free(my_envp->envp[x]);
 		x++;
 	}
-	free(history->buf);
-	free(history->pos);
-	close(fd);
+	free(my_envp->envp);
 	return (0);
 }

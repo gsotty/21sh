@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   line_edition.h                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/04/04 16:33:46 by gsotty            #+#    #+#             */
+/*   Updated: 2019/04/04 16:34:26 by gsotty           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef LINE_EDITION_H
 # define LINE_EDITION_H
 
@@ -29,15 +41,12 @@ typedef struct		s_calcul_len
 {
 	int				co_max;
 	int				len_tab;
-
 	int				start_char;
 	int				start_cursor;
 	int				count;
 	int				rest;
-
 	int				len_promt;
 	int				real_promt;
-
 	int				real;
 	int				len;
 	int				nbr_char;
@@ -59,9 +68,7 @@ typedef struct		s_pos
 	int				end;
 	int				nbr_line_pos;
 	int				nbr_line_len;
-
 	int				malloc;
-
 	int				nbr_char;
 	int				nbr_cursor;
 	int				len;
@@ -71,8 +78,6 @@ typedef struct		s_pos
 	int				cursor_pos;
 	t_length		*promt;
 	t_length		*buf;
-
-
 	int				nbr_mx;
 	int				nbr_po;
 	char			*promt_c;

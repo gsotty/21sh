@@ -4,126 +4,6 @@
 
 #include <stdio.h>
 
-void	ft_print_lchar(t_lchar *buf)
-{
-	int		x;
-	char	*nbr;
-
-	x = 0;
-	while (x < buf->len)
-	{
-		write(1, "buf = [", 7);
-		nbr = ft_itoa(x);
-		write(1, nbr, ft_strlen(nbr));
-		free(nbr);
-		write(1, "], [", 4);
-		write(1, buf->c + x, 1);
-		write(1, "], [", 4);
-		write(1, which_define(buf->type[x]),
-				ft_strlen(which_define(buf->type[x])));
-		write(1, "]\n", 2);
-		x++;
-	}
-}
-
-void	print_base(t_parser_shell base)
-{
-	int		x;
-	int		y;
-	int		z;
-	char	*nbr;
-
-	x = 0;
-	write(1, "len sep [", 9);
-	nbr = ft_itoa(base.len);
-	write(1, nbr, ft_strlen(nbr));
-	free(nbr);
-	write(1, "]\n", 2);
-	while (x < base.len)
-	{
-		write(1, "	sep [", 6);
-		nbr = ft_itoa(x);
-		write(1, nbr, ft_strlen(nbr));
-		free(nbr);
-		write(1, "]\n", 2);
-		write(1, "	len pipe [", 11);
-		nbr = ft_itoa(base.sep[x].len);
-		write(1, nbr, ft_strlen(nbr));
-		free(nbr);
-		write(1, "]\n", 2);
-		y = 0;
-		while (y < base.sep[x].len)
-		{
-			write(1, "		pipe [", 8);
-			nbr = ft_itoa(y);
-			write(1, nbr, ft_strlen(nbr));
-			free(nbr);
-			write(1, "]\n", 2);
-			write(1, "		len cmd [", 11);
-			nbr = ft_itoa(base.sep[x].pipel[y].argc);
-			write(1, nbr, ft_strlen(nbr));
-			free(nbr);
-			write(1, "]\n", 2);
-			z = 0;
-			if (base.sep[x].pipel[y].argc == 0 && x != (base.len - 1))
-			{
-				write(2, "erreur parser\n", 14);
-			}
-			while (z < base.sep[x].pipel[y].argc)
-			{
-				write(1, "			cmp [", 9);
-				nbr = ft_itoa(z);
-				write(1, nbr, ft_strlen(nbr));
-				free(nbr);
-				write(1, "]\n", 2);
-				write(1, "				type_cmd [", 14);
-				nbr = ft_itoa(base.sep[x].pipel[y].argv[z]->type_cmd);
-				write(1, nbr, ft_strlen(nbr));
-				free(nbr);
-				write(1, "]\n", 2);
-				if (base.sep[x].pipel[y].argv[z]->type_cmd >= 2 &&
-						base.sep[x].pipel[y].argv[z]->type_cmd <= 8)
-				{
-					write(1, "				fd [", 8);
-					nbr = ft_itoa(base.sep[x].pipel[y].argv[z]->l_fd);
-					write(1, nbr, ft_strlen(nbr));
-					free(nbr);
-					write(1, "], [", 4);
-					nbr = ft_itoa(base.sep[x].pipel[y].argv[z]->r_fd);
-					write(1, nbr, ft_strlen(nbr));
-					free(nbr);
-					write(1, "]\n", 2);
-					write(1, "				digit [", 11);
-					nbr = ft_itoa(base.sep[x].pipel[y].argv[z]->digit);
-					write(1, nbr, ft_strlen(nbr));
-					free(nbr);
-					write(1, "]\n", 2);
-					write(1, "				len_file [", 14);
-					nbr = ft_itoa(base.sep[x].pipel[y].argv[z]->file->len);
-					write(1, nbr, ft_strlen(nbr));
-					free(nbr);
-					write(1, "]\n", 2);
-					write(1, "				file [", 10);
-					write(1, base.sep[x].pipel[y].argv[z]->file->c, base.sep[x].pipel[y].argv[z]->file->len);
-					write(1, "]\n", 2);
-				}
-				write(1, "				len [", 9);
-				nbr = ft_itoa(base.sep[x].pipel[y].argv[z]->len);
-				write(1, nbr, ft_strlen(nbr));
-				free(nbr);
-				write(1, "]\n", 2);
-				write(1, "				argv [", 10);
-				write(1, base.sep[x].pipel[y].argv[z]->c,
-						base.sep[x].pipel[y].argv[z]->len);
-				write(1, "]\n", 2);
-				z++;
-			}
-			y++;
-		}
-		x++;
-	}
-}
-
 char	*token[] = {"&&", "||", ";;", "<<-", "<<", ">>", "<&", ">&", "<>", ">|",
 	"<", ">", "|", ";", NULL};
 
@@ -187,48 +67,6 @@ int		ft_onlyspace(int *type, int len)
 	return (0);
 }
 
-/*
-int		ft_open_redir(char *file, t_typecmd *exec_struct, t_history *history)
-{
-	int		fd;
-
-	fd = -2;
-	if (exec_struct->type_cmd == _RINT)
-	{
-		if ((fd = open(file, O_RDONLY)) == -1)
-			write(2, "error: open\n", 12);
-	}
-	else if (exec_struct->type_cmd == _ROUT)
-	{
-		if ((fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR |
-						S_IRGRP | S_IROTH)) == -1)
-			write(2, "error: open\n", 12);
-	}
-	else if (exec_struct->type_cmd == _APPROUT)
-	{
-		if ((fd = open(file, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR |
-						S_IRGRP | S_IROTH)) == -1)
-			write(2, "error: open\n", 12);
-	}
-	else if (exec_struct->type_cmd == _RRDWR)
-	{
-		if ((fd = open(file, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR |
-						S_IRGRP | S_IROTH)) == -1)
-			write(2, "error: open\n", 12);
-	}
-	else if (exec_struct->type_cmd == _HEREDOC)
-	{
-		if (creat_here_document(exec_struct, file, history) == 1)
-			return (-2);
-		return (-1);
-	}
-	else if (exec_struct->type_cmd == _DUPINT ||
-			exec_struct->type_cmd == _DUPOUT)
-		return (-1);
-	return (fd);
-}
-*/
-
 int		ft_addvalue_redir(t_typecmd *exec_struct, t_lchar **tab, int count_cmd, int maybe_fd, int type)
 {
 	if ((ft_typecmddup(exec_struct, tab[count_cmd])) == NULL)
@@ -250,8 +88,6 @@ int		ft_addvalue_redir(t_typecmd *exec_struct, t_lchar **tab, int count_cmd, int
 	return (0);
 }
 
-#include <sys/ioctl.h>
-
 int		ft_addvalue_cmd(t_typecmd ****exec_struct, int sep, int pipe, t_lchar **tab,
 		int start_cmd, int count_pipe, t_history *history)
 {
@@ -266,7 +102,6 @@ int		ft_addvalue_cmd(t_typecmd ****exec_struct, int sep, int pipe, t_lchar **tab
 	after_redir = -1;
 	maybe_fd = -1;
 	count_cmd = start_cmd;
-//	printf("open_max = %ld\n", sysconf(_SC_OPEN_MAX));
 	while (tab[count_cmd] != NULL && count_cmd < count_pipe)
 	{
 		if (ft_strmatch(tab[count_cmd]->c, "<") == 1)
@@ -448,16 +283,11 @@ int		ft_addvalue_cmd(t_typecmd ****exec_struct, int sep, int pipe, t_lchar **tab
 				if ((ft_lchardup(exec_struct[sep][pipe][cmd]->file, tab[count_cmd], 0)) == NULL)
 					return (1);
 				exec_struct[sep][pipe][cmd]->r_fd = -1;
-//				if ((exec_struct[sep][pipe][cmd]->r_fd =
-//							ft_open_redir(tab[count_cmd]->c,
-//								exec_struct[sep][pipe][cmd], history)) == -2)
-//					return (1);
 				after_redir = -1;
 				cmd++;
 			}
 			else
 			{
-//				printf("tab[%d]->c = [%s], ->len = [%d]\n", count_cmd, tab[count_cmd]->c, tab[count_cmd]->len);
 				if ((exec_struct[sep][pipe][cmd] = ft_memalloc(sizeof(t_typecmd))) == NULL)
 					return (1);
 				if ((ft_typecmddup(exec_struct[sep][pipe][cmd], tab[count_cmd])) == NULL)
@@ -474,12 +304,30 @@ int		ft_addvalue_cmd(t_typecmd ****exec_struct, int sep, int pipe, t_lchar **tab
 	return (0);
 }
 
+typedef struct		s_parser_count
+{
+	char			str[4];
+	int				redir;
+}					t_parser_count;
+
 int		ft_nbrcmd(t_lchar **tab, int start_cmd, int count_pipe)
 {
 	int		cmd;
 	int		count_cmd;
 	int		after_redir;
 	int		maybe_fd;
+	int		if_redir;
+	t_parser_count	redir[] = {
+		{"<<-", _APPROUT},
+		{"<<", _HEREDOC},
+		{">>", _APPROUT},
+		{"<&", _DUPINT},
+		{">&", _DUPOUT},
+		{"<>", _RRDWR},
+		{">|", _ROUT},
+		{"<", _RINT},
+		{">", _ROUT}
+	};
 
 	cmd = 0;
 	after_redir = 0;
@@ -487,61 +335,19 @@ int		ft_nbrcmd(t_lchar **tab, int start_cmd, int count_pipe)
 	count_cmd = start_cmd;
 	while (tab[count_cmd] != NULL && count_cmd < count_pipe)
 	{
-		if (ft_strmatch(tab[count_cmd]->c, "<") == 1)
+		if_redir = 0;
+		while (if_redir < 9)
 		{
-			maybe_fd = 0;
-			after_redir = 1;
-			count_cmd++;
+			if (ft_strmatch(tab[count_cmd]->c,  redir[if_redir].str) == 1)
+			{
+				maybe_fd = 0;
+				after_redir = 1;
+				count_cmd++;
+				break ;
+			}
+			if_redir++;
 		}
-		else if (ft_strmatch(tab[count_cmd]->c, ">") == 1)
-		{
-			maybe_fd = 0;
-			after_redir = 1;
-			count_cmd++;
-		}
-		else if (ft_strmatch(tab[count_cmd]->c, ">|") == 1)
-		{
-			maybe_fd = 0;
-			after_redir = 1;
-			count_cmd++;
-		}
-		else if (ft_strmatch(tab[count_cmd]->c, "<<-") == 1)
-		{
-			maybe_fd = 0;
-			after_redir = 1;
-			count_cmd++;
-		}
-		else if (ft_strmatch(tab[count_cmd]->c, "<<") == 1)
-		{
-			maybe_fd = 0;
-			after_redir = 1;
-			count_cmd++;
-		}
-		else if (ft_strmatch(tab[count_cmd]->c, ">>") == 1)
-		{
-			maybe_fd = 0;
-			after_redir = 1;
-			count_cmd++;
-		}
-		else if (ft_strmatch(tab[count_cmd]->c, ">&") == 1)
-		{
-			maybe_fd = 0;
-			after_redir = 1;
-			count_cmd++;
-		}
-		else if (ft_strmatch(tab[count_cmd]->c, "<&") == 1)
-		{
-			maybe_fd = 0;
-			after_redir = 1;
-			count_cmd++;
-		}
-		else if (ft_strmatch(tab[count_cmd]->c, "<>") == 1)
-		{
-			maybe_fd = 0;
-			after_redir = 1;
-			count_cmd++;
-		}
-		else if (ft_onlydigit(tab[count_cmd]->type, tab[count_cmd]->len) == 1)
+		if (ft_onlydigit(tab[count_cmd]->type, tab[count_cmd]->len) == 1)
 		{
 			if (after_redir == 1)
 			{
@@ -556,7 +362,6 @@ int		ft_nbrcmd(t_lchar **tab, int start_cmd, int count_pipe)
 		{
 			if (maybe_fd == 1)
 			{
-				// add the last token to _WORD
 				cmd++;
 				maybe_fd = 0;
 			}
@@ -779,7 +584,6 @@ int		ft_nbrpipe_sep(t_typecmd ****exec_struct,
 					(lenexec->pipe[sep] + 1))) == NULL)
 		return (1);
 	sep++;
-//	printf("sep(seg ?) = [%d]\n", sep);
 	exec_struct[sep] = NULL;
 	return (0);
 }
@@ -798,7 +602,6 @@ int		ft_nbrsep(t_lchar **tab)
 	{
 		if (ft_strmatch(tab[count_sep]->c, ";") == 1)
 		{
-//			printf("start_pipe = [%d], count_sep = [%d]\n", start_pipe, count_sep);
 			if (start_pipe == count_sep)
 			{
 				printf("error\n");
@@ -807,20 +610,13 @@ int		ft_nbrsep(t_lchar **tab)
 			test = start_pipe;
 			while (test < count_sep)
 			{
-//				write(1, "sep = [", 7);
-//				write(1, tab[test]->c, tab[test]->len);
-//				write(1, "]\n", 2);
 				test++;
 			}
-//			write(1, "sep = [", 7);
-//			write(1, tab[count_sep]->c, tab[count_sep]->len);
-//			write(1, "]\n", 2);
 			count_sep++;
 			start_pipe = count_sep;
 			sep++;
 			if (tab[count_sep] == NULL)
 			{
-//				printf("nbr_sep error = [%d]\n", sep);
 				return (sep);
 			}
 		}
@@ -830,13 +626,9 @@ int		ft_nbrsep(t_lchar **tab)
 	test = start_pipe;
 	while (test < count_sep)
 	{
-//		write(1, "sep = [", 7);
-//		write(1, tab[test]->c, tab[test]->len);
-//		write(1, "]\n", 2);
 		test++;
 	}
 	sep++;
-//	printf("nbr_sep = [%d]\n", sep);
 	return (sep);
 }
 
@@ -844,22 +636,13 @@ int		parser(t_lchar *buf, t_history *history, t_envp *my_envp)
 {
 	t_parser_shell	base;
 
-//	char	*nbr;
-
 	(void)base;
 	(void)my_envp;
 	(void)history;
 
-//	int				count;
 	t_lchar			**tab;
 
 	tab = ft_lcharsplit(buf, token);
-//	count = 0;
-//	while (tab[count] != NULL)
-//	{
-//		printf("tab[%d]->c = [%s]\n", count, tab[count]->c);
-//		count++;
-//	}
 
 	t_lenexec		*lenexec;
 	t_process		*process;
@@ -877,7 +660,6 @@ int		parser(t_lchar *buf, t_history *history, t_envp *my_envp)
 		return (1);
 	if ((ft_nbrpipe_sep(exec_struct, lenexec, tab)) == 1)
 		return (1);
-//	printf("nbr_process = [%d]\n", lenexec->nbr_process);
 	if ((process = ft_memalloc(sizeof(t_process) * (lenexec->nbr_process + 1))) == NULL)
 		return (1);
 	if ((ft_nbrcmd_sep(exec_struct, lenexec, tab)) == 1)
@@ -885,7 +667,6 @@ int		parser(t_lchar *buf, t_history *history, t_envp *my_envp)
 	if ((ft_addvalue_sep(exec_struct, tab, history)) == 1)
 		return (1);
 
-///*
 	char	*nbr;
 	int		x = 0;
 	int		y = 0;
@@ -929,7 +710,6 @@ int		parser(t_lchar *buf, t_history *history, t_envp *my_envp)
 		}
 		x++;
 	}
-//*/
 
 	exec_base(exec_struct, process, lenexec, my_envp, history);
 	return (0);

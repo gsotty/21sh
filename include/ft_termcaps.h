@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_termcaps.h                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/04/04 16:30:09 by gsotty            #+#    #+#             */
+/*   Updated: 2019/04/04 16:30:56 by gsotty           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef FT_TERMCAPS_H
 # define FT_TERMCAPS_H
 
@@ -9,9 +21,6 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
-
-//char				term_buffer[4096];
-//char				key_buffer[4096];
 
 typedef struct		s_sequence
 {
@@ -40,8 +49,8 @@ typedef struct		s_which_key
 			t_history *history);
 }					t_which_key;
 
-int		f_putchar(int c);
-int		ft_init_termcaps(t_key *key, t_sequence *sequence);
-int		ft_reset_termcaps(t_sequence *sequence);
+int					f_putchar(int c);
+int					ft_init_termcaps(t_key *key, t_sequence *sequence);
+int					ft_reset_termcaps(t_sequence *sequence);
 
 #endif

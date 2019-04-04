@@ -27,7 +27,6 @@ SRC =	main.c \
 		init_termcaps.c \
 		reset_termcaps.c \
 		parser.c \
-		which_define.c \
 		exec_base.c \
 		exec_cmd.c \
 		env.c \
@@ -48,6 +47,7 @@ SRC =	main.c \
 		ft_freehistory.c \
 		ft_addtype.c \
 		ft_lcharndup.c \
+		free_envp.c \
 		ft_lcharsplit.c
 
 OBJ = $(SRC:.c=.o)

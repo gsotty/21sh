@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/13 12:11:12 by gsotty            #+#    #+#             */
-/*   Updated: 2018/12/02 12:11:25 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/04/04 16:43:43 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@ int		buffer_to_stock(int fd, int len_stock, char **stock, int *bytes_read)
 	char	*buffer;
 	char	*tmp;
 
-	buffer = (char*)malloc(sizeof(char) * BUFF_SIZE + 1);
-	if (buffer == NULL)
+	if ((buffer = ft_memalloc(sizeof(char) * BUFF_SIZE + 1)) == NULL)
 		return (0);
 	*bytes_read = read(fd, buffer, BUFF_SIZE);
 	if (*bytes_read == -1)

@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 14:51:01 by gsotty            #+#    #+#             */
-/*   Updated: 2019/04/04 14:06:20 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/04/04 15:40:04 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,26 @@
 #include <stdio.h>
 #include <curses.h>
 #include <term.h>
+
+static void		ft_add_value_key_tow(t_key *key, t_sequence *sequence)
+{
+	key[8].str = tgetstr("kb", &sequence->buffer);
+	key[9].str = tgetstr("ka", &sequence->buffer);
+	key[10].str = tgetstr("kt", &sequence->buffer);
+	key[11].str = tgetstr("kC", &sequence->buffer);
+	key[12].str = tgetstr("kD", &sequence->buffer);
+	key[13].str = tgetstr("kL", &sequence->buffer);
+	key[14].str = tgetstr("kM", &sequence->buffer);
+	key[15].str = tgetstr("kE", &sequence->buffer);
+	key[16].str = tgetstr("kS", &sequence->buffer);
+	key[17].str = tgetstr("kI", &sequence->buffer);
+	key[18].str = tgetstr("kA", &sequence->buffer);
+	key[19].str = tgetstr("kN", &sequence->buffer);
+	key[20].str = tgetstr("kP", &sequence->buffer);
+	key[21].str = tgetstr("kF", &sequence->buffer);
+	key[22].str = tgetstr("kT", &sequence->buffer);
+	key[23].str = tgetstr("ko", &sequence->buffer);
+}
 
 static void		ft_add_value_key(t_key *key, t_sequence *sequence)
 {
@@ -40,23 +60,7 @@ static void		ft_add_value_key(t_key *key, t_sequence *sequence)
 		key[7].str[3] = '\0';
 		sequence->buffer = &key[7].str[4];
 	}
-	key[8].str = tgetstr("kb", &sequence->buffer);
-	key[9].str = tgetstr("ka", &sequence->buffer);
-	key[10].str = tgetstr("kt", &sequence->buffer);
-	key[11].str = tgetstr("kC", &sequence->buffer);
-	key[12].str = tgetstr("kD", &sequence->buffer);
-	key[13].str = tgetstr("kL", &sequence->buffer);
-	key[14].str = tgetstr("kM", &sequence->buffer);
-	key[15].str = tgetstr("kE", &sequence->buffer);
-	key[16].str = tgetstr("kS", &sequence->buffer);
-	key[17].str = tgetstr("kI", &sequence->buffer);
-	key[18].str = tgetstr("kA", &sequence->buffer);
-	key[19].str = tgetstr("kN", &sequence->buffer);
-	key[20].str = tgetstr("kP", &sequence->buffer);
-	key[21].str = tgetstr("kF", &sequence->buffer);
-	key[22].str = tgetstr("kT", &sequence->buffer);
-	key[23].str = tgetstr("ko", &sequence->buffer);
-	fprintf(stderr, "ko= [%s]\n", key[23].str);
+	ft_add_value_key_tow(key, sequence);
 }
 
 static int		ft_add_value_sequence(int len_term, t_key *key,
@@ -94,20 +98,16 @@ static void		ft_change_var_term(void)
 		return ;
 }
 
-static void		ft_error_getenv(void)
-{
-	write(2, "Specify a terminal type with `setenv TERM <yourtype>'.\n", 55);
-	exit(0);
-}
-
 int				ft_init_termcaps(t_key *key, t_sequence *sequence)
 {
 	int		success;
 	char	*termtype;
 
 	if ((termtype = getenv("TERM")) == NULL)
-		ft_error_getenv();
-	fprintf(stderr, "termtype = [%s]\n", termtype);
+	{
+		write(2, "Specify a terminal type with `setenv TERM <yourtype>'\n", 55);
+		exit(0);
+	}
 	success = tgetent(NULL, termtype);
 	if (success < 0)
 	{
