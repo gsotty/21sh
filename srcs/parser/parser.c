@@ -180,7 +180,7 @@ int		ft_onlyspace(int *type, int len)
 	int		x;
 
 	x = 0;
-	while (x < len && type[x] == _SPACE && type[x] == _NEW_LINE)
+	while (x < len && (type[x] == _SPACE || type[x] == _NEW_LINE))
 		x++;
 	if (x == len)
 		return (1);
@@ -885,7 +885,8 @@ int		parser(t_lchar *buf, t_history *history, t_envp *my_envp)
 	if ((ft_addvalue_sep(exec_struct, tab, history)) == 1)
 		return (1);
 
-/*
+///*
+	char	*nbr;
 	int		x = 0;
 	int		y = 0;
 	int		z = 0;
@@ -928,11 +929,8 @@ int		parser(t_lchar *buf, t_history *history, t_envp *my_envp)
 		}
 		x++;
 	}
-*/
+//*/
 
-//	if (creat_sep(buf, &base, history) == 1)
-//		return (0);
-//	print_base(base);
 	exec_base(exec_struct, process, lenexec, my_envp, history);
 	return (0);
 }

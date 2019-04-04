@@ -9,7 +9,8 @@ int			ft_lcharmatch(t_lchar *buf, int start, char **token)
 	count_token = 0;
 	is_space = 0;
 	count = 0;
-	while (buf->type[count + start] == _SPACE)
+	while (buf->type[count + start] == _SPACE ||
+			buf->type[count + start] == _NEW_LINE)
 	{
 		is_space = 1;
 		count++;

@@ -41,7 +41,7 @@ t_lchar			*while_main(int type, t_history *history)
 		return (NULL);
 	history_cpy.pos_buf = history_cpy.len;
 	buf = line_edition(type, &history_cpy);
-	fprintf(stderr, "\033[31mbut->c = [%s]\033[0m\n", buf->c);
+//	fprintf(stderr, "\033[31mbut->c = [%s]\033[0m\n", buf->c);
 	ft_freehistory(&history_cpy);
 	return (buf);
 }

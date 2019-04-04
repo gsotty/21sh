@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 15:10:49 by gsotty            #+#    #+#             */
-/*   Updated: 2017/09/18 15:18:48 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/04/04 12:48:38 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ static void		ft_change_var_term(void)
 int				ft_reset_termcaps(t_sequence *sequence)
 {
 	tputs(sequence->end, 0, f_putchar);
+	tputs(sequence->reset, 0, f_putchar);
 	ft_change_var_term();
 	free(sequence->start_buf);
 	return (0);

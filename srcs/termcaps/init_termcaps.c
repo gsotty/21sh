@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/18 14:51:01 by gsotty            #+#    #+#             */
-/*   Updated: 2019/01/16 18:27:55 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/04/04 12:56:49 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ static void		ft_add_value_key(t_key *key, t_sequence *sequence)
 	key[21].str = tgetstr("kF", &sequence->buffer);
 	key[22].str = tgetstr("kT", &sequence->buffer);
 	key[23].str = tgetstr("ko", &sequence->buffer);
+	fprintf(stderr, "ko= [%s]\n", key[23].str);
 }
 
 static int		ft_add_value_sequence(int len_term, t_key *key,
@@ -55,13 +56,16 @@ static int		ft_add_value_sequence(int len_term, t_key *key,
 	if ((sequence->buffer = ft_memalloc(sizeof(char) * len_term)) == NULL)
 		return (1);
 	sequence->start_buf = sequence->buffer;
+	sequence->reset = tgetstr("rs", &sequence->buffer);
 	sequence->start = tgetstr("ks", &sequence->buffer);
 	sequence->end = tgetstr("ke", &sequence->buffer);
 	sequence->left_cursor = tgetstr("le", &sequence->buffer);
 	sequence->right_cursor = tgetstr("nd", &sequence->buffer);
 	sequence->up_scroll = tgetstr("sf", &sequence->buffer);
 	sequence->down_scroll = tgetstr("sr", &sequence->buffer);
+	sequence->go_start_line = tgetstr("cr", &sequence->buffer);
 	sequence->clear_rest_screen = tgetstr("cd", &sequence->buffer);
+	tputs(sequence->reset, 0, f_putchar);
 	tputs(sequence->start, 0, f_putchar);
 	ft_add_value_key(key, sequence);
 	return (0);
@@ -94,6 +98,7 @@ int				ft_init_termcaps(t_key *key, t_sequence *sequence)
 
 	if ((termtype = getenv("TERM")) == NULL)
 		ft_error_getenv();
+	fprintf(stderr, "termtype = [%s]\n", termtype);
 	success = tgetent(NULL, termtype);
 	if (success < 0)
 	{

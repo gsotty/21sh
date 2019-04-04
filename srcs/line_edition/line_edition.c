@@ -337,6 +337,7 @@ int			real_length(t_pos *pos, t_promt promt, int pos_len, t_lchar *buf)
 	line.len_tab = tgetnum ("it");
 	ft_addvalue_lenbuf(pos, &line, promt, pos_len, buf);
 
+///*
 	int		x;
 	fprintf(stderr, "pos->\n");
 	fprintf(stderr, "\tco_max = [%d]\n", pos->co_max);
@@ -355,6 +356,8 @@ int			real_length(t_pos *pos, t_promt promt, int pos_len, t_lchar *buf)
 		fprintf(stderr, "\tpromt->pos_cursor[%d] = [%d]\n", x, pos->promt->pos_cursor[x]);
 		x++;
 	}
+//*/
+
 	return (0);
 }
 
@@ -387,6 +390,7 @@ void		replace_cursor(t_sequence *sequence, t_pos *pos, int mode)
 			count_line++;
 		}
 		count_pos = 0;
+		tputs(sequence->go_start_line, 0, f_putchar);
 //		fprintf(stderr, "count_line = [%d]\n", count_line);
 		while (count_pos < pos->cursor_pos)
 		{
@@ -398,7 +402,6 @@ void		replace_cursor(t_sequence *sequence, t_pos *pos, int mode)
 	}
 	else if (mode == 1) // go to the start with pos at the last pos know
 	{
-		tputs(tgetstr("cr", NULL), 0, f_putchar);
 		tputs(sequence->go_start_line, 0, f_putchar);
 		count_line = 0;
 //		fprintf(stderr, "replace_cursor mode = 1\n");
@@ -505,6 +508,7 @@ int				creat_struct_pos(int type, t_pos *pos)
 	pos->co_max = tgetnum("co");
 	pos->li_max = tgetnum("li");
 	pos->len_tab = tgetnum ("it");
+	fprintf(stderr, "pos->len_tab = [%d]\n", pos->len_tab);
 	pos->malloc = 1;
 	pos->start = 0;
 	pos->end = (pos->li_max - 1);
@@ -542,97 +546,35 @@ int		free_pos(t_pos *pos)
 	return (0);
 }
 
-int				print_the_buf(t_sequence *sequence, t_promt promt,
-		t_lchar *buf, int pos_buf, t_pos *pos)
+int				print_the_buf(t_sequence *sequence, t_promt promt, t_lchar *buf,
+		t_pos *pos)
 {
-	int		x;
-	int		len_use_promt;
-	int		len_use_buf;
+	int		count;
+	int		upromt;
+	int		ubuf;
 
-	(void)pos_buf;
-//	replace_cursor(pos, 1);
-//	refresh_size_win(type, buf, pos_buf, pos);
-	x = 0;
-	len_use_buf = 0;
-	len_use_promt = 0;
+	ubuf = 0;
+	upromt = 0;
+	count = 0;
+	tputs(sequence->go_start_line, 0, f_putchar);
 	tputs(sequence->clear_rest_screen, 0, f_putchar);
-	while (x <= pos->nbr_char)
+	while (count <= pos->nbr_char)
 	{
-		write(STDOUT_FILENO, promt.str + len_use_promt, (pos->promt->pos_char[x]));
-		write(STDOUT_FILENO, buf->c + len_use_buf, (pos->buf->pos_char[x]));
-//		fprintf(stderr, "len_use_promt = [%d]\n", len_use_promt);
-//		fprintf(stderr, "promt->pos_char[%d] = [%d]\n", x, pos->promt->pos_char[x]);
-//		fprintf(stderr, "len_use_buf = [%d]\n", len_use_buf);
-//		fprintf(stderr, "buf->pos_char[%d] = [%d]\n", x, pos->buf->pos_char[x]);
-
-//		fprintf(stderr, "\033[33m");
-//		write(STDERR_FILENO, PROMT + len_use_promt, (pos->promt->pos_char[x]));
-//		write(STDERR_FILENO, buf->c + len_use_buf, (pos->buf->pos_char[x]));
-//		fprintf(stderr, "\033[0m\n");
-//		fprintf(stderr, "buf = [%c]\n",
-//				buf->c[len_use_buf + pos->buf->pos_char[x]]);
-		if (x < pos->nbr_char &&
-				buf->c[len_use_promt + pos->promt->pos_char[x]] != '\n' &&
-				buf->c[len_use_buf + pos->buf->pos_char[x]] != '\n')
-		{
-//			fprintf(stderr, "next_line\n");
-//			tputs(tgetstr("do", NULL), 0, f_putchar);
-//			tputs(tgetstr("sf", NULL), 0, f_putchar);
+		write(STDOUT_FILENO, promt.str + upromt, (pos->promt->pos_char[count]));
+		write(STDOUT_FILENO, buf->c + ubuf, (pos->buf->pos_char[count]));
+		fprintf(stderr, "\033[33m");
+		write(STDERR_FILENO, promt.str + upromt, (pos->promt->pos_char[count]));
+		write(STDERR_FILENO, buf->c + ubuf, (pos->buf->pos_char[count]));
+		fprintf(stderr, "\033[0m\n");
+		if (count < pos->nbr_char &&
+				buf->c[upromt + pos->promt->pos_char[count]] != '\n' &&
+				buf->c[ubuf + pos->buf->pos_char[count]] != '\n')
 			tputs(sequence->up_scroll, 0, f_putchar);
-		}
-		len_use_promt += pos->promt->pos_char[x];
-		len_use_buf += pos->buf->pos_char[x];
-		x++;
+		upromt += pos->promt->pos_char[count];
+		ubuf += pos->buf->pos_char[count];
+		count++;
 	}
-//	refresh_size_win(type, buf, pos_buf, pos);
 	replace_cursor(sequence, pos, 3);
-/*
-	while (x < pos->start)
-	{
-		len_use_promt += pos->promt.pos_char[x];
-		len_use_buf += pos->buf_len.pos_char[x];
-		x++;
-	}
-	tputs(tgetstr("cd", NULL), 0, f_putchar);
-	x = 0;
-	len_use_promt = 0;
-	while (x <= pos->promt.nbr)
-	{
-		write(STDOUT_FILENO, PROMT + len_use_promt, pos->promt.pos_char[x]);
-		len_use_promt += pos->promt.pos_char[x];
-		if (x < pos->promt.nbr)
-			tputs(tgetstr("sf", NULL), 0, f_putchar);
-		x++;
-	}
-	x = 0;
-	len_use_buf = 0;
-	while (x <= pos->buf_len.nbr)
-	{
-		write(STDOUT_FILENO, buf->c + len_use_buf, pos->buf_len.pos_char[x]);
-		len_use_buf += pos->buf_len.pos_char[x];
-		if (x < pos->buf_len.nbr)
-			tputs(tgetstr("sf", NULL), 0, f_putchar);
-		x++;
-	}
-*/;/*
-	   while (x <= pos->nbr_line_len && x <= pos->end)
-	   {
-	   write(STDOUT_FILENO, PROMT + len_use_promt, pos->promt.pos_char[x]);
-	   write(STDOUT_FILENO, buf->c + len_use_buf, pos->buf_len.pos_char[x]);
-	   len_use_promt += pos->promt.pos_char[x];
-	   len_use_buf += pos->buf_len.pos_char[x];
-	   if ((pos->promt.pos_char[pos->nbr_line_pos] +
-	   pos->buf_len.pos_char[pos->nbr_line_pos]) >= pos->co_max &&
-	   pos->nbr_line_pos < pos->malloc && x < pos->nbr_line_len &&
-	   x < pos->end)
-	   {
-	//	fprintf(stderr, "test\n");
-	//	tputs(tgetstr("do", NULL), 0, f_putchar);
-	tputs(tgetstr("sf", NULL), 0, f_putchar);
-	}
-	x++;
-	}
-	*/
 	return (0);
 }
 
@@ -783,9 +725,6 @@ int				apply_arrow(t_sequence *sequence, int type, t_promt *promt, int which_arr
 			change_pos(1, 1, hist->buf[hist->pos_buf + 1]->len, hist);
 		refresh_size_win(promt[type], hist->buf[hist->pos_buf],
 				hist->pos[hist->pos_buf], pos);
-//		replace_cursor(pos, 0);
-//		print_the_buf(sequence, type, promt, hist->buf[hist->pos_buf],
-//				hist->pos[hist->pos_buf], pos);
 	}
 	else if ((which_arrow == 67 &&
 				hist->pos[hist->pos_buf] < hist->buf[hist->pos_buf]->len) ||
@@ -846,7 +785,7 @@ int				ft_arrow_up(t_sequence *sequence, t_pos *pos, t_promt promt,
 		history->pos_buf--;
 		refresh_size_win(promt, history->buf[history->pos_buf],
 				history->pos[history->pos_buf], pos);
-		replace_cursor(sequence, pos, 0);
+		print_the_buf(sequence, promt, history->buf[history->pos_buf], pos);
 	}
 	return (0);
 }
@@ -860,18 +799,42 @@ int				ft_arrow_down(t_sequence *sequence, t_pos *pos, t_promt promt,
 		history->pos_buf++;
 		refresh_size_win(promt, history->buf[history->pos_buf],
 				history->pos[history->pos_buf], pos);
-		replace_cursor(sequence, pos, 0);
+		print_the_buf(sequence, promt, history->buf[history->pos_buf], pos);
 	}
+	return (0);
+}
+
+int				ft_home_position(t_sequence *sequence, t_pos *pos, t_promt promt,
+		t_history *history)
+{
+	replace_cursor(sequence, pos, 1);
+	history->pos[history->pos_buf] = 0;
+	refresh_size_win(promt, history->buf[history->pos_buf],
+			history->pos[history->pos_buf], pos);
+	replace_cursor(sequence, pos, 0);
+	return (0);
+}
+
+int				ft_home_down(t_sequence *sequence, t_pos *pos, t_promt promt,
+		t_history *history)
+{
+	replace_cursor(sequence, pos, 1);
+	fprintf(stderr, "history->buf[history->pos_buf]->len = [%d]\n",
+			history->buf[history->pos_buf]->len);
+	history->pos[history->pos_buf] = history->buf[history->pos_buf]->len;
+	refresh_size_win(promt, history->buf[history->pos_buf],
+			history->pos[history->pos_buf], pos);
+	replace_cursor(sequence, pos, 0);
 	return (0);
 }
 
 int				ft_char_return(t_sequence *sequence, t_pos *pos,
 		t_promt promt, t_history *history)
 {
-	(void)sequence;
-	(void)pos;
-	(void)promt;
-	(void)history;
+	refresh_size_win(promt, history->buf[history->pos_buf],
+			history->pos[history->pos_buf], pos);
+	print_the_buf(sequence, promt, history->buf[history->pos_buf], pos);
+	write(0, "\n", 1);
 	return (1);
 }
 
@@ -882,7 +845,9 @@ int				ft_exit_edition_line(t_sequence *sequence, t_pos *pos,
 	(void)pos;
 	(void)promt;
 	(void)history;
-	return (1);
+	if (history->buf[history->pos_buf]->len == 0)
+		return (1);
+	return (0);
 }
 
 int				ft_backspace(t_sequence *sequence, t_pos *pos,
@@ -911,8 +876,7 @@ int				ft_backspace(t_sequence *sequence, t_pos *pos,
 				history->buf[history->pos_buf]->len);
 		refresh_size_win(promt, history->buf[history->pos_buf],
 				history->pos[history->pos_buf], pos);
-		print_the_buf(sequence, promt, history->buf[history->pos_buf],
-				history->pos[history->pos_buf], pos);
+		print_the_buf(sequence, promt, history->buf[history->pos_buf], pos);
 	}
 	return (0);
 }
@@ -942,8 +906,7 @@ int				ft_delete_char(t_sequence *sequence, t_pos *pos,
 				history->buf[history->pos_buf]->len);
 		refresh_size_win(promt, history->buf[history->pos_buf],
 				history->pos[history->pos_buf], pos);
-		print_the_buf(sequence, promt, history->buf[history->pos_buf],
-				history->pos[history->pos_buf], pos);
+		print_the_buf(sequence, promt, history->buf[history->pos_buf], pos);
 	}
 	return (0);
 }
@@ -956,8 +919,8 @@ t_which_key		which_key[] = {
 	{"right_arrow", ft_arrow_right},
 	{"up_arrow", ft_arrow_up},
 	{"down_arrow", ft_arrow_down},
-	{"home_position", NULL},
-	{"home_down", NULL},
+	{"home_position", ft_home_position},
+	{"home_down", ft_home_down},
 	{"backspace", ft_backspace},
 	{"clear_all_the_tabs", NULL},
 	{"clear_tab_column", NULL},
@@ -1009,6 +972,19 @@ t_lchar			*line_edition(int type, t_history *history)
 		ft_memset(&buffer, 0, sizeof(char) * 4);
 		ret = read(STDIN_FILENO, buffer, 4095);
 		buffer[ret] = '\0';
+
+
+		int		print = 0;
+
+		fprintf(stderr, "ret = [%d]\n", ret);
+		while (print < ret)
+		{
+			fprintf(stderr, "[%d]", buffer[print]);
+			print++;
+		}
+		fprintf(stderr, "\n");
+
+
 		if (g_sig == SIGINT)
 		{
 			g_sig = 0;
@@ -1051,9 +1027,7 @@ t_lchar			*line_edition(int type, t_history *history)
 						}
 						count_buffer += ft_strlen(key[count_key].str);
 						fprintf(stderr, "}\n");
-						fprintf(stderr, "allo ??\n");
 						break ;
-						fprintf(stderr, "c'est possible ??\n");
 					}
 					else
 						count_key++;
@@ -1062,110 +1036,32 @@ t_lchar			*line_edition(int type, t_history *history)
 					count_key++;
 				fprintf(stderr, "}\n");
 			}
-			fprintf(stderr, "ref_f == [%d]\n", ret_f);
+//			fprintf(stderr, "ref_f == [%d]\n", ret_f);
 			if (ret_f == 1)
 			{
-//				replace_cursor(&sequence, &pos, 1);
 				creat_buf(history, buffer, ret);
-//				refresh_size_win(promt[type], history->buf[history->pos_buf],
-//						history->pos[history->pos_buf], &pos);
-//				print_the_buf(&sequence, type, promt, history->buf[history->pos_buf],
-//						history->pos[history->pos_buf], &pos);
 				break ;
 			}
 			else if (which_key[count_key].key == NULL)
 			{
-				fprintf(stderr, "c'est pas une commande\n");
+//				fprintf(stderr, "c'est pas une commande\n");
 				replace_cursor(&sequence, &pos, 1);
 				creat_buf(history, buffer, 1);
 				refresh_size_win(promt[type], history->buf[history->pos_buf],
 						history->pos[history->pos_buf], &pos);
-				print_the_buf(&sequence, promt[type], history->buf[history->pos_buf],
-						history->pos[history->pos_buf], &pos);
+				print_the_buf(&sequence, promt[type], history->buf[history->pos_buf], &pos);
 			}
 			else
 			{
-				fprintf(stderr, "c'est une commande\n");
+//				fprintf(stderr, "c'est une commande\n");
 			}
 			count_buffer++;
 		}
-		fprintf(stderr, "ref_f == [%d]\n", ret_f);
+//		fprintf(stderr, "ref_f == [%d]\n", ret_f);
 		if (ret_f == 1 || ret_f == 2)
 		{
 			break ;
 		}
-/*
-		int		print = 0;
-
-		fprintf(stderr, "ret = [%d]\n", ret);
-		while (print < ret)
-		{
-			fprintf(stderr, "[%d]", buffer[print]);
-			print++;
-		}
-		fprintf(stderr, "\n");
-*/
-/*
-		if (g_sig == SIGINT)
-		{
-			g_sig = 0;
-			history->buf[history->pos_buf]->len = -1;
-			write(1, "\n", 1);
-			break ;
-		}
-		if (buffer[0] == 4 && ret == 1 &&
-				history->buf[history->pos_buf]->len == 0 && type == 0)
-		{
-			creat_buf(history, buffer, ret);
-			break ;
-		}
-		else if (buffer[0] == 4 && ret == 1)
-		{
-			replace_cursor(&sequence, &pos, 1);
-			delete_key(history);
-			refresh_size_win(promt[type], history->buf[history->pos_buf],
-					history->pos[history->pos_buf], &pos);
-			print_the_buf(&sequence, type, promt, history->buf[history->pos_buf],
-					history->pos[history->pos_buf], &pos);
-		}
-		else if (buffer[0] == 127 && ret == 1)
-		{
-			replace_cursor(&sequence, &pos, 1);
-			backspace_key(history);
-			refresh_size_win(promt[type], history->buf[history->pos_buf],
-					history->pos[history->pos_buf], &pos);
-			print_the_buf(&sequence, type, promt, history->buf[history->pos_buf],
-					history->pos[history->pos_buf], &pos);
-		}
-		else if (buffer[0] == 27 && buffer[1] == 91 && buffer[2] == 51)
-		{
-			replace_cursor(&sequence, &pos, 1);
-			delete_key(history);
-			refresh_size_win(promt[type], history->buf[history->pos_buf],
-					history->pos[history->pos_buf], &pos);
-			print_the_buf(&sequence, type, promt, history->buf[history->pos_buf],
-					history->pos[history->pos_buf], &pos);
-		}
-		else if (buffer[0] == 27 && buffer[1] == 91)
-			apply_arrow(&sequence, type, promt, buffer[2], history, &pos);
-		else if (buffer[0] == 10 && ret == 1)
-		{
-			change_pos(0, 1, history->buf[history->pos_buf]->len, history);
-//			print_the_buf(type, history->buf[history->pos_buf],
-//					history->pos[history->pos_buf], &pos);
-			write(1, "\n", 1);
-			break ;
-		}
-		else
-		{
-			replace_cursor(&sequence, &pos, 1);
-			creat_buf(history, buffer, ret);
-			refresh_size_win(promt[type], history->buf[history->pos_buf],
-					history->pos[history->pos_buf], &pos);
-			print_the_buf(&sequence, type, promt, history->buf[history->pos_buf],
-					history->pos[history->pos_buf], &pos);
-		}
-*/
 	}
 	if (ft_reset_termcaps(&sequence) == 1)
 		return (NULL);

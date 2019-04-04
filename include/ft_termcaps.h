@@ -15,6 +15,7 @@
 
 typedef struct		s_sequence
 {
+	char			*reset;
 	char			*start_buf;
 	char			*buffer;
 	char			*start;
