@@ -680,6 +680,8 @@ int				ft_home_down(t_sequence *sequence, t_pos *pos, t_promt promt,
 int				ft_char_return(t_sequence *sequence, t_pos *pos,
 		t_promt promt, t_history *history)
 {
+	replace_cursor(sequence, pos, 1);
+	history->pos[history->pos_buf] = history->buf[history->pos_buf]->len;
 	refresh_size_win(promt, history->buf[history->pos_buf],
 			history->pos[history->pos_buf], pos);
 	print_the_buf(sequence, promt, history->buf[history->pos_buf], pos);
