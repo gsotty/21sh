@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 16:35:02 by gsotty            #+#    #+#             */
-/*   Updated: 2019/04/05 11:41:27 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/04/05 15:27:23 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,7 +213,8 @@ typedef struct		s_process
 typedef struct		s_lenexec
 {
 	int					len;
-	int					type;
+	int					*type;
+	char				**str;
 	struct s_lenexec	**next;
 }					t_lenexec;
 

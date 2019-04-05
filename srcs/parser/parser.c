@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 17:20:39 by gsotty            #+#    #+#             */
-/*   Updated: 2019/04/05 09:52:44 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/04/05 15:53:41 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -527,6 +527,51 @@ static int			ft_lentab_lchar(t_lchar **tab_split)
 	return (count);
 }
 
+void				ft_free_tab_split(t_lchar **tab_split)
+{
+	int		count;
+
+	count = 0;
+	while (tab_split[count] != NULL)
+	{
+		free(tab_split[count]->c);
+		free(tab_split[count]->type);
+		free(tab_split[count]);
+		count++;
+	}
+	free(tab_split[count]);
+}
+
+void				ft_free_lenexec(t_lenexec *lenexec)
+{
+	int		count_sep;
+	int		count_pipe;
+	int		count_cmd;
+
+	count_sep = 0;
+	while (count_sep < lenexec->len)
+	{
+		count_pipe = 0;
+		while (count_pipe < lenexec->next[count_sep]->len)
+		{
+			count_cmd = 0;
+			while (count_cmd < lenexec->next[count_sep]->next[count_pipe]->len)
+			{
+				free(lenexec->next[count_sep]->next[count_pipe]->str[count_cmd]);
+				count_cmd++;
+			}
+			free(lenexec->next[count_sep]->next[count_pipe]->type);
+			free(lenexec->next[count_sep]->next[count_pipe]);
+			count_pipe++;
+		}
+		free(lenexec->next[count_sep]->next);
+		free(lenexec->next[count_sep]);
+		count_sep++;
+	}
+	free(lenexec->next);
+	free(lenexec);
+}
+
 int					parser(t_lchar *buf, t_history *history, t_envp *my_envp)
 {
 	t_lchar			**tab_split;
@@ -541,8 +586,12 @@ int					parser(t_lchar *buf, t_history *history, t_envp *my_envp)
 	len_tab = ft_lentab_lchar(tab_split);
 	if ((lenexec = ft_memalloc(sizeof(t_lenexec))) == NULL)
 		return (1);
+	if ((lenexec->next = ft_memalloc(sizeof(t_lenexec))) == NULL)
+		return (1);
 	ft_nbrsep(lenexec, len_tab, tab_split);
-/*	if ((lenexec->sep = ft_nbrmatch(";", tab_split)) == -1)
+	ft_free_lenexec(lenexec);
+	ft_free_tab_split(tab_split);
+	/*	if ((lenexec->sep = ft_nbrmatch(";", tab_split)) == -1)
 		return (1);
 	if ((exec_struct = ft_memalloc(sizeof(t_typecmd ***) *
 					(lenexec->sep + 1))) == NULL)
