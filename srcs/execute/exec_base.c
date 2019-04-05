@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 18:01:22 by gsotty            #+#    #+#             */
-/*   Updated: 2019/04/04 18:43:40 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/04/05 09:54:52 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,9 +253,9 @@ int		exec_base(t_typecmd ****base, t_process *process, t_lenexec *lenexec,
 	int			count_cmd;
 
 	int			argc;
-
-	int			rep;
-	int			status;
+	(void)lenexec;
+//	int			rep;
+//	int			status;
 
 	count_sep = 0;
 	count_process = 0;
@@ -282,9 +282,9 @@ int		exec_base(t_typecmd ****base, t_process *process, t_lenexec *lenexec,
 			fdexec->close = -1;
 			fdexec->src = -1;
 			fdexec->dest = -1;
-			if (add_pipe(count_pipe, lenexec->pipe[count_sep],
-						fdexec, pipefd) == 1)
-				return (1);
+	///		if (add_pipe(count_pipe, lenexec->pipe[count_sep],
+	//					fdexec, pipefd) == 1)
+	//			return (1);
 			count_cmd = 0;
 			argc = 0;
 			while (base[count_sep][count_pipe][count_cmd] != NULL)
@@ -416,8 +416,8 @@ int		exec_base(t_typecmd ****base, t_process *process, t_lenexec *lenexec,
 				if (father == 0)
 				{
 					signal(SIGINT, SIG_DFL);
-					if (close_pipe_child(count_pipe, lenexec->pipe[count_sep],
-								pipefd) == 1)
+//					if (close_pipe_child(count_pipe, lenexec->pipe[count_sep],
+//								pipefd) == 1)
 						return (1);
 					if (fdexec->fd_in != -1)
 						dup2(fdexec->fd_in, fdexec->in);
@@ -472,9 +472,9 @@ int		exec_base(t_typecmd ****base, t_process *process, t_lenexec *lenexec,
 					return (1);
 				}
 			}
-			if (close_pipe_father(count_pipe, lenexec->pipe[count_sep],
-						pipefd) == 1)
-				return (1);
+	//		if (close_pipe_father(count_pipe, lenexec->pipe[count_sep],
+	//					pipefd) == 1)
+	//			return (1);
 			count_cmd = 0;
 			while (base[count_sep][count_pipe][count_cmd] != NULL)
 			{
@@ -502,23 +502,23 @@ int		exec_base(t_typecmd ****base, t_process *process, t_lenexec *lenexec,
 			count_pipe++;
 			count_process++;
 		}
-		while ((rep = waitpid(-1, &status, 0)) > -1)
-		{
-			int		test_proc;
-
-			test_proc = 0;
-			while (test_proc < lenexec->nbr_process)
-			{
-				if (process[test_proc].id == rep)
-				{
-				//	printf("process = [%d]\n", process[test_proc].id);
-					process[test_proc].rep = WEXITSTATUS(status);
-				//	printf("	ret = [%d]\n", process[test_proc].rep);
-				}
-				test_proc++;
-			}
+//		while ((rep = waitpid(-1, &status, 0)) > -1)
+//		{
+//			int		test_proc;
+//
+//			test_proc = 0;
+//			while (test_proc < lenexec->nbr_process)
+//			{
+//				if (process[test_proc].id == rep)
+//				{
+//				//	printf("process = [%d]\n", process[test_proc].id);
+//					process[test_proc].rep = WEXITSTATUS(status);
+//				//	printf("	ret = [%d]\n", process[test_proc].rep);
+//				}
+//				test_proc++;
+//			}
 		//	printf("wait = [%d], rep = [%d]\n", rep, WEXITSTATUS(status));
-		}
+//		}
 		if (pipefd->here_doc[0] != -1)
 		{
 			close(pipefd->here_doc[0]);

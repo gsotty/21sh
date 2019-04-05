@@ -332,8 +332,8 @@ void		replace_cursor(t_sequence *sequence, t_pos *pos, int mode)
 				tputs(sequence->up_scroll, 0, f_putchar);
 			count_line++;
 		}
-		count_pos = 0;
 		tputs(sequence->go_start_line, 0, f_putchar);
+		count_pos = 0;
 		while (count_pos < pos->cursor_pos)
 		{
 			tputs(sequence->right_cursor, 0, f_putchar);
@@ -360,7 +360,7 @@ void		replace_cursor(t_sequence *sequence, t_pos *pos, int mode)
 				tputs(sequence->down_scroll, 0, f_putchar);
 			count_line++;
 		}
-		tputs(tgetstr("cr", NULL), 0, f_putchar);
+		tputs(sequence->go_start_line, 0, f_putchar);
 		count_pos = 0;
 		while (count_pos < pos->cursor_pos)
 		{
@@ -547,54 +547,6 @@ int				free_history(t_history *history)
 	free(history->buf);
 	free(history->pos);
 	return (1);
-}
-
-int				change_pos(int add_pos_buf, int type, int add_pos, t_history *hist)
-{
-	hist->pos_buf += add_pos_buf;
-	if (type == 0)
-		hist->pos[hist->pos_buf] += add_pos;
-	if (type == 1)
-		hist->pos[hist->pos_buf] = add_pos;
-	return (0);
-}
-
-int				apply_arrow(t_sequence *sequence, int type, t_promt *promt, int which_arrow,
-		t_history *hist, t_pos *pos)
-{
-	(void)type;
-	(void)pos;
-	if ((which_arrow == 65 && hist->pos_buf > 0) ||
-			(which_arrow == 66 && hist->pos_buf < hist->len))
-	{
-		replace_cursor(sequence, pos, 1);
-		if (which_arrow == 65)
-			change_pos(-1, 1, hist->buf[hist->pos_buf - 1]->len, hist);
-		else if (which_arrow == 66)// down
-			change_pos(1, 1, hist->buf[hist->pos_buf + 1]->len, hist);
-		refresh_size_win(promt[type], hist->buf[hist->pos_buf],
-				hist->pos[hist->pos_buf], pos);
-	}
-	else if ((which_arrow == 67 &&
-				hist->pos[hist->pos_buf] < hist->buf[hist->pos_buf]->len) ||
-			(which_arrow == 68 && hist->pos[hist->pos_buf] > 0) ||
-			(which_arrow == 70) ||
-			(which_arrow == 72))
-	{
-		replace_cursor(sequence, pos, 1);
-		if (which_arrow == 67) // right
-			change_pos(0, 0, 1, hist);
-		else if (which_arrow == 68) // left
-			change_pos(0, 0, -1, hist);
-		else if (which_arrow == 70) // end
-			change_pos(0, 1, hist->buf[hist->pos_buf]->len, hist);
-		else if (which_arrow == 72) // home
-			change_pos(0, 1, 0, hist);
-		refresh_size_win(promt[type], hist->buf[hist->pos_buf],
-				hist->pos[hist->pos_buf], pos);
-		replace_cursor(sequence, pos, 0);
-	}
-	return (0);
 }
 
 int				ft_arrow_left(t_sequence *sequence, t_pos *pos, t_promt promt,
@@ -864,7 +816,7 @@ t_lchar			*line_edition(int type, t_history *history)
 //						fprintf(stderr, "[%d]", key[count_key].str[count_len_key]);
 						count_len_key++;
 					}
-					if (ft_strmatch(key[count_key].str, buffer + count_buffer) == 1)
+					if (ft_strmatch(key[count_key].str, buffer + count_buffer) >= 0)
 					{
 						ret_f = which_key[count_key].f(&sequence, &pos, promt[type], history);
 //						fprintf(stderr, " or ");

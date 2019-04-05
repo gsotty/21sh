@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 17:20:39 by gsotty            #+#    #+#             */
-/*   Updated: 2019/04/04 18:57:40 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/04/05 09:52:44 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ char				*token[] = {
 	";",
 	NULL
 };
+/*
 
 static int			ft_atoi_redir(char *str, int len)
 {
@@ -129,7 +130,7 @@ int					ft_addvalue_cmd(t_typecmd ****exec_struct, int sep, int pipe,
 		if_redir = 0;
 		while (if_redir < 9)
 		{
-			if (ft_strmatch(tab[count_cmd]->c, redir[if_redir].str) == 1)
+			if (ft_strmatch(tab[count_cmd]->c, redir[if_redir].str) >= 0)
 			{
 				if ((exec_struct[sep][pipe][cmd] =
 							ft_memalloc(sizeof(t_typecmd))) == NULL)
@@ -451,7 +452,7 @@ int					ft_nbrcmd_sep(t_typecmd ****exec_struct, t_lenexec *lenexec,
 	start_pipe = 0;
 	while (tab[count_sep] != NULL)
 	{
-		if (ft_strmatch(tab[count_sep]->c, ";") == 1)
+		if (ft_strmatch(tab[count_sep]->c, ";") >= 0)
 		{
 			if (ft_nbrcmd_pipe(exec_struct, lenexec, sep, tab,
 						start_pipe, count_sep - 1) == 1)
@@ -484,7 +485,7 @@ int					ft_nbrpipe_sep(t_typecmd ****exec_struct,
 	start_pipe = 0;
 	while (tab[count_sep] != NULL)
 	{
-		if (ft_strmatch(tab[count_sep]->c, ";") == 1)
+		if (ft_strmatch(tab[count_sep]->c, ";") >= 0)
 		{
 			lenexec->pipe[sep] = ft_nbrpipe(tab, start_pipe, count_sep - 1);
 			if ((exec_struct[sep] = ft_memalloc(sizeof(t_typecmd **) *
@@ -515,46 +516,33 @@ int					ft_nbrpipe_sep(t_typecmd ****exec_struct,
 	exec_struct[sep] = NULL;
 	return (0);
 }
-
-int					ft_nbrsep(t_lchar **tab)
+*/
+static int			ft_lentab_lchar(t_lchar **tab_split)
 {
-	int		sep;
-	int		count_sep;
-	int		start_pipe;
+	int		count;
 
-	sep = 0;
-	count_sep = 0;
-	start_pipe = 0;
-	while (tab[count_sep] != NULL)
-	{
-		if (ft_strmatch(tab[count_sep]->c, ";") == 1)
-		{
-			if (start_pipe == count_sep)
-				return (-1);
-			count_sep++;
-			start_pipe = count_sep;
-			sep++;
-			if (tab[count_sep] == NULL)
-				return (sep);
-		}
-		else
-			count_sep++;
-	}
-	sep++;
-	return (sep);
+	count = 0;
+	while (tab_split[count] != NULL)
+		count++;
+	return (count);
 }
 
 int					parser(t_lchar *buf, t_history *history, t_envp *my_envp)
 {
-	t_lchar			**tab;
+	t_lchar			**tab_split;
 	t_lenexec		*lenexec;
-	t_process		*process;
-	t_typecmd		****exec_struct;
+//	t_process		*process;
+//	t_typecmd		****exec_struct;
+	(void)history;
+	(void)my_envp;
+	int				len_tab;
 
-	tab = ft_lcharsplit(buf, token);
+	tab_split = ft_lcharsplit(buf, token);
+	len_tab = ft_lentab_lchar(tab_split);
 	if ((lenexec = ft_memalloc(sizeof(t_lenexec))) == NULL)
 		return (1);
-	if ((lenexec->sep = ft_nbrsep(tab)) == -1)
+	ft_nbrsep(lenexec, len_tab, tab_split);
+/*	if ((lenexec->sep = ft_nbrmatch(";", tab_split)) == -1)
 		return (1);
 	if ((exec_struct = ft_memalloc(sizeof(t_typecmd ***) *
 					(lenexec->sep + 1))) == NULL)
@@ -565,15 +553,15 @@ int					parser(t_lchar *buf, t_history *history, t_envp *my_envp)
 	if ((lenexec->cmd = ft_memalloc(sizeof(int *) *
 					(lenexec->sep + 1))) == NULL)
 		return (1);
-	if ((ft_nbrpipe_sep(exec_struct, lenexec, tab)) == 1)
+	if ((ft_nbrpipe_sep(exec_struct, lenexec, tab_split)) == 1)
 		return (1);
 	if ((process = ft_memalloc(sizeof(t_process) *
 					(lenexec->nbr_process + 1))) == NULL)
 		return (1);
-	if ((ft_nbrcmd_sep(exec_struct, lenexec, tab)) == 1)
+	if ((ft_nbrcmd_sep(exec_struct, lenexec, tab_split)) == 1)
 		return (1);
-	if ((ft_addvalue_sep(exec_struct, tab, history)) == 1)
+	if ((ft_addvalue_sep(exec_struct, tab_split, history)) == 1)
 		return (1);
 	exec_base(exec_struct, process, lenexec, my_envp, history);
-	return (0);
+*/	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 15:42:07 by gsotty            #+#    #+#             */
-/*   Updated: 2019/04/04 18:41:27 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/04/05 08:56:01 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,15 @@ int				ft_strmatch(char *str1, char *str2)
 	while (str1[x] == str2[x] && str1[x] != '\0' && str2[x] != '\0')
 		x++;
 	if (str1[x] == '\0' && str2[x] == '\0')
-		return (1);
-	return (0);
+		return (x);
+	return (-1);
 }
 
 t_history		*add_new_history(t_history *history, t_lchar *buf)
 {
 	t_history	*tmp_history;
 
-	if (ft_strmatch(history->buf[history->len]->c, buf->c) == 0)
+	if (ft_strmatch(history->buf[history->len]->c, buf->c) == -1)
 	{
 		if ((tmp_history = ft_memalloc(sizeof(t_history) + 1)) == NULL)
 			return (NULL);
@@ -67,7 +67,7 @@ int				ft_loop_for_line(t_history *history, t_envp *my_envp)
 		return (1);
 	if (buf->len > 0)
 	{
-		if (ft_strmatch("exit\n", buf->c) == 1 ||
+		if (ft_strmatch("exit\n", buf->c) >= 0 ||
 					(buf->type[0] == _EOT && buf->len == 1))
 		{
 			free(buf->c);

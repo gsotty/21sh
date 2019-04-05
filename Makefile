@@ -50,6 +50,7 @@ SRC =	main.c \
 		free_envp.c \
 		ft_onlydigit.c \
 		ft_onlyspace.c \
+		ft_nbrsep.c \
 		ft_lcharsplit.c
 
 OBJ = $(SRC:.c=.o)

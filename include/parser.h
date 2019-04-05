@@ -6,7 +6,7 @@
 /*   By: gsotty <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/04 16:35:02 by gsotty            #+#    #+#             */
-/*   Updated: 2019/04/04 17:08:02 by gsotty           ###   ########.fr       */
+/*   Updated: 2019/04/05 11:41:27 by gsotty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,11 +212,16 @@ typedef struct		s_process
 
 typedef struct		s_lenexec
 {
-	int				nbr_process;
-	int				sep;
-	int				*pipe;
-	int				**cmd;
+	int					len;
+	int					type;
+	struct s_lenexec	**next;
 }					t_lenexec;
+
+typedef struct		s_parser_count
+{
+	char			str[4];
+	int				redir;
+}					t_parser_count;
 
 typedef struct		s_typecmd
 {
@@ -234,25 +239,8 @@ typedef struct		s_typecmd
 	char			*heredoc;
 }					t_typecmd;
 
-typedef struct		s_pipelines
-{
-	int				argc;
-	t_typecmd		**argv;
-}					t_pipelines;
-
-typedef struct		s_separateurs
-{
-	t_pipelines		*pipel;
-	int				len;
-}					t_separateurs;
-
-typedef struct		s_parser_shell
-{
-	t_separateurs	*sep;
-	int				len;
-}					t_parser_shell;
-
 int					ft_onlyspace(int *type, int len);
 int					ft_onlydigit(int *type, int len);
+int					ft_nbrsep(t_lenexec *lenexec, int end, t_lchar **tab_split);
 
 #endif
